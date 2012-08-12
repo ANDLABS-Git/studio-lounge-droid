@@ -1,0 +1,36 @@
+<manifest package="eu.andlabs.studiolounge"
+    android:versionCode="1"
+    android:versionName="0.0.1" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:debuggable="true"
+        android:label="@string/app_name"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@android:style/Theme.Light" >
+
+        <activity
+            android:name=".LoungeActivity"
+            android:screenOrientation="reverseLandscape"
+            android:label="@string/title_activity_lounge"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="GameCommunicationService" >
+        </service>
+    </application>
+
+</manifest>
