@@ -16,16 +16,25 @@
 package eu.andlabs.studiolounge;
 
 
+import java.util.ArrayList;
+
+import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 @SuppressLint("NewApi")
-public class ChatFragment extends Fragment implements FragmentListner {
+public class ChatFragment extends Fragment implements ChatListener {
+    ArrayList<String> mConversation;
+    ListView mListView;
     int mNum;
 
     /**
@@ -34,12 +43,10 @@ public class ChatFragment extends Fragment implements FragmentListner {
      */
     static ChatFragment newInstance(int num) {
         ChatFragment f = new ChatFragment();
-
         // Supply num input as an argument.
         Bundle args = new Bundle();
         args.putInt("num", num);
         f.setArguments(args);
-
         return f;
     }
 
@@ -49,8 +56,16 @@ public class ChatFragment extends Fragment implements FragmentListner {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mConversation = new ArrayList<String>();
         mNum = getArguments() != null ? getArguments().getInt("num") : 1;
-        ((LoungeMainActivity)getActivity()).registerChatFragment(this);
+        ((LoungeMainActivity)getActivity()).mLounge.register(this);
+    }
+
+    @Override
+    public void onChatMessageRecieved(String msg) {
+        Toast.makeText(getActivity(), msg, 3000).show();
+        mConversation.add(msg);
+        ((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
     }
 
     /**
@@ -60,25 +75,33 @@ public class ChatFragment extends Fragment implements FragmentListner {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.chat, container, false);
-        return v;
+        View chat = inflater.inflate(R.layout.chat, container, false);
+        mListView = (ListView) chat.findViewById(R.id.chatlist);
+        
+        mListView.setAdapter(new BaseAdapter() {
+            
+            LayoutInflater inflater = (LayoutInflater) getActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            
+            @Override
+            public int getCount() { return mConversation.size(); }
+
+            @Override
+            public View getView(int position, View view, ViewGroup parent) {
+                if (view == null)
+                    view = inflater.inflate(R.layout.lobby_list_entry, null);
+                String[] msg = mConversation.get(position).split(">");
+                ((TextView)view.findViewById(R.id.sender)).setText(msg[0]);
+                ((TextView)view.findViewById(R.id.msg_text)).setText(msg[1]);
+                return view;
+            }
+            
+            @Override
+            public long getItemId(int position) { return 0; }
+            
+            @Override
+            public Object getItem(int position) { return null; }
+        });
+        return chat;
     }
-
-	@Override
-	public void onPlayerJoined(String player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onPlayerLeft(String player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onChatMessageRecieved(String msg) {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -18,20 +18,15 @@ package eu.andlabs.studiolounge;
 
 import java.util.ArrayList;
 
-import eu.andlabs.studiolounge.GameCommunicationService.ChatSession;
-
+import eu.andlabs.studiolounge.gcp.Lounge;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -42,14 +37,10 @@ import android.view.Menu;
  */
 
 public class LoungeMainActivity extends Activity {
-    ViewPager mViewPager;
-    TabsAdapter mTabsAdapter;
-    
-    private ServiceConnection mBinding;
-    protected ChatSession mChatSession;
-	private FragmentListner chatListner;
-	private FragmentListner LobbyListner;
-	private ChatSessionImplementation chatSession;
+
+    public Lounge mLounge;
+    private ViewPager mViewPager;
+    private TabsAdapter mTabsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,34 +64,14 @@ public class LoungeMainActivity extends Activity {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
         }
         
-  mBinding = new ServiceConnection() {
-            
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder b) {
-                join(((GameCommunicationService.LocalBinder)b).getService());
-            }
-            
-            @Override
-            public void onServiceDisconnected(ComponentName name) {}
-        };
-        bindService(new Intent(this, GameCommunicationService.class),
-                mBinding, BIND_AUTO_CREATE);
+        mLounge = new Lounge(this);
     }
 
     @Override
     protected void onDestroy() {
-        unbindService(mBinding);
+        unbindService(mLounge);
         super.onDestroy();
     }
-
-    // here starts the fun
-    protected void join(GameCommunicationService service) {
-        // auto login
-//    	chatSession = new ChatSessionImplementation("Guest");
-        service.joinLounge(chatSession);
-        
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,14 +86,6 @@ public class LoungeMainActivity extends Activity {
         outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
     }
     
-    public void registerChatFragment(FragmentListner chatListner){
-    	this.chatListner=chatListner;
-    }
-    
-    public void registerLobbyFragment(FragmentListner lobbyListner){
-    	this.LobbyListner=lobbyListner;
-    }
-
     /**
      * This is a helper class that implements the management of tabs and all
      * details of connecting a ViewPager with associated TabHost.  It relies on a

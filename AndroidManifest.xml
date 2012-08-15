@@ -17,7 +17,7 @@
         android:theme="@android:style/Theme.Light" >
 
         <activity
-            android:name=".LoungeActivity"
+            android:name=".LoungeMainActivity"
             android:screenOrientation="reverseLandscape"
             android:label="@string/title_activity_lounge"
             android:windowSoftInputMode="stateAlwaysHidden"
@@ -29,7 +29,7 @@
         </activity>
 
         <service
-            android:name="GameCommunicationService" >
+            android:name=".gcp.GCPService" >
         </service>
     </application>
 

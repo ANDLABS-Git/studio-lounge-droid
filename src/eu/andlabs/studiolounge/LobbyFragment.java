@@ -16,28 +16,32 @@
 package eu.andlabs.studiolounge;
 
 
+import java.util.ArrayList;
+
+import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
+import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class LobbyFragment extends Fragment implements FragmentListner{
+public class LobbyFragment extends Fragment implements LobbyListener {
     int mNum;
-	private ListView playerlist;
-	private LobbyListAdpater mAdapter;
+    private ListView mListView;
+    private ArrayList<String> mPlayers;
 
     /**
-     * Create a new instance of CountingFragment, providing "num"
-     * as an argument.
+     * Create a new instance of CountingFragment, providing "num" as an
+     * argument.
      */
     static LobbyFragment newInstance(int num) {
         LobbyFragment f = new LobbyFragment();
-
-        
-
         return f;
     }
 
@@ -47,39 +51,56 @@ public class LobbyFragment extends Fragment implements FragmentListner{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPlayers = new ArrayList<String>();
         mNum = getArguments() != null ? getArguments().getInt("num") : 1;
-        ((LoungeMainActivity)getActivity()).registerLobbyFragment(this);
+        ((LoungeMainActivity)getActivity()).mLounge.register(this);
+    }
+
+    
+    @Override
+    public void onPlayerJoined(String player) {
+        Toast.makeText(getActivity(), player + " joined", 3000).show();
+        mPlayers.add(player);
+        ((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
+    }
+    
+    @Override
+    public void onPlayerLeft(String player) {
+        Toast.makeText(getActivity(), player + " left", 3000).show();
     }
 
     /**
-     * The Fragment's UI is just a simple text view showing its
-     * instance number.
+     * The Fragment's UI is just a simple text view showing its instance number.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.lobby, container, false);
-        playerlist=(ListView) v.findViewById(R.id.playerList);
-        mAdapter= new LobbyListAdpater(getActivity());
-        playerlist.setAdapter(mAdapter);
-        return v;
+        View lobby = inflater.inflate(R.layout.lobby, container, false);
+        mListView = (ListView) lobby.findViewById(R.id.playerList);
+        
+        mListView.setAdapter(new BaseAdapter() {
+            
+            LayoutInflater inflater = (LayoutInflater) getActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            
+            @Override
+            public int getCount() { return mPlayers.size(); }
+
+            @Override
+            public View getView(int position, View view, ViewGroup parent) {
+                if (view == null)
+                    view = inflater.inflate(R.layout.lobby_list_entry, null);
+                ((TextView) view.findViewById(R.id.playername))
+                        .setText(mPlayers.get(position));
+                return view;
+            }
+            
+            @Override
+            public long getItemId(int position) { return 0; }
+            
+            @Override
+            public Object getItem(int position) { return null; }
+        });
+        return lobby;
     }
-
-	@Override
-	public void onPlayerJoined(String player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onPlayerLeft(String player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onChatMessageRecieved(String msg) {
-		// TODO Auto-generated method stub
-		
-	}
 }
