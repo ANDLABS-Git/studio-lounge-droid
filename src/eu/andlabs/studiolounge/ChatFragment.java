@@ -23,14 +23,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 
-public class ChatFragment extends Fragment implements ChatListener {
+public class ChatFragment extends Fragment implements ChatListener, OnClickListener {
     ArrayList<String> mConversation;
     ListView mListView;
     int mNum;
@@ -44,6 +47,7 @@ public class ChatFragment extends Fragment implements ChatListener {
         // Supply num input as an argument.
         Bundle args = new Bundle();
         args.putInt("num", num);
+       
         return f;
     }
 
@@ -56,6 +60,7 @@ public class ChatFragment extends Fragment implements ChatListener {
         mConversation = new ArrayList<String>();
         mNum = getArguments() != null ? getArguments().getInt("num") : 1;
         ((LoungeMainActivity)getActivity()).mLounge.register(this);
+        
     }
 
     @Override
@@ -74,7 +79,7 @@ public class ChatFragment extends Fragment implements ChatListener {
             Bundle savedInstanceState) {
         View chat = inflater.inflate(R.layout.chat, container, false);
         mListView = (ListView) chat.findViewById(R.id.chatlist);
-        
+        ((Button)chat.findViewById(R.id.btn_msgSend)).setOnClickListener(this);
         mListView.setAdapter(new BaseAdapter() {
             
             LayoutInflater inflater = (LayoutInflater) getActivity()
@@ -86,7 +91,7 @@ public class ChatFragment extends Fragment implements ChatListener {
             @Override
             public View getView(int position, View view, ViewGroup parent) {
                 if (view == null)
-                    view = inflater.inflate(R.layout.lobby_list_entry, null);
+                    view = inflater.inflate(R.layout.chat_list_entry, null);
                 String[] msg = mConversation.get(position).split(">");
                 ((TextView)view.findViewById(R.id.sender)).setText(msg[0]);
                 ((TextView)view.findViewById(R.id.msg_text)).setText(msg[1]);
@@ -101,4 +106,15 @@ public class ChatFragment extends Fragment implements ChatListener {
         });
         return chat;
     }
+
+	@Override
+	public void onClick(View v) {
+		 
+		String msg = ((EditText)getView().findViewById(R.id.msg_field)).getText().toString();
+	     ((LoungeMainActivity)getActivity()).mLounge.sendMessage(0,msg );
+//	     mConversation.add(msg);
+//	        ((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
+	        ((EditText)getView().findViewById(R.id.msg_field)).setText("");
+		
+	}
 }

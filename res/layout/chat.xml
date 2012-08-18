@@ -24,7 +24,8 @@
             android:ems="10" />
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/btn_msgSend"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
