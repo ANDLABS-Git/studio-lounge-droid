@@ -41,7 +41,7 @@ public class GCPService extends Service {
         
         log("starting GCP Service");
         try {
-            mSocketIO.connect("http://happylog.jit.su:443", new IOCallback() {
+            mSocketIO.connect("http://happylog.jit.su:80", new IOCallback() {
                 
                 @Override
                 public void onConnect() { // auto login
