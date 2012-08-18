@@ -18,11 +18,9 @@ package eu.andlabs.studiolounge;
 
 import java.util.ArrayList;
 
-import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
-import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +28,9 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
+import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
+
 
 public class LobbyFragment extends Fragment implements LobbyListener {
     int mNum;
@@ -52,7 +53,6 @@ public class LobbyFragment extends Fragment implements LobbyListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPlayers = new ArrayList<String>();
-        mNum = getArguments() != null ? getArguments().getInt("num") : 1;
         ((LoungeMainActivity)getActivity()).mLounge.register(this);
     }
 

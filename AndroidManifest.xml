@@ -3,7 +3,7 @@
     android:versionName="0.0.1" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="4"
         android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -12,15 +12,12 @@
     <application
         android:debuggable="true"
         android:label="@string/app_name"
-        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
-        android:theme="@android:style/Theme.Light" >
+        >
 
         <activity
             android:name=".LoungeMainActivity"
-            android:screenOrientation="reverseLandscape"
             android:label="@string/title_activity_lounge"
-            android:windowSoftInputMode="stateAlwaysHidden"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

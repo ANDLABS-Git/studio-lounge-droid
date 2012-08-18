@@ -1,5 +1,3 @@
-package eu.andlabs.studiolounge;
-
 /*
  * Copyright (C) 2011 The Android Open Source Project
  *
@@ -15,77 +13,75 @@ package eu.andlabs.studiolounge;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package eu.andlabs.studiolounge;
+
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TabHost;
+import android.widget.TabWidget;
 
 import java.util.ArrayList;
 
+
 import eu.andlabs.studiolounge.gcp.Lounge;
 
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.Context;
-import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.Menu;
-
 /**
- * This demonstrates the use of action bar tabs and how they interact
- * with other action bar features.
+ * Demonstrates combining a TabHost with a ViewPager to implement a tab UI
+ * that switches between tabs and also allows the user to perform horizontal
+ * flicks to move between the tabs. 
+ * 
+ * COMPATIBEL WITH API LEVEL 4
  */
-
-public class LoungeMainActivity extends Activity {
-
-    public Lounge mLounge;
-    private ViewPager mViewPager;
-    private TabsAdapter mTabsAdapter;
+public class LoungeMainActivity extends FragmentActivity {
+    TabHost mTabHost;
+    ViewPager  mViewPager;
+    TabsAdapter mTabsAdapter;
+	public Lounge mLounge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mViewPager = new ViewPager(this);
-        mViewPager.setId(R.id.pager);
-        setContentView(mViewPager);
+        setContentView(R.layout.fragment_tabs_pager);
+        mTabHost = (TabHost)findViewById(android.R.id.tabhost);
+        mTabHost.setup();
 
-        final ActionBar bar = getActionBar();
-        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
+        mViewPager = (ViewPager)findViewById(R.id.pager);
 
-        mTabsAdapter = new TabsAdapter(this, mViewPager);
-        mTabsAdapter.addTab(bar.newTab().setText("Lobby"),
-                LobbyFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Chat"),
-               ChatFragment.class, null);
+        mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
+
+        mTabsAdapter.addTab(mTabHost.newTabSpec("Lobby").setIndicator("Lobby"),
+        		LobbyFragment.class, null);
+        mTabsAdapter.addTab(mTabHost.newTabSpec("Chat").setIndicator("Chat"),
+        		ChatFragment.class, null);
+      
 
         if (savedInstanceState != null) {
-            bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
+            mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
-        
+
         mLounge = new Lounge(this);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("tab", mTabHost.getCurrentTabTag());
+    }
+
+    
     @Override
     protected void onDestroy() {
         unbindService(mLounge);
         super.onDestroy();
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_lounge, menu);
-        return true;
-    }
-    
-    
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
-    }
-    
     /**
      * This is a helper class that implements the management of tabs and all
      * details of connecting a ViewPager with associated TabHost.  It relies on a
@@ -98,37 +94,57 @@ public class LoungeMainActivity extends Activity {
      * tab changes.
      */
     public static class TabsAdapter extends FragmentPagerAdapter
-            implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
+            implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
         private final Context mContext;
-        private final ActionBar mActionBar;
+        private final TabHost mTabHost;
         private final ViewPager mViewPager;
         private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
 
         static final class TabInfo {
+            private final String tag;
             private final Class<?> clss;
             private final Bundle args;
 
-            TabInfo(Class<?> _class, Bundle _args) {
+            TabInfo(String _tag, Class<?> _class, Bundle _args) {
+                tag = _tag;
                 clss = _class;
                 args = _args;
             }
         }
 
-        public TabsAdapter(Activity activity, ViewPager pager) {
-            super(activity.getFragmentManager());
+        static class DummyTabFactory implements TabHost.TabContentFactory {
+            private final Context mContext;
+
+            public DummyTabFactory(Context context) {
+                mContext = context;
+            }
+
+            @Override
+            public View createTabContent(String tag) {
+                View v = new View(mContext);
+                v.setMinimumWidth(0);
+                v.setMinimumHeight(0);
+                return v;
+            }
+        }
+
+        public TabsAdapter(FragmentActivity activity, TabHost tabHost, ViewPager pager) {
+            super(activity.getSupportFragmentManager());
             mContext = activity;
-            mActionBar = activity.getActionBar();
+            mTabHost = tabHost;
             mViewPager = pager;
+            mTabHost.setOnTabChangedListener(this);
             mViewPager.setAdapter(this);
             mViewPager.setOnPageChangeListener(this);
         }
 
-        public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {
-            TabInfo info = new TabInfo(clss, args);
-            tab.setTag(info);
-            tab.setTabListener(this);
+        public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args) {
+            tabSpec.setContent(new DummyTabFactory(mContext));
+            String tag = tabSpec.getTag();
+
+            TabInfo info = new TabInfo(tag, clss, args);
             mTabs.add(info);
-            mActionBar.addTab(tab);
+            mTabHost.addTab(tabSpec);
             notifyDataSetChanged();
         }
 
@@ -144,35 +160,31 @@ public class LoungeMainActivity extends Activity {
         }
 
         @Override
+        public void onTabChanged(String tabId) {
+            int position = mTabHost.getCurrentTab();
+            mViewPager.setCurrentItem(position);
+        }
+
+        @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         }
 
         @Override
         public void onPageSelected(int position) {
-            mActionBar.setSelectedNavigationItem(position);
+            // Unfortunately when TabHost changes the current tab, it kindly
+            // also takes care of putting focus on it when not in touch mode.
+            // The jerk.
+            // This hack tries to prevent this from pulling focus out of our
+            // ViewPager.
+            TabWidget widget = mTabHost.getTabWidget();
+            int oldFocusability = widget.getDescendantFocusability();
+            widget.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            mTabHost.setCurrentTab(position);
+            widget.setDescendantFocusability(oldFocusability);
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
         }
-
-        @Override
-        public void onTabSelected(Tab tab, FragmentTransaction ft) {
-            Object tag = tab.getTag();
-            for (int i=0; i<mTabs.size(); i++) {
-                if (mTabs.get(i) == tag) {
-                    mViewPager.setCurrentItem(i);
-                }
-            }
-        }
-
-        @Override
-        public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-        }
-
-        @Override
-        public void onTabReselected(Tab tab, FragmentTransaction ft) {
-        }
     }
 }
-
