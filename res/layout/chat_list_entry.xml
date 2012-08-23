@@ -4,21 +4,16 @@
     android:layout_height="match_parent"
     android:background="@android:drawable/bottom_bar"
     android:orientation="vertical" >
-
-    <TextView
+    <TextView
         android:id="@+id/sender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Medium Text"
         android:textColor="@android:color/black"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+    <TextView
         android:id="@+id/msg_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Small Text"
         android:textColor="@android:color/black"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>

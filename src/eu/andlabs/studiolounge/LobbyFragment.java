@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2012 http://andlabs.eu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,8 @@
  */
 package eu.andlabs.studiolounge;
 
-
 import java.util.ArrayList;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,60 +26,24 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 
 
 public class LobbyFragment extends Fragment implements LobbyListener {
-    int mNum;
-    private ListView mListView;
-    private ArrayList<String> mPlayers;
+    private ArrayList<String> mPlayers = new ArrayList<String>();
 
-    /**
-     * Create a new instance of CountingFragment, providing "num" as an
-     * argument.
-     */
-    static LobbyFragment newInstance(int num) {
-        LobbyFragment f = new LobbyFragment();
-        return f;
-    }
-
-    /**
-     * When creating, retrieve this instance's number from its arguments.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPlayers = new ArrayList<String>();
         ((LoungeMainActivity)getActivity()).mLounge.register(this);
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
-    
     @Override
-    public void onPlayerJoined(String player) {
-        Toast.makeText(getActivity(), player + " joined", 3000).show();
-        mPlayers.add(player);
-        ((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
-    }
-    
-    @Override
-    public void onPlayerLeft(String player) {
-        Toast.makeText(getActivity(), player + " left", 3000).show();
-    }
-
-    /**
-     * The Fragment's UI is just a simple text view showing its instance number.
-     */
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View lobby = inflater.inflate(R.layout.lobby, container, false);
-        mListView = (ListView) lobby.findViewById(R.id.playerList);
-        
-        mListView.setAdapter(new BaseAdapter() {
-            
-            LayoutInflater inflater = (LayoutInflater) getActivity()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ((ListView)lobby.findViewById(R.id.list)).setAdapter(new BaseAdapter() {
             
             @Override
             public int getCount() { return mPlayers.size(); }
@@ -102,5 +64,18 @@ public class LobbyFragment extends Fragment implements LobbyListener {
             public Object getItem(int position) { return null; }
         });
         return lobby;
+    }
+    
+    @Override
+    public void onPlayerJoined(String player) {
+        Toast.makeText(getActivity(), player + " joined", 3000).show();
+        mPlayers.add(player);
+        ((BaseAdapter) ((ListView) getView().findViewById(R.id.list))
+                .getAdapter()).notifyDataSetChanged();
+    }
+    
+    @Override
+    public void onPlayerLeft(String player) {
+        Toast.makeText(getActivity(), player + " left", 3000).show();
     }
 }

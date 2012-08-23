@@ -15,6 +15,7 @@
  */
 package eu.andlabs.studiolounge;
 
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -26,48 +27,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
-
-import java.util.ArrayList;
-
-
 import eu.andlabs.studiolounge.gcp.Lounge;
 
-/**
- * Demonstrates combining a TabHost with a ViewPager to implement a tab UI
- * that switches between tabs and also allows the user to perform horizontal
- * flicks to move between the tabs. 
- * 
- * COMPATIBEL WITH API LEVEL 4
- */
+
 public class LoungeMainActivity extends FragmentActivity {
     TabHost mTabHost;
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
-	public Lounge mLounge;
+    public Lounge mLounge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLounge = new Lounge(this);
 
         setContentView(R.layout.fragment_tabs_pager);
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
-
         mViewPager = (ViewPager)findViewById(R.id.pager);
-
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
 
         mTabsAdapter.addTab(mTabHost.newTabSpec("Lobby").setIndicator("Lobby"),
-        		LobbyFragment.class, null);
+                LobbyFragment.class, null);
         mTabsAdapter.addTab(mTabHost.newTabSpec("Chat").setIndicator("Chat"),
-        		ChatFragment.class, null);
-      
+                ChatFragment.class, null);
 
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
-
-        mLounge = new Lounge(this);
     }
 
     @Override
@@ -76,10 +63,9 @@ public class LoungeMainActivity extends FragmentActivity {
         outState.putString("tab", mTabHost.getCurrentTabTag());
     }
 
-    
     @Override
     protected void onDestroy() {
-        unbindService(mLounge);
+        if (isFinishing()) unbindService(mLounge);
         super.onDestroy();
     }
     /**

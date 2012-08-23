@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2012 http://andlabs.eu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,106 +15,113 @@
  */
 package eu.andlabs.studiolounge;
 
-
 import java.util.ArrayList;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
+import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
-public class ChatFragment extends Fragment implements ChatListener, OnClickListener {
-    ArrayList<String> mConversation;
-    ListView mListView;
-    int mNum;
+public class ChatFragment extends Fragment implements ChatListener,
+        OnClickListener {
+    ArrayList<ChatMessage> mConversation = new ArrayList<ChatMessage>();
+    private EditText mChatEditText;
 
-    /**
-     * Create a new instance of CountingFragment, providing "num"
-     * as an argument.
-     */
     static ChatFragment newInstance(int num) {
         ChatFragment f = new ChatFragment();
-        // Supply num input as an argument.
-        Bundle args = new Bundle();
-        args.putInt("num", num);
-       
         return f;
     }
 
-    /**
-     * When creating, retrieve this instance's number from its arguments.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        ((LoungeMainActivity) getActivity()).mLounge.register(this);
         super.onCreate(savedInstanceState);
-        mConversation = new ArrayList<String>();
-        mNum = getArguments() != null ? getArguments().getInt("num") : 1;
-        ((LoungeMainActivity)getActivity()).mLounge.register(this);
-        
+        setRetainInstance(true);
     }
 
     @Override
-    public void onChatMessageRecieved(String msg) {
-        Toast.makeText(getActivity(), msg, 3000).show();
-        mConversation.add(msg);
-        ((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
-    }
-
-    /**
-     * The Fragment's UI is just a simple text view showing its
-     * instance number.
-     */
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View chat = inflater.inflate(R.layout.chat, container, false);
-        mListView = (ListView) chat.findViewById(R.id.chatlist);
-        ((Button)chat.findViewById(R.id.btn_msgSend)).setOnClickListener(this);
-        mListView.setAdapter(new BaseAdapter() {
-            
-            LayoutInflater inflater = (LayoutInflater) getActivity()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            
+    public View onCreateView(final LayoutInflater infl, ViewGroup p, Bundle b) {
+        final View chat = infl.inflate(R.layout.chat, p, false);
+        mChatEditText = ((EditText) chat.findViewById(R.id.msg_field));
+        ((Button) chat.findViewById(R.id.btn_msgSend)).setOnClickListener(this);
+        ((ListView) chat.findViewById(R.id.list)).setAdapter(new BaseAdapter() {
             @Override
-            public int getCount() { return mConversation.size(); }
+            public int getCount() {
+                return mConversation.size();
+            }
 
             @Override
             public View getView(int position, View view, ViewGroup parent) {
                 if (view == null)
-                    view = inflater.inflate(R.layout.chat_list_entry, null);
-                String[] msg = mConversation.get(position).split(">");
-                ((TextView)view.findViewById(R.id.sender)).setText(msg[0]);
-                ((TextView)view.findViewById(R.id.msg_text)).setText(msg[1]);
+                    view = infl.inflate(R.layout.chat_list_entry, null);
+                ChatMessage msg = mConversation.get(position);
+                ((TextView) view.findViewById(R.id.sender)).setText(msg.player);
+                ((TextView) view.findViewById(R.id.msg_text)).setText(msg.text);
                 return view;
             }
-            
+
             @Override
-            public long getItemId(int position) { return 0; }
-            
+            public long getItemId(int position) {
+                return 0;
+            }
+
             @Override
-            public Object getItem(int position) { return null; }
+            public Object getItem(int position) {
+                return null;
+            }
+        });
+        //http://code.google.com/p/android/issues/detail?id=2516
+        mChatEditText.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mChatEditText.requestFocusFromTouch(); // bug
+                return false;
+            }
+        });
+        mChatEditText.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER
+                        && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    onClick(null);
+                    return true;
+                }
+                return false;
+            }
         });
         return chat;
     }
 
-	@Override
-	public void onClick(View v) {
-		 
-		String msg = ((EditText)getView().findViewById(R.id.msg_field)).getText().toString();
-	     ((LoungeMainActivity)getActivity()).mLounge.sendMessage(0,msg );
-//	     mConversation.add(msg);
-//	        ((BaseAdapter) mListView.getAdapter()).notifyDataSetChanged();
-	        ((EditText)getView().findViewById(R.id.msg_field)).setText("");
-		
-	}
+    @Override
+    public void onChatMessageRecieved(ChatMessage msg) {
+        mConversation.add(msg);
+        ((BaseAdapter) ((ListView) getView().findViewById(R.id.list))
+                .getAdapter()).notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d("WHY", "2 mal?");
+        ChatMessage msg = new ChatMessage();
+        msg.text = mChatEditText.getText().toString();
+        ((LoungeMainActivity) getActivity()).mLounge.sendChatMessage(msg);
+        mChatEditText.requestFocusFromTouch();
+        mChatEditText.setText("");
+        onChatMessageRecieved(msg);
+    }
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2012 http://andlabs.eu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.andlabs.studiolounge.gcp;
 
 
@@ -10,6 +25,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.os.Vibrator;
 
 public class Lounge implements ServiceConnection {
 
@@ -33,18 +49,26 @@ public class Lounge implements ServiceConnection {
         
         /**
          * is called when a chat message arrives
-         * @param msg  the content of the message
+         * @param text  the content of the message
          */
-        public void onChatMessageRecieved(String msg);
+        public void onChatMessageRecieved(ChatMessage msg);
         
+    }
+    
+    public static class ChatMessage {
+        public String player;
+        public String text;
     }
 
 
+
+    private Vibrator mVibrator;
 
     public Lounge(Context context) {
         Intent intent = new Intent(context, GCPService.class);
         intent.putExtra("messenger", mMessenger); 
         context.bindService(intent, this, context.BIND_AUTO_CREATE);
+        mVibrator = (Vibrator)context.getSystemService(context.VIBRATOR_SERVICE);
     }
 
 
@@ -53,12 +77,18 @@ public class Lounge implements ServiceConnection {
 
         @Override
         public void handleMessage(Message msg) {
+            ChatMessage message;
             switch (msg.what) {
             case GCPService.JOIN:
                 mLobbyListener.onPlayerJoined(msg.obj.toString());
                 break;
             case GCPService.CHAT:
-                mChatListener.onChatMessageRecieved(msg.obj.toString());
+                mVibrator.vibrate(230);
+                String[] msplit = msg.obj.toString().split(":");
+                message = new ChatMessage();
+                message.player = msplit[0];
+                message.text = msplit[1];
+                mChatListener.onChatMessageRecieved(message);
                 break;
             case GCPService.LEAVE:
                 mLobbyListener.onPlayerLeft(msg.obj.toString());
@@ -83,8 +113,12 @@ public class Lounge implements ServiceConnection {
     
     public void sendMessage(int what, Object thing) {
         try {
-            mService.send(Message.obtain(null, what, thing.toString()));
+            mService.send(Message.obtain(null, what, thing));
         } catch (RemoteException e) { e.printStackTrace(); }
+    }
+    
+    public void sendChatMessage(ChatMessage msg) {
+        sendMessage(GCPService.CHAT, msg);
     }
     
     @Override

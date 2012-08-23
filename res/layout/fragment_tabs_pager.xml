@@ -2,7 +2,7 @@
 <!--
 /* //device/apps/common/assets/res/layout/tab_content.xml
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2012 http://andlabs.eu
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,35 +18,34 @@
 */
 -->
 
-<TabHost
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/tabhost"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
         <TabWidget
             android:id="@android:id/tabs"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0"/>
+            android:layout_weight="0"
+            android:orientation="horizontal" />
 
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="0"/>
+            android:layout_weight="0" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
-
+            android:layout_weight="1" />
     </LinearLayout>
+
 </TabHost>
