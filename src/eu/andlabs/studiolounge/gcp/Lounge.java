@@ -35,13 +35,17 @@ public class Lounge implements ServiceConnection {
          * is called after every successful login
          * @param name  the player who has joined
          */
-        public void onPlayerJoined(String player);
+        public void onPlayerLoggedIn(String player);
         
         /**
          * is called after every logout operation
          * @param name  the player who has left
          */
         public void onPlayerLeft(String player);
+        
+        public void onNewHostedGame(String player, String Game);
+        
+        public void onPlayerJoined(String player);
         
     }
     
@@ -79,8 +83,8 @@ public class Lounge implements ServiceConnection {
         public void handleMessage(Message msg) {
             ChatMessage message;
             switch (msg.what) {
-            case GCPService.JOIN:
-                mLobbyListener.onPlayerJoined(msg.obj.toString());
+            case GCPService.LOGIN:
+                mLobbyListener.onPlayerLoggedIn(msg.obj.toString());
                 break;
             case GCPService.CHAT:
                 mVibrator.vibrate(230);
@@ -93,6 +97,8 @@ public class Lounge implements ServiceConnection {
             case GCPService.LEAVE:
                 mLobbyListener.onPlayerLeft(msg.obj.toString());
                 break;
+                
+            case GCPService.HOST:
             }
         }});
 
@@ -123,4 +129,14 @@ public class Lounge implements ServiceConnection {
     
     @Override
     public void onServiceDisconnected(ComponentName name) {}
+
+	public void sendHostedGame() {
+		 sendMessage(GCPService.HOST, "de.andlabs.gravitywins");
+		
+	}
+
+	public void joinGame(String hostplayer) {
+		 sendMessage(GCPService.JOIN, hostplayer);
+		
+	}
 }
