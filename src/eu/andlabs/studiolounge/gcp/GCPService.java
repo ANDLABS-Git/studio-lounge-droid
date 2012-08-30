@@ -45,9 +45,11 @@ public class GCPService extends Service {
     private SocketIO mSocketIO;
     private Messenger mChatGame;
 
-    public static final int JOIN = 1;
+    public static final int LOGIN = 1;
     public static final int CHAT = 2;
     public static final int LEAVE = 3;
+	public static final int HOST = 4;
+	public static final int JOIN = 4;
     
     @Override
     public void onCreate() {
@@ -74,9 +76,9 @@ public class GCPService extends Service {
                 public void on(String type, IOAcknowledge ack, Object... data) {                    
 //                    log("incoming message:" + type + " --- " + data);
                     if (type.equals("Welcome")) {
-                        dispatchMessage(JOIN, data[0].toString());
+                        dispatchMessage(LOGIN, data[0].toString());
                     } else if (type.equals("Joining")) {
-                            dispatchMessage(JOIN, data[0].toString());
+                            dispatchMessage(LOGIN, data[0].toString());
                     } else {
                         dispatchMessage(CHAT, "Error: BAD protocol message: " + type);
                     }
