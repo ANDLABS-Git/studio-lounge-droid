@@ -17,6 +17,7 @@ package eu.andlabs.studiolounge;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -49,6 +50,7 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("THIS", "on create chat fragment");
         ((LoungeMainActivity) getActivity()).mLounge.register(this);
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
@@ -56,6 +58,7 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public View onCreateView(final LayoutInflater infl, ViewGroup p, Bundle b) {
+        Log.d("THIS", "on create view");
         final View chat = infl.inflate(R.layout.chat, p, false);
         mChatEditText = ((EditText) chat.findViewById(R.id.msg_field));
         ((Button) chat.findViewById(R.id.btn_msgSend)).setOnClickListener(this);
@@ -116,12 +119,18 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public void onClick(View v) {
-        Log.d("WHY", "2 mal?");
         ChatMessage msg = new ChatMessage();
         msg.text = mChatEditText.getText().toString();
         ((LoungeMainActivity) getActivity()).mLounge.sendChatMessage(msg);
         mChatEditText.requestFocusFromTouch();
         mChatEditText.setText("");
         onChatMessageRecieved(msg);
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d("THIS", "on destroy view chat fragment");
+        ((LoungeMainActivity) getActivity()).mLounge.unregister(this);
+        super.onDestroyView();
     }
 }

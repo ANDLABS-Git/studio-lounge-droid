@@ -80,7 +80,8 @@ public class Lounge implements ServiceConnection {
             ChatMessage message;
             switch (msg.what) {
             case GCPService.JOIN:
-                mLobbyListener.onPlayerJoined(msg.obj.toString());
+                if (mLobbyListener != null)
+                    mLobbyListener.onPlayerJoined(msg.obj.toString());
                 break;
             case GCPService.CHAT:
                 mVibrator.vibrate(230);
@@ -88,7 +89,8 @@ public class Lounge implements ServiceConnection {
                 message = new ChatMessage();
                 message.player = msplit[0];
                 message.text = msplit[1];
-                mChatListener.onChatMessageRecieved(message);
+                if (mChatListener != null)
+                    mChatListener.onChatMessageRecieved(message);
                 break;
             case GCPService.LEAVE:
                 mLobbyListener.onPlayerLeft(msg.obj.toString());
@@ -98,9 +100,11 @@ public class Lounge implements ServiceConnection {
 
     private ChatListener mChatListener;
     public void register(ChatListener listener) { mChatListener = listener; }
+    public void unregister(ChatListener listener) { mChatListener = null; }
     
     private LobbyListener mLobbyListener;
     public void register(LobbyListener listener) { mLobbyListener = listener; }
+    public void unregister(LobbyListener listener) { mLobbyListener = null; }
 
 
     // send android system IPC message to backround GCP service

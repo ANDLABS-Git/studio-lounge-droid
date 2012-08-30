@@ -52,13 +52,12 @@ public class GCPService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mName = "Lucky Lukas";
+        mName = "AndroidoKa";
         mHandler = new Handler();
-        mSocketIO = new SocketIO();
         
         log("starting GCP Service");
         try {
-            mSocketIO.connect("http://happylog.jit.su:80", new IOCallback() {
+            mSocketIO = new SocketIO("http://may.base45.de:7777", new IOCallback() {
                 
                 @Override
                 public void onConnect() { // auto login
@@ -93,14 +92,15 @@ public class GCPService extends Service {
                 public void onError(SocketIOException error) { log(error); }
             });
         } catch (Exception e) {
+            log(e);
             dispatchMessage(CHAT, "GCP Service Error:   " + e.toString());
         }
     }
-    
-    
+
     // bind game app(s)
     @Override
     public IBinder onBind(Intent intent) {
+        log("on bind");
         mChatGame = (Messenger) intent.getParcelableExtra("messenger");
         return mMessenger.getBinder();
     }
@@ -127,6 +127,13 @@ public class GCPService extends Service {
                 break;
             }
         }});
+
+    @Override
+    public void onDestroy() {
+        log("on destroy");
+        mSocketIO.disconnect();
+        super.onDestroy();
+    }
 
 
 
