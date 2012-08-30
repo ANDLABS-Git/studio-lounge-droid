@@ -20,12 +20,8 @@ import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
 
-import java.util.HashMap;
-import java.util.HashSet;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
-
-import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
 import android.app.Service;
 import android.content.Intent;
@@ -64,7 +60,7 @@ public class GCPService extends Service {
                 @Override
                 public void onConnect() { // auto login
                     log("connected to GCP game server!"); 
-                    mSocketIO.emit("Hi", "I am " + mName);
+                    mSocketIO.emit("login", "I am " + mName);
                 }
                 
                 @Override
@@ -73,14 +69,15 @@ public class GCPService extends Service {
                 }
                 
                 @Override
-                public void on(String type, IOAcknowledge ack, Object... data) {                    
+                public void on(String type, IOAcknowledge ack, Object... data) {
 //                    log("incoming message:" + type + " --- " + data);
-                    if (type.equals("Welcome")) {
+                    if (type.equals("login")) {
                         dispatchMessage(LOGIN, data[0].toString());
-                    } else if (type.equals("Joining")) {
-                            dispatchMessage(LOGIN, data[0].toString());
+                    } else if (type.equals("players")) {
+                        dispatchMessage(LOGIN, data[0].toString());
                     } else {
-                        dispatchMessage(CHAT, "Error: BAD protocol message: " + type);
+                        dispatchMessage(CHAT, "BAD protocol message: " + type);
+                            Log.d("GCP", ""+data[0].getClass().getName());
                     }
                 }
                 
@@ -121,12 +118,15 @@ public class GCPService extends Service {
 
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case CHAT:
-                if (mSocketIO.isConnected()) {
-                    mSocketIO.send(((ChatMessage) msg.obj).text);
+            if (mSocketIO.isConnected()) {
+                switch (msg.what) {
+                case CHAT:
+                    mSocketIO.send(((String) msg.obj));
+                    break;
+                case HOST:
+                    mSocketIO.emit("host", getPackageName());
+                    break;
                 }
-                break;
             }
         }});
 
