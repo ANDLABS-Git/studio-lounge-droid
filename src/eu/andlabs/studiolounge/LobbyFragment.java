@@ -36,8 +36,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		((LoungeMainActivity) getActivity()).mLounge.register(this);
-		lobbyList = (ListView) getView().findViewById(R.id.list);
+		
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
 	}
@@ -45,6 +44,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 	@Override
 	public View onCreateView(final LayoutInflater inflater,
 			ViewGroup container, Bundle savedInstanceState) {
+		
 		View lobby = inflater.inflate(R.layout.lobby, container, false);
 		((ListView) lobby.findViewById(R.id.list))
 				.setAdapter(new BaseAdapter() {
@@ -93,6 +93,9 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 						return null;
 					}
 				});
+		
+		((LoungeMainActivity) getActivity()).mLounge.register(this);
+		lobbyList = (ListView) lobby.findViewById(R.id.list);
 		return lobby;
 	}
 
