@@ -17,12 +17,15 @@ package eu.andlabs.studiolounge;
 
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
@@ -55,6 +58,8 @@ public class LoungeMainActivity extends FragmentActivity {
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
+//        
+      
     }
 
     @Override
