@@ -25,9 +25,8 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".gcp.GCPService" >
-        </service>
+        <service android:name="eu.andlabs.gcp.GCPService"></service>
+
     </application>
 
 </manifest>
