@@ -21,6 +21,7 @@ import io.socket.SocketIO;
 import io.socket.SocketIOException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Service;
@@ -74,7 +75,14 @@ public class GCPService extends Service {
                     if (type.equals("login")) {
                         dispatchMessage(LOGIN, data[0].toString());
                     } else if (type.equals("players")) {
-                        dispatchMessage(LOGIN, data[0].toString());
+                        try {
+                            JSONArray json = (JSONArray)data[0];
+                            for (int i = 0; 0 < json.length(); i++) {
+                                dispatchMessage(LOGIN, json.getString(i));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         dispatchMessage(CHAT, "BAD protocol message: " + type);
                             Log.d("GCP", ""+data[0].getClass().getName());
