@@ -101,7 +101,8 @@ public class GCPService extends Service {
                             b.putString("host", json.getString("host"));
                             dispatchMessage(HOST, b);
                         } else if (type.equals("join")){
-                            dispatchMessage(JOIN, (String)data[0]);
+                            JSONObject json = (JSONObject) data[0];
+                            dispatchMessage(JOIN, json.get("guest"));
                         } else {
                             dispatchMessage(CHAT, "BAD protocol message: " + type);
                             Log.d("GCP", ""+data[0].getClass().getName());
