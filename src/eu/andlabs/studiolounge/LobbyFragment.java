@@ -125,6 +125,5 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 	@Override
 	public void onPlayerJoined(String player) {
 		Toast.makeText(getActivity(), player + " wants to join your game", Toast.LENGTH_LONG).show();
-
 	}
 }

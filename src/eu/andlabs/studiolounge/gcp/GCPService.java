@@ -26,10 +26,13 @@ import org.json.JSONObject;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
@@ -46,7 +49,7 @@ public class GCPService extends Service {
     public static final int CHAT = 2;
     public static final int LEAVE = 3;
 	public static final int HOST = 4;
-	public static final int JOIN = 4;
+	public static final int JOIN = 5;
     
     @Override
     public void onCreate() {
@@ -71,21 +74,29 @@ public class GCPService extends Service {
                 
                 @Override
                 public void on(String type, IOAcknowledge ack, Object... data) {
-//                    log("incoming message:" + type + " --- " + data);
-                    if (type.equals("login")) {
-                        dispatchMessage(LOGIN, data[0].toString());
-                    } else if (type.equals("players")) {
-                        try {
-                            JSONArray json = (JSONArray)data[0];
+                    //                    log("incoming message:" + type + " --- " + data);
+                    try {
+                        if (type.equals("login")) {
+                            dispatchMessage(LOGIN, data[0].toString());
+                        } else if (type.equals("players")) {
+                            JSONArray json = (JSONArray) data[0];
                             for (int i = 0; 0 < json.length(); i++) {
                                 dispatchMessage(LOGIN, json.getString(i));
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        dispatchMessage(CHAT, "BAD protocol message: " + type);
+                        } else if (type.equals("host")){
+                            JSONObject json = (JSONObject) data[0];
+                            Bundle b = new Bundle();
+                            b.putString("game", json.getString("game"));
+                            b.putString("host", json.getString("host"));
+                            dispatchMessage(HOST, b);
+                        } else if (type.equals("join")){
+                            dispatchMessage(JOIN, (String)data[0]);
+                        } else {
+                            dispatchMessage(CHAT, "BAD protocol message: " + type);
                             Log.d("GCP", ""+data[0].getClass().getName());
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
                 
@@ -113,7 +124,7 @@ public class GCPService extends Service {
     }
     
     // send android system IPC message to game apps
-    private void dispatchMessage(int what, String thing) {
+    private void dispatchMessage(int what, Object thing) {
         try {
             mChatGame.send(Message.obtain(mHandler, what, thing));
         } catch (RemoteException e) {
@@ -127,13 +138,24 @@ public class GCPService extends Service {
         @Override
         public void handleMessage(Message msg) {
             if (mSocketIO.isConnected()) {
-                switch (msg.what) {
-                case CHAT:
-                    mSocketIO.send(((String) msg.obj));
-                    break;
-                case HOST:
-                    mSocketIO.emit("host", getPackageName());
-                    break;
+                try {
+                    switch (msg.what) {
+                    case CHAT:
+                        mSocketIO.send(((String) msg.obj));
+                        break;
+                    case HOST:
+                        mSocketIO.emit("host", msg.obj);
+                        break;
+                    case JOIN:
+                        JSONObject json = new JSONObject();
+                        json.put("host", msg.obj);
+                        json.put("game", "my.game");
+                        mSocketIO.emit("join", json);
+                        break;
+                    }
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
             }
         }});

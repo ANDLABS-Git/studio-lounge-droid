@@ -20,6 +20,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -96,11 +97,22 @@ public class Lounge implements ServiceConnection {
                 if (mChatListener != null)
                     mChatListener.onChatMessageRecieved(message);
                 break;
+            case GCPService.HOST:
+                if (mLobbyListener != null) {
+                    Bundle b = (Bundle) msg.obj;
+                    mLobbyListener.onNewHostedGame(
+                            b.getString("host"), b.getString("game"));
+                }
+                break;
+            case GCPService.JOIN:
+                if (mLobbyListener != null) {
+                    mLobbyListener.onPlayerJoined((String) msg.obj);
+                }
+                break;
             case GCPService.LEAVE:
                 mLobbyListener.onPlayerLeft(msg.obj.toString());
                 break;
                 
-            case GCPService.HOST:
             }
         }});
 
@@ -132,7 +144,7 @@ public class Lounge implements ServiceConnection {
     }
     
     public void hostGame() {
-        sendMessage(GCPService.HOST, null);
+        sendMessage(GCPService.HOST, "my.game");
     }
     
     public void joinGame(String hostplayer) {

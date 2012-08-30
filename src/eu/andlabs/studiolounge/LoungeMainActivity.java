@@ -62,6 +62,10 @@ public class LoungeMainActivity extends FragmentActivity {
       
     }
 
+    public void hostGame(View v) {
+        mLounge.hostGame();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
