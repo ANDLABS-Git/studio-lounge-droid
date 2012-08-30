@@ -34,9 +34,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import eu.andlabs.gcp.GCPService;
-import eu.andlabs.gcp.Lounge.ChatListener;
-import eu.andlabs.gcp.Lounge.ChatMessage;
+import eu.andlabs.studiolounge.gcp.GCPService;
+import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
+import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
 public class ChatFragment extends Fragment implements ChatListener,
         OnClickListener {

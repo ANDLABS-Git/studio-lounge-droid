@@ -28,15 +28,15 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import eu.andlabs.gcp.Lounge.LobbyListener;
+import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 
 public class LobbyFragment extends Fragment implements LobbyListener {
 	private ArrayList<Player> mPlayers = new ArrayList<Player>();
-    private ListView lobbyList;
+	private ListView lobbyList;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		((LoungeMainActivity) getActivity()).mLounge.register(this);
+		
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
 	}

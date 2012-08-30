@@ -30,7 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
-import eu.andlabs.gcp.Lounge;
+import eu.andlabs.studiolounge.gcp.Lounge;
 
 
 public class LoungeMainActivity extends FragmentActivity {
