@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -113,8 +114,9 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 	@Override
 	public void onNewHostedGame(String player, String hostedGame) {
+	    Log.i("io.socket", player);
 		for (Player p : mPlayers) {
-			if (p.getPlayername() == player) {
+			if (p.getPlayername().equals(player)) {
 				p.setHostedGame(hostedGame);
 				((BaseAdapter) lobbyList.getAdapter()).notifyDataSetChanged();
 			}

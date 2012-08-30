@@ -15,6 +15,8 @@
  */
 package eu.andlabs.studiolounge.gcp;
 
+import java.io.IOException;
+
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
@@ -54,7 +56,7 @@ public class GCPService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mName = "AndroidoKa";
+        mName = "Flo";
         mHandler = new Handler();
         
         log("starting GCP Service");
@@ -80,8 +82,17 @@ public class GCPService extends Service {
                             dispatchMessage(LOGIN, data[0].toString());
                         } else if (type.equals("players")) {
                             JSONArray json = (JSONArray) data[0];
-                            for (int i = 0; 0 < json.length(); i++) {
+                            for (int i = 0; i < json.length(); i++) {
                                 dispatchMessage(LOGIN, json.getString(i));
+                            }
+                        } else if (type.equals("games")) {
+                            JSONArray json = (JSONArray) data[0];
+                            for (int i = 0; i < json.length(); i++) {
+                                JSONObject o = json.getJSONObject(i);
+                                Bundle b = new Bundle();
+                                b.putString("game", o.getString("game"));
+                                b.putString("host", o.getString("host"));
+                                dispatchMessage(HOST, b);
                             }
                         } else if (type.equals("host")){
                             JSONObject json = (JSONObject) data[0];
@@ -112,6 +123,7 @@ public class GCPService extends Service {
         } catch (Exception e) {
             log(e);
             dispatchMessage(CHAT, "GCP Service Error:   " + e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -139,15 +151,17 @@ public class GCPService extends Service {
         public void handleMessage(Message msg) {
             if (mSocketIO.isConnected()) {
                 try {
+                    JSONObject json = new JSONObject();
                     switch (msg.what) {
                     case CHAT:
                         mSocketIO.send(((String) msg.obj));
                         break;
                     case HOST:
-                        mSocketIO.emit("host", msg.obj);
+                        json.put("host", mName);
+                        json.put("game", "my.game");
+                        mSocketIO.emit("host", json);
                         break;
                     case JOIN:
-                        JSONObject json = new JSONObject();
                         json.put("host", msg.obj);
                         json.put("game", "my.game");
                         mSocketIO.emit("join", json);

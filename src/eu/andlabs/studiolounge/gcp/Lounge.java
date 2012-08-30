@@ -144,7 +144,7 @@ public class Lounge implements ServiceConnection {
     }
     
     public void hostGame() {
-        sendMessage(GCPService.HOST, "my.game");
+        sendMessage(GCPService.HOST, null);
     }
     
     public void joinGame(String hostplayer) {
