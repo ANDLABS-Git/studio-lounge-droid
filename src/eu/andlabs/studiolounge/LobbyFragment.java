@@ -67,6 +67,8 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 								.getPlayername());
 						if (mPlayers.get(position).getHostedGame() != null) {
 							((Button) view.findViewById(R.id.joinbtn))
+							.setText(mPlayers.get(position).getHostedGame());
+							((Button) view.findViewById(R.id.joinbtn))
 									.setVisibility(View.VISIBLE);
 							((Button) view.findViewById(R.id.joinbtn))
 									.setOnClickListener(new OnClickListener() {
