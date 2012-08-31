@@ -37,7 +37,6 @@ public class LoungeMainActivity extends FragmentActivity {
     TabHost mTabHost;
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
-    public Lounge mLounge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +62,7 @@ public class LoungeMainActivity extends FragmentActivity {
     }
 
     public void hostGame(View v) {
-        mLounge.hostGame();
+        Lounge.getInstance(this).hostGame();
     }
 
     @Override
@@ -74,7 +73,7 @@ public class LoungeMainActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
-        if (isFinishing()) unbindService(mLounge);
+        if (isFinishing()) unbindService(Lounge.getInstance(this));
         super.onDestroy();
     }
     /**
