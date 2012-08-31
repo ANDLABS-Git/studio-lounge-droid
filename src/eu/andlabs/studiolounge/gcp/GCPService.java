@@ -55,7 +55,7 @@ public class GCPService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mName = "Orange";
+        mName = "Lucas";
         mHandler = new Handler();
         
         log("starting GCP Service");
@@ -113,7 +113,6 @@ public class GCPService extends Service {
                             	String key = i.next();
                             	b.putString(key, json.getString(key));
                             	Log.i("json", "converting -  key:"+key + "  /  Value: "+json.getString(key));
-                            	
                             }
                             
 //                            b.putString("who", json.getString("who"));

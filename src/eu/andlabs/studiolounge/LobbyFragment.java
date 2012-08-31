@@ -16,7 +16,11 @@
 package eu.andlabs.studiolounge;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,6 +33,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 
 public class LobbyFragment extends Fragment implements LobbyListener {
@@ -37,7 +42,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		
+
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
 	}
@@ -45,7 +50,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 	@Override
 	public View onCreateView(final LayoutInflater inflater,
 			ViewGroup container, Bundle savedInstanceState) {
-		
+
 		View lobby = inflater.inflate(R.layout.lobby, container, false);
 		((ListView) lobby.findViewById(R.id.list))
 				.setAdapter(new BaseAdapter() {
@@ -56,7 +61,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 					}
 
 					@Override
-					public View getView(int position, View view,
+					public View getView(final int position, View view,
 							ViewGroup parent) {
 						if (view == null)
 							view = inflater.inflate(R.layout.lobby_list_entry,
@@ -67,7 +72,8 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 								.getPlayername());
 						if (mPlayers.get(position).getHostedGame() != null) {
 							((Button) view.findViewById(R.id.joinbtn))
-							.setText(mPlayers.get(position).getHostedGame());
+									.setText(mPlayers.get(position)
+											.getHostedGame());
 							((Button) view.findViewById(R.id.joinbtn))
 									.setVisibility(View.VISIBLE);
 							((Button) view.findViewById(R.id.joinbtn))
@@ -75,12 +81,11 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 										@Override
 										public void onClick(View v) {
-											((LoungeMainActivity) getActivity()).mLounge
-													.joinGame(playerLabel
-															.getText()
-															.toString());
+
+											joinGame(position, playerLabel);
 
 										}
+
 									});
 						}
 						return view;
@@ -96,8 +101,8 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 						return null;
 					}
 				});
-		
-		((LoungeMainActivity) getActivity()).mLounge.register(this);
+
+		Lounge.getInstance(getActivity()).register(this);
 		lobbyList = (ListView) lobby.findViewById(R.id.list);
 		return lobby;
 	}
@@ -116,7 +121,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 	@Override
 	public void onNewHostedGame(String player, String hostedGame) {
-	    Log.i("io.socket", player);
+		Log.i("io.socket", player);
 		for (Player p : mPlayers) {
 			if (p.getPlayername().equals(player)) {
 				p.setHostedGame(hostedGame);
@@ -126,8 +131,38 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 	}
 
+	private void joinGame(final int position, final TextView playerLabel) {
+		Lounge.getInstance(getActivity()).joinGame(playerLabel
+				.getText().toString(), mPlayers.get(position).getHostedGame());
+		PackageManager pm = getActivity().getPackageManager();
+		Intent i = new Intent(Intent.ACTION_MAIN);
+		i.addCategory("eu.andlabs.lounge");
+		List<ResolveInfo> list = pm.queryIntentActivities(i, 0);
+		
+		for(ResolveInfo info:list){
+			String packageName = info.resolvePackageName;
+			String activity =info.activityInfo.packageName;
+			String activityname = info.activityInfo.name;
+			Log.i("debug", "Package Name "+(mPlayers.get(position).getHostedGame()) + "    -  "+activity+  "  -  "+activityname);
+			if(activity.equalsIgnoreCase(mPlayers.get(position).getHostedGame())){
+				Intent startGame = new Intent(Intent.ACTION_MAIN);
+				
+				Log.i("debug", "Packge Match found");
+				startGame.setPackage(activity);
+				startGame.setClassName(getActivity(),activityname );
+				startActivity(startGame);
+				
+			}else{
+				Log.i("debug", "NO Package Match");
+			}
+		}
+		
+		
+	}
+
 	@Override
 	public void onPlayerJoined(String player) {
-		Toast.makeText(getActivity(), player + " wants to join your game", Toast.LENGTH_LONG).show();
+		Toast.makeText(getActivity(), player + " wants to join your game",
+				Toast.LENGTH_LONG).show();
 	}
 }

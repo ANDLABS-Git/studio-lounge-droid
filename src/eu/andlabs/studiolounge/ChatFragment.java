@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.andlabs.studiolounge.gcp.GCPService;
+import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
@@ -51,7 +52,7 @@ public class ChatFragment extends Fragment implements ChatListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("THIS", "on create chat fragment");
-        ((LoungeMainActivity) getActivity()).mLounge.register(this);
+       Lounge.getInstance(getActivity()).register(this);
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
@@ -130,7 +131,7 @@ public class ChatFragment extends Fragment implements ChatListener,
     @Override
     public void onDestroyView() {
         Log.d("THIS", "on destroy view chat fragment");
-        ((LoungeMainActivity) getActivity()).mLounge.unregister(this);
+       Lounge.getInstance(getActivity()).unregister(this);
         super.onDestroyView();
     }
 }

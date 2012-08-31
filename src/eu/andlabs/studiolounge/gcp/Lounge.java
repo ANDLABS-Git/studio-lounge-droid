@@ -27,9 +27,12 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.Vibrator;
+import android.sax.StartElementListener;
 
 public class Lounge implements ServiceConnection {
 
+	private static  Lounge instance;
+	
     public interface LobbyListener {
         
         /**
@@ -79,11 +82,25 @@ public class Lounge implements ServiceConnection {
 
     private Vibrator mVibrator;
 
+	private Context context;
+
+
+	
+	
+	public static Lounge getInstance(Context context){
+		
+		if(instance==null){
+			instance=new Lounge(context);
+		}
+		return instance;
+	}
+
     public Lounge(Context context) {
         Intent intent = new Intent(context, GCPService.class);
-        intent.putExtra("messenger", mMessenger); 
+        intent.putExtra("messenger", mMessenger);
         context.bindService(intent, this, context.BIND_AUTO_CREATE);
         mVibrator = (Vibrator)context.getSystemService(context.VIBRATOR_SERVICE);
+        this.context=context;
     }
 
 
@@ -166,8 +183,11 @@ public class Lounge implements ServiceConnection {
         sendMessage(GCPService.HOST, null);
     }
     
-    public void joinGame(String hostplayer) {
+    public void joinGame(String hostplayer, String gamepackages) {
         sendMessage(GCPService.JOIN, hostplayer);
+        
+//     context.startActivity( context.getPackageManager().getLaunchIntentForPackage(gamepackages));
+        
     }
     
     public void sendGameMessage(Bundle msg) {

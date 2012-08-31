@@ -42,7 +42,7 @@ public class LoungeMainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLounge = new Lounge(this);
+//        mLounge = new Lounge(this);
 
         setContentView(R.layout.fragment_tabs_pager);
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);

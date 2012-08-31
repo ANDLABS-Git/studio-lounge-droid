@@ -3,7 +3,7 @@
     android:versionName="0.0.1" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk
-        android:minSdkVersion="4"
+        android:minSdkVersion="5"
         android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,10 +19,7 @@
             android:name=".LoungeMainActivity"
             android:label="@string/title_activity_lounge"
             >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+    
         </activity>
 
         <service
