@@ -15,8 +15,6 @@
  */
 package eu.andlabs.studiolounge.gcp;
 
-import java.io.IOException;
-
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
@@ -33,8 +31,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
@@ -52,11 +48,12 @@ public class GCPService extends Service {
     public static final int LEAVE = 3;
 	public static final int HOST = 4;
 	public static final int JOIN = 5;
+    protected static final int CUSTOM = 6;
     
     @Override
     public void onCreate() {
         super.onCreate();
-        mName = "Flo";
+        mName = "Orange";
         mHandler = new Handler();
         
         log("starting GCP Service");
@@ -103,6 +100,14 @@ public class GCPService extends Service {
                         } else if (type.equals("join")){
                             JSONObject json = (JSONObject) data[0];
                             dispatchMessage(JOIN, json.get("guest"));
+                        } else if (type.equals("move")){
+                            JSONObject json = (JSONObject) data[0];
+                            Bundle b = new Bundle();
+                            b.putString("who", json.getString("who"));
+                            b.putString("color", json.getString("color"));
+                            b.putLong("x", json.getLong("x"));
+                            b.putLong("y", json.getLong("y"));
+                            dispatchMessage(CUSTOM, b);
                         } else {
                             dispatchMessage(CHAT, "BAD protocol message: " + type);
                             Log.d("GCP", ""+data[0].getClass().getName());
@@ -166,6 +171,15 @@ public class GCPService extends Service {
                         json.put("host", msg.obj);
                         json.put("game", "my.game");
                         mSocketIO.emit("join", json);
+                        break;
+                    case CUSTOM:
+                        Bundle b = (Bundle) msg.obj;
+                        json.put("who", mName);
+                        json.put("color", b.getString("color"));
+                        
+                        json.put("x", b.getLong("x"));
+                        json.put("y", b.getLong("y"));
+                        mSocketIO.emit("move", json);
                         break;
                     }
                 } catch (JSONException e) {

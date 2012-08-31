@@ -60,6 +60,16 @@ public class Lounge implements ServiceConnection {
         
     }
     
+    public interface GameMsgListener {
+        
+        /**
+         * is called when custom game messages come in
+         * @param msg  the content of the json message
+         */
+        public void onMessageRecieved(Bundle msg);
+        
+    }
+    
     public static class ChatMessage {
         public String player;
         public String text;
@@ -109,6 +119,11 @@ public class Lounge implements ServiceConnection {
                     mLobbyListener.onPlayerJoined((String) msg.obj);
                 }
                 break;
+            case GCPService.CUSTOM:
+                if (mMsgListener != null) {
+                    mMsgListener.onMessageRecieved((Bundle) msg.obj);
+                }
+                break;
             case GCPService.LEAVE:
                 mLobbyListener.onPlayerLeft(msg.obj.toString());
                 break;
@@ -124,6 +139,10 @@ public class Lounge implements ServiceConnection {
     public void register(LobbyListener listener) { mLobbyListener = listener; }
     public void unregister(LobbyListener listener) { mLobbyListener = null; }
 
+    private GameMsgListener mMsgListener;
+    public void register(GameMsgListener listener) { mMsgListener = listener; }
+    public void unregister(GameMsgListener listener) { mMsgListener = null; }
+
 
     // send android system IPC message to backround GCP service
     private Messenger mService;
@@ -133,7 +152,7 @@ public class Lounge implements ServiceConnection {
         mService = new Messenger(service);
     }
     
-    public void sendMessage(int what, Object thing) {
+    private void sendMessage(int what, Object thing) {
         try {
             mService.send(Message.obtain(null, what, thing));
         } catch (RemoteException e) { e.printStackTrace(); }
@@ -149,6 +168,10 @@ public class Lounge implements ServiceConnection {
     
     public void joinGame(String hostplayer) {
         sendMessage(GCPService.JOIN, hostplayer);
+    }
+    
+    public void sendGameMessage(Bundle msg) {
+        sendMessage(GCPService.CUSTOM, msg);
     }
     
     @Override
