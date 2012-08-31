@@ -122,7 +122,7 @@ public class ChatFragment extends Fragment implements ChatListener,
     public void onClick(View v) {
         ChatMessage msg = new ChatMessage();
         msg.text = mChatEditText.getText().toString();
-        ((LoungeMainActivity) getActivity()).mLounge.sendChatMessage(msg);
+       Lounge.getInstance(getActivity()).sendChatMessage(msg);
         mChatEditText.requestFocusFromTouch();
         mChatEditText.setText("");
         onChatMessageRecieved(msg);

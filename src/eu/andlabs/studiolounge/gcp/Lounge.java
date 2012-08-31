@@ -27,6 +27,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.Vibrator;
+import android.util.Log;
 
 public class Lounge implements ServiceConnection {
 
@@ -89,6 +90,8 @@ public class Lounge implements ServiceConnection {
     public Lounge(Context context) {
         Intent intent = new Intent(context, GCPService.class);
         intent.putExtra("messenger", mMessenger);
+        intent.putExtra("packageName","eu.andlabs.gcp.examples.points" );
+        Log.i("debug","Service Package Name " +context.getPackageName());
         context.bindService(intent, this, context.BIND_AUTO_CREATE);
         mVibrator = (Vibrator)context.getSystemService(context.VIBRATOR_SERVICE);
     }

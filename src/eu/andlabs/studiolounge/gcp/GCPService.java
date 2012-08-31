@@ -40,10 +40,11 @@ import android.widget.Toast;
 
 public class GCPService extends Service {
 
-    private String mName;
+    public static String mName;
     private Handler mHandler;
     private SocketIO mSocketIO;
     private Messenger mChatGame;
+	private String packagename;
 
     public static final int LOGIN = 1;
     public static final int CHAT = 2;
@@ -55,7 +56,7 @@ public class GCPService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mName = "Flori";
+        mName = "lucas";
         mHandler = new Handler();
         
         log("starting GCP Service");
@@ -150,6 +151,7 @@ public class GCPService extends Service {
     public IBinder onBind(Intent intent) {
         log("on bind");
         mChatGame = (Messenger) intent.getParcelableExtra("messenger");
+     packagename= intent.getExtras().getString("packageName");
         return mMessenger.getBinder();
     }
     
@@ -176,8 +178,9 @@ public class GCPService extends Service {
                         break;
                     case HOST:
                         json.put("host", mName);
-                        json.put("game", "my.game");
+                        json.put("game", packagename);
                         mSocketIO.emit("host", json);
+                        
                         break;
                     case JOIN:
                         json.put("host", msg.obj);
