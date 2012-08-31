@@ -15,6 +15,8 @@
  */
 package eu.andlabs.studiolounge.gcp;
 
+import java.util.Iterator;
+
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
@@ -102,11 +104,22 @@ public class GCPService extends Service {
                             dispatchMessage(JOIN, json.get("guest"));
                         } else if (type.equals("move")){
                             JSONObject json = (JSONObject) data[0];
+                            
+                            
                             Bundle b = new Bundle();
-                            b.putString("who", json.getString("who"));
-                            b.putString("color", json.getString("color"));
-                            b.putLong("x", json.getLong("x"));
-                            b.putLong("y", json.getLong("y"));
+                            
+                            for ( Iterator<String> i = json.keys(); i.hasNext(); )
+                            {
+                            	String key = i.next();
+                            	b.putString(key, json.getString(key));
+                            	Log.i("json", "converting -  key:"+key + "  /  Value: "+json.getString(key));
+                            	
+                            }
+                            
+//                            b.putString("who", json.getString("who"));
+//                            b.putString("color", json.getString("color"));
+//                            b.putLong("x", json.getLong("x"));
+//                            b.putLong("y", json.getLong("y"));
                             dispatchMessage(CUSTOM, b);
                         } else {
                             dispatchMessage(CHAT, "BAD protocol message: " + type);
