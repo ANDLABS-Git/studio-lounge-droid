@@ -90,8 +90,8 @@ public class Lounge implements ServiceConnection {
     public Lounge(Context context) {
         Intent intent = new Intent(context, GCPService.class);
         intent.putExtra("messenger", mMessenger);
-        intent.putExtra("packageName","eu.andlabs.gcp.examples.points" );
-        Log.i("debug","Service Package Name " +context.getPackageName());
+        intent.putExtra("packageName", context.getPackageName() );
+        Log.i("debug","Service Package Name " + context.getPackageName());
         context.bindService(intent, this, context.BIND_AUTO_CREATE);
         mVibrator = (Vibrator)context.getSystemService(context.VIBRATOR_SERVICE);
     }
@@ -105,6 +105,7 @@ public class Lounge implements ServiceConnection {
             ChatMessage message;
             switch (msg.what) {
             case GCPService.LOGIN:
+                if (mName == null) mName = (String) msg.obj;
                 if (mLobbyListener != null)
                     mLobbyListener.onPlayerLoggedIn(msg.obj.toString());
                 break;
@@ -156,6 +157,8 @@ public class Lounge implements ServiceConnection {
 
     // send android system IPC message to backround GCP service
     private Messenger mService;
+
+    private String mName;
     
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -178,13 +181,14 @@ public class Lounge implements ServiceConnection {
     
     public void joinGame(String hostplayer, String gamepackages) {
         sendMessage(GCPService.JOIN, hostplayer);
-        
-//     context.startActivity( context.getPackageManager().getLaunchIntentForPackage(gamepackages));
-        
     }
     
     public void sendGameMessage(Bundle msg) {
         sendMessage(GCPService.CUSTOM, msg);
+    }
+    
+    public String getName() {
+        return mName;
     }
     
     @Override

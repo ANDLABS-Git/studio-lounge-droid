@@ -52,6 +52,13 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 			ViewGroup container, Bundle savedInstanceState) {
 
 		View lobby = inflater.inflate(R.layout.lobby, container, false);
+		lobby.findViewById(R.id.btn_host).setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                Lounge.getInstance(getActivity()).hostGame();
+            }
+        });
 		((ListView) lobby.findViewById(R.id.list))
 				.setAdapter(new BaseAdapter() {
 
@@ -64,28 +71,25 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 					public View getView(final int position, View view,
 							ViewGroup parent) {
 						if (view == null)
-							view = inflater.inflate(R.layout.lobby_list_entry,
-									null);
+							view = inflater.inflate(R.layout.lobby_list_entry, null);
 						final TextView playerLabel = (TextView) view
 								.findViewById(R.id.playername);
-						playerLabel.setText(mPlayers.get(position)
-								.getPlayername());
-						if (mPlayers.get(position).getHostedGame() != null) {
-							((Button) view.findViewById(R.id.joinbtn))
-									.setText(mPlayers.get(position)
-											.getHostedGame());
-							((Button) view.findViewById(R.id.joinbtn))
-									.setVisibility(View.VISIBLE);
-							((Button) view.findViewById(R.id.joinbtn))
-									.setOnClickListener(new OnClickListener() {
+						final Player player = mPlayers.get(position);
+						playerLabel.setText(player.getPlayername());
+						if (player.getHostedGame() != null &&
+						        !player.getPlayername().equals(Lounge
+						                .getInstance(getActivity()).getName())) {
+							Button b = (Button) view.findViewById(R.id.joinbtn);
+							b.setText(mPlayers.get(position).getHostedGame());
+							b.setVisibility(View.VISIBLE);
+							b.setOnClickListener(new OnClickListener() {
 
 										@Override
 										public void onClick(View v) {
-
-											joinGame(position, playerLabel);
-
-										}
-
+									        Lounge.getInstance(getActivity())
+									            .joinGame(player.getPlayername()
+									                , player.getHostedGame());
+									        launchGameApp(player.getHostedGame());										}
 									});
 						}
 						return view;
@@ -131,38 +135,34 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 	}
 
-	private void joinGame(final int position, final TextView playerLabel) {
-		Lounge.getInstance(getActivity()).joinGame(playerLabel
-				.getText().toString(), mPlayers.get(position).getHostedGame());
-		PackageManager pm = getActivity().getPackageManager();
-		Intent i = new Intent(Intent.ACTION_MAIN);
-		i.addCategory("eu.andlabs.lounge");
-		List<ResolveInfo> list = pm.queryIntentActivities(i, 0);
-		
-		for(ResolveInfo info:list){
-			String packageName = info.resolvePackageName;
-			String activity =info.activityInfo.packageName;
-			String activityname = info.activityInfo.name;
-			Log.i("debug", "Package Name "+(mPlayers.get(position).getHostedGame()) + "    -  "+activity+  "  -  "+activityname);
-			if(activity.equalsIgnoreCase(mPlayers.get(position).getHostedGame())){
-				Intent startGame = new Intent(Intent.ACTION_MAIN);
-				
-				Log.i("debug", "Packge Match found");
-				startGame.setPackage(activity);
-				startGame.setClassName(getActivity(),activityname );
-				startActivity(startGame);
-				
-			}else{
-				Log.i("debug", "NO Package Match");
-			}
-		}
-		
-		
-	}
 
 	@Override
 	public void onPlayerJoined(String player) {
 		Toast.makeText(getActivity(), player + " wants to join your game",
 				Toast.LENGTH_LONG).show();
+		launchGameApp(getActivity().getPackageName());
+	}
+	
+	private void launchGameApp(String pkgName) {
+	    PackageManager pm = getActivity().getPackageManager();
+	    Intent i = new Intent(Intent.ACTION_MAIN);
+	    i.addCategory("eu.andlabs.lounge");
+	    List<ResolveInfo> list = pm.queryIntentActivities(i, 0);
+	    
+	    for(ResolveInfo info:list){
+	        String activity =info.activityInfo.packageName;
+	        String activityname = info.activityInfo.name;
+	        Intent startGame = new Intent(Intent.ACTION_MAIN);
+	        if(activity.equalsIgnoreCase(pkgName)){
+	            Log.i("debug", "Packge Match found");
+	            startGame.setPackage(activity);
+	            startGame.setClassName(getActivity(),activityname );
+	        }else{
+	            Log.i("debug", "NO Package Match");
+	            startGame = pm.getLaunchIntentForPackage(pkgName);
+	        }
+	        startActivity(startGame);
+	    }
+	    
 	}
 }

@@ -17,7 +17,6 @@ package eu.andlabs.studiolounge;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -34,7 +33,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;

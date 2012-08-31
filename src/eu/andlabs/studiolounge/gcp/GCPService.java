@@ -15,12 +15,12 @@
  */
 package eu.andlabs.studiolounge.gcp;
 
-import java.util.Iterator;
-
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
+
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +80,8 @@ public class GCPService extends Service {
                     try {
                         if (type.equals("login")) {
                             dispatchMessage(LOGIN, data[0].toString());
+                        } else if (type.equals("welcome")) {
+                            dispatchMessage(LOGIN, data[0].toString().split("in as ")[1]);
                         } else if (type.equals("players")) {
                             JSONArray json = (JSONArray) data[0];
                             for (int i = 0; i < json.length(); i++) {
