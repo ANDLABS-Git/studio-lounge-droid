@@ -27,7 +27,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.Vibrator;
-import android.sax.StartElementListener;
 
 public class Lounge implements ServiceConnection {
 
@@ -82,25 +81,16 @@ public class Lounge implements ServiceConnection {
 
     private Vibrator mVibrator;
 
-	private Context context;
-
-
-	
-	
-	public static Lounge getInstance(Context context){
-		
-		if(instance==null){
-			instance=new Lounge(context);
-		}
-		return instance;
-	}
+    public static Lounge getInstance(Context context) {
+        if (instance == null) instance = new Lounge(context);
+        return instance;
+    }
 
     public Lounge(Context context) {
         Intent intent = new Intent(context, GCPService.class);
         intent.putExtra("messenger", mMessenger);
         context.bindService(intent, this, context.BIND_AUTO_CREATE);
         mVibrator = (Vibrator)context.getSystemService(context.VIBRATOR_SERVICE);
-        this.context=context;
     }
 
 
