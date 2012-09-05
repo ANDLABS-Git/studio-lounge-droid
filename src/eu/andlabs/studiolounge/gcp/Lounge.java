@@ -25,13 +25,16 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.Vibrator;
 import android.util.Log;
 
 public class Lounge implements ServiceConnection {
 
-	private static  Lounge instance;
+	protected static final String TAG = "Lounge";
+
+    private static  Lounge instance;
 	
     public interface LobbyListener {
         
@@ -105,6 +108,7 @@ public class Lounge implements ServiceConnection {
             ChatMessage message;
             switch (msg.what) {
             case GCPService.LOGIN:
+                Log.d(TAG, "Lounge on LOGIN " + msg.obj);
                 if (mName == null) mName = (String) msg.obj;
                 if (mLobbyListener != null)
                     mLobbyListener.onPlayerLoggedIn(msg.obj.toString());
@@ -119,6 +123,7 @@ public class Lounge implements ServiceConnection {
                     mChatListener.onChatMessageRecieved(message);
                 break;
             case GCPService.HOST:
+                Log.d(TAG, "Lounge on HOST " + msg.obj);
                 if (mLobbyListener != null) {
                     Bundle b = (Bundle) msg.obj;
                     mLobbyListener.onNewHostedGame(

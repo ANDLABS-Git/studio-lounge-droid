@@ -150,18 +150,17 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 	    List<ResolveInfo> list = pm.queryIntentActivities(i, 0);
 	    
 	    for(ResolveInfo info:list){
-	        String activity =info.activityInfo.packageName;
-	        String activityname = info.activityInfo.name;
-	        Intent startGame = new Intent(Intent.ACTION_MAIN);
-	        if(activity.equalsIgnoreCase(pkgName)){
+	        Intent launch = new Intent(Intent.ACTION_MAIN);
+	        Log.i("debug", "found package "+info.activityInfo.packageName);
+	        if(info.activityInfo.packageName.equalsIgnoreCase(pkgName)){
 	            Log.i("debug", "Packge Match found");
-	            startGame.setPackage(activity);
-	            startGame.setClassName(getActivity(),activityname );
+	            launch.setPackage(info.activityInfo.packageName);
+	            launch.setClassName(getActivity(), info.activityInfo.name);
 	        }else{
 	            Log.i("debug", "NO Package Match");
-	            startGame = pm.getLaunchIntentForPackage(pkgName);
+	            launch = pm.getLaunchIntentForPackage(pkgName);
 	        }
-	        startActivity(startGame);
+	        startActivity(launch);
 	    }
 	    
 	}
