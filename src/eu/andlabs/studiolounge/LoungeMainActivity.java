@@ -23,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
@@ -34,6 +35,7 @@ public class LoungeMainActivity extends FragmentActivity {
     TabHost mTabHost;
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
+    Lounge mLounge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +56,20 @@ public class LoungeMainActivity extends FragmentActivity {
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
-//        
-      
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d("Lounge", "on START");
+        mLounge = new Lounge(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("Lounge", "on STOP");
+        unbindService(mLounge);
+        super.onStop();
     }
 
     @Override
@@ -64,11 +78,8 @@ public class LoungeMainActivity extends FragmentActivity {
         outState.putString("tab", mTabHost.getCurrentTabTag());
     }
 
-    @Override
-    protected void onDestroy() {
-        if (isFinishing()) unbindService(Lounge.getInstance(this));
-        super.onDestroy();
-    }
+
+
     /**
      * This is a helper class that implements the management of tabs and all
      * details of connecting a ViewPager with associated TabHost.  It relies on a

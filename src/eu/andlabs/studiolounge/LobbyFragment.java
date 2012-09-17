@@ -18,6 +18,8 @@ package eu.andlabs.studiolounge;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -33,6 +35,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 
@@ -42,10 +45,18 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
+	    Log.i("Lounge", "LobbyFragment on CREATE");
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
 	}
+
+    @Override
+    public void onStart() {
+        Log.i("Lounge", "LobbyFragment on START");
+        ((LoungeMainActivity)getActivity()).mLounge.register(this);
+        mPlayers.clear();
+        super.onStart();
+    }
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater,
@@ -56,7 +67,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
             
             @Override
             public void onClick(View v) {
-                Lounge.getInstance(getActivity()).hostGame();
+                ((LoungeMainActivity)getActivity()).mLounge.hostGame();
             }
         });
 		((ListView) lobby.findViewById(R.id.list))
@@ -76,21 +87,21 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 								.findViewById(R.id.playername);
 						final Player player = mPlayers.get(position);
 						playerLabel.setText(player.getPlayername());
-						if (player.getHostedGame() != null &&
-						        !player.getPlayername().equals(Lounge
-						                .getInstance(getActivity()).getName())) {
-							Button b = (Button) view.findViewById(R.id.joinbtn);
-							b.setText(mPlayers.get(position).getHostedGame());
+						Button b = (Button) view.findViewById(R.id.joinbtn);
+						if (player.getHostedGame() != null) {
+							b.setText(player.getHostedGame().split("\\.")[4]);
 							b.setVisibility(View.VISIBLE);
 							b.setOnClickListener(new OnClickListener() {
 
 										@Override
 										public void onClick(View v) {
-									        Lounge.getInstance(getActivity())
+										    ((LoungeMainActivity)getActivity()).mLounge
 									            .joinGame(player.getPlayername()
 									                , player.getHostedGame());
 									        launchGameApp(player.getHostedGame());										}
 									});
+						} else {
+						    b.setVisibility(View.GONE);
 						}
 						return view;
 					}
@@ -106,14 +117,14 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 					}
 				});
 
-		Lounge.getInstance(getActivity()).register(this);
 		lobbyList = (ListView) lobby.findViewById(R.id.list);
 		return lobby;
 	}
 
+
 	@Override
 	public void onPlayerLoggedIn(String player) {
-		Toast.makeText(getActivity(), player + " joined", 3000).show();
+//		Toast.makeText(getActivity(), player + " joined", 3000).show();
 		mPlayers.add(new Player(player));
 		((BaseAdapter) lobbyList.getAdapter()).notifyDataSetChanged();
 	}
@@ -125,7 +136,6 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 	@Override
 	public void onNewHostedGame(String player, String hostedGame) {
-		Log.i("io.socket", player);
 		for (Player p : mPlayers) {
 			if (p.getPlayername().equals(player)) {
 				p.setHostedGame(hostedGame);
@@ -138,9 +148,8 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 	@Override
 	public void onPlayerJoined(String player) {
-		Toast.makeText(getActivity(), player + " wants to join your game",
-				Toast.LENGTH_LONG).show();
-		launchGameApp(getActivity().getPackageName());
+		if (!player.equals(GCPService.mName))
+		    launchGameApp(getActivity().getPackageName());
 	}
 	
 	private void launchGameApp(String pkgName) {
@@ -154,14 +163,19 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 	        Log.i("debug", "found package "+info.activityInfo.packageName);
 	        if(info.activityInfo.packageName.equalsIgnoreCase(pkgName)){
 	            Log.i("debug", "Packge Match found");
-	            launch.setPackage(info.activityInfo.packageName);
-	            launch.setClassName(getActivity(), info.activityInfo.name);
-	        }else{
+	            launch.setComponent(new ComponentName(
+	                    info.activityInfo.packageName, info.activityInfo.name));
+	        } else {
 	            Log.i("debug", "NO Package Match");
 	            launch = pm.getLaunchIntentForPackage(pkgName);
 	        }
 	        startActivity(launch);
 	    }
-	    
 	}
+
+    @Override
+    public void onStop() {
+        ((LoungeMainActivity)getActivity()).mLounge.unregister(this);
+        super.onStop();
+    }
 }

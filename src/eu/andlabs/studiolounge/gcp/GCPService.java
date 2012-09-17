@@ -43,8 +43,9 @@ public class GCPService extends Service {
     public static String mName;
     private Handler mHandler;
     private SocketIO mSocketIO;
-    private Messenger mChatGame;
+    private Messenger mApp;
 	private String packagename;
+    private boolean connecting;
 
     public static final int LOGIN = 1;
     public static final int CHAT = 2;
@@ -52,6 +53,7 @@ public class GCPService extends Service {
 	public static final int HOST = 4;
 	public static final int JOIN = 5;
     protected static final int CUSTOM = 6;
+    public static final int REGISTER = 7;
     
     @Override
     public void onCreate() {
@@ -60,13 +62,21 @@ public class GCPService extends Service {
         mHandler = new Handler();
         
         log("starting GCP Service");
+        connect();
+    }
+
+    private void connect() {
+        if (connecting) return;
+        log("connecting");
         try {
+            connecting = true;
             mSocketIO = new SocketIO("http://may.base45.de:7777", new IOCallback() {
                 
                 @Override
                 public void onConnect() { // auto login
-                    log("connected to GCP game server!"); 
-                    mSocketIO.emit("login", "I am " + mName);
+                    log("connected to GCP game server!");
+                    if (mApp != null) mSocketIO.emit("login", "I am " + mName);
+                    connecting = false;
                 }
                 
                 @Override
@@ -81,7 +91,7 @@ public class GCPService extends Service {
                         if (type.equals("login")) {
                             dispatchMessage(LOGIN, data[0].toString());
                         } else if (type.equals("welcome")) {
-                            dispatchMessage(LOGIN, data[0].toString().split("in as ")[1]);
+//                            dispatchMessage(LOGIN, data[0].toString().split("in as ")[1]);
                         } else if (type.equals("players")) {
                             JSONArray json = (JSONArray) data[0];
                             for (int i = 0; i < json.length(); i++) {
@@ -115,13 +125,9 @@ public class GCPService extends Service {
                             {
                             	String key = i.next();
                             	b.putString(key, json.getString(key));
-                            	Log.i("json", "converting -  key:"+key + "  /  Value: "+json.getString(key));
+//                            	Log.i("json", "converting -  key:"+key + "  /  Value: "+json.getString(key));
                             }
                             
-//                            b.putString("who", json.getString("who"));
-//                            b.putString("color", json.getString("color"));
-//                            b.putLong("x", json.getLong("x"));
-//                            b.putLong("y", json.getLong("y"));
                             dispatchMessage(CUSTOM, b);
                         } else {
                             dispatchMessage(CHAT, "BAD protocol message: " + type);
@@ -139,7 +145,7 @@ public class GCPService extends Service {
                 public void onDisconnect() { log("lost game server."); }
                 
                 @Override
-                public void onError(SocketIOException error) { log(error); }
+                public void onError(SocketIOException error) { error.printStackTrace(); log(error); }
             });
         } catch (Exception e) {
             log(e);
@@ -147,20 +153,28 @@ public class GCPService extends Service {
             e.printStackTrace();
         }
     }
-
+    
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        log("on startCommand id="+startId+"  flags="+flags);
+        mApp = (Messenger) intent.getParcelableExtra("messenger");
+        packagename = intent.getExtras().getString("packageName");
+        if (mSocketIO.isConnected()) mSocketIO.emit("login", "I am " + mName);
+        else connect();
+        return START_NOT_STICKY;
+    }
+    
     // bind game app(s)
     @Override
     public IBinder onBind(Intent intent) {
         log("on bind");
-        mChatGame = (Messenger) intent.getParcelableExtra("messenger");
-     packagename= intent.getExtras().getString("packageName");
         return mMessenger.getBinder();
     }
     
     // send android system IPC message to game apps
     private void dispatchMessage(int what, Object thing) {
         try {
-            mChatGame.send(Message.obtain(mHandler, what, thing));
+            mApp.send(Message.obtain(mHandler, what, thing));
         } catch (RemoteException e) {
             log("Error: " + e.toString());
         } 
@@ -185,8 +199,9 @@ public class GCPService extends Service {
                         
                         break;
                     case JOIN:
-                        json.put("host", msg.obj);
-                        json.put("game", "my.game");
+                        Bundle bb = (Bundle) msg.obj;
+                        json.put("host", bb.getString("host"));
+                        json.put("game", bb.getString("game"));
                         mSocketIO.emit("join", json);
                         break;
                     case CUSTOM:

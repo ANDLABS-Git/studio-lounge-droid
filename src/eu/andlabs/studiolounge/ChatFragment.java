@@ -37,8 +37,7 @@ import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
-public class ChatFragment extends Fragment implements ChatListener,
-        OnClickListener {
+public class ChatFragment extends Fragment implements ChatListener, OnClickListener {
     ArrayList<ChatMessage> mConversation = new ArrayList<ChatMessage>();
     private EditText mChatEditText;
 
@@ -50,9 +49,16 @@ public class ChatFragment extends Fragment implements ChatListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("THIS", "on create chat fragment");
-       Lounge.getInstance(getActivity()).register(this);
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+    }
+
+    @Override
+    public void onStart() {
+        Log.i("Lounge", "ChatFragment on START");
+        ((LoungeMainActivity)getActivity()).mLounge.register(this);
+        mConversation.clear();
+        super.onStart();
     }
 
     @Override
@@ -120,16 +126,21 @@ public class ChatFragment extends Fragment implements ChatListener,
     public void onClick(View v) {
         ChatMessage msg = new ChatMessage();
         msg.text = mChatEditText.getText().toString();
-       Lounge.getInstance(getActivity()).sendChatMessage(msg);
+        ((LoungeMainActivity)getActivity()).mLounge.sendChatMessage(msg);
         mChatEditText.requestFocusFromTouch();
         mChatEditText.setText("");
         onChatMessageRecieved(msg);
     }
 
     @Override
+    public void onStop() {
+        ((LoungeMainActivity)getActivity()).mLounge.unregister(this);
+        super.onStop();
+    }
+
+    @Override
     public void onDestroyView() {
         Log.d("THIS", "on destroy view chat fragment");
-       Lounge.getInstance(getActivity()).unregister(this);
         super.onDestroyView();
     }
 }

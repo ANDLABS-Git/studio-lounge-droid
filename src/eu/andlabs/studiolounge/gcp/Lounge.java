@@ -34,8 +34,6 @@ public class Lounge implements ServiceConnection {
 
 	protected static final String TAG = "Lounge";
 
-    private static  Lounge instance;
-	
     public interface LobbyListener {
         
         /**
@@ -85,20 +83,15 @@ public class Lounge implements ServiceConnection {
 
     private Vibrator mVibrator;
 
-    public static Lounge getInstance(Context context) {
-        if (instance == null) instance = new Lounge(context);
-        return instance;
-    }
-
     public Lounge(Context context) {
+        Log.d("Lounge", "Lounge Constructor");
         Intent intent = new Intent(context, GCPService.class);
-        intent.putExtra("messenger", mMessenger);
         intent.putExtra("packageName", context.getPackageName() );
-        Log.i("debug","Service Package Name " + context.getPackageName());
+        intent.putExtra("messenger", mMessenger);
+        context.startService(intent);
         context.bindService(intent, this, context.BIND_AUTO_CREATE);
         mVibrator = (Vibrator)context.getSystemService(context.VIBRATOR_SERVICE);
     }
-
 
     // receive incoming android system IPC messages from backround GCP service
     final Messenger mMessenger = new Messenger(new Handler(){
@@ -137,6 +130,7 @@ public class Lounge implements ServiceConnection {
                 break;
             case GCPService.CUSTOM:
                 if (mMsgListener != null) {
+                    Log.d(TAG, "CUSTOM " + msg.obj);
                     mMsgListener.onMessageRecieved((Bundle) msg.obj);
                 }
                 break;
@@ -167,7 +161,9 @@ public class Lounge implements ServiceConnection {
     
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
+        Log.d("Lounge", "Service Connected "+service);
         mService = new Messenger(service);
+        sendMessage(GCPService.REGISTER, mMessenger);
     }
     
     private void sendMessage(int what, Object thing) {
@@ -184,8 +180,11 @@ public class Lounge implements ServiceConnection {
         sendMessage(GCPService.HOST, null);
     }
     
-    public void joinGame(String hostplayer, String gamepackages) {
-        sendMessage(GCPService.JOIN, hostplayer);
+    public void joinGame(String hostplayer, String gamepackage) {
+        Bundle b = new Bundle();
+        b.putString("host", hostplayer);
+        b.putString("game", gamepackage);
+        sendMessage(GCPService.JOIN, b);
     }
     
     public void sendGameMessage(Bundle msg) {
@@ -197,5 +196,7 @@ public class Lounge implements ServiceConnection {
     }
     
     @Override
-    public void onServiceDisconnected(ComponentName name) {}
+    public void onServiceDisconnected(ComponentName name) {
+        Log.d("Lounge", "Service DISconnected");
+    }
 }
