@@ -1,5 +1,4 @@
 
-
 ##  * hAppy Log * 
 
 # Studio-Lounge Android-App
@@ -41,12 +40,15 @@
     protected void onStop() { unbindService(mLounge); }
   ```
 
-  * send and receive game messages
+  * send game messages
   ```Java
     Bundle data = new Bundle();
     data.putString("foo", "bar");
     mLounge.sendGameMessage(data)
+```
 
+* receive game messages
+  ```Java
     mLounge.register(new GameMsgListener() {                
       @Override
       public void onMessageRecieved(Bundle msg) {
