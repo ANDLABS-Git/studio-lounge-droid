@@ -1,4 +1,3 @@
-
 ##  * hAppy Log * 
 
 # Studio-Lounge Android-App
@@ -59,7 +58,7 @@
   Currently only String data is supported
 
   * register listeners to implement a custom Lounge experience
-  ```Java
+  Java
     mLounge.register( new LobbyListener() {...} );
     mLounge.register( new ChatListener() {...} );
   ```
