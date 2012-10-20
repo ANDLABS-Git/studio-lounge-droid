@@ -55,9 +55,6 @@ public class LobbyFragment extends Fragment implements LobbyListener {
         Log.i("Lounge", "LobbyFragment on START");
         ((LoungeActivity)getActivity()).mLounge.register(this);
         mPlayers.clear();
-        mPlayers.add(new Player("TEEST3"));
-        mPlayers.add(new Player("TEEST2"));
-        mPlayers.add(new Player("TEEST1"));
         super.onStart();
     }
 

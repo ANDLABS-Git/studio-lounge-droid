@@ -117,6 +117,7 @@ public class ChatFragment extends Fragment implements ChatListener, OnClickListe
 
     @Override
     public void onChatMessageRecieved(ChatMessage msg) {
+        Log.d("Lounge", "CHAT " + msg);
         mConversation.add(msg);
         ((BaseAdapter) ((ListView) getView().findViewById(R.id.list))
                 .getAdapter()).notifyDataSetChanged();

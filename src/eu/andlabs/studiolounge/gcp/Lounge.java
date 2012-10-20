@@ -15,6 +15,8 @@
  */
 package eu.andlabs.studiolounge.gcp;
 
+import java.util.ArrayList;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -121,8 +123,10 @@ public class Lounge implements ServiceConnection {
                 message = new ChatMessage();
                 message.player = msplit[0];
                 message.text = msplit[1];
-                if (mChatListener != null)
-                    mChatListener.onChatMessageRecieved(message);
+                Log.d(TAG, "CHATLISTENER " + mChatListener);
+                for (ChatListener l : mChatListeners) { 
+                    l.onChatMessageRecieved(message);
+                }
                 break;
             case GCPService.HOST:
                 Log.d(TAG, "Lounge on HOST " + msg.obj);
@@ -146,15 +150,16 @@ public class Lounge implements ServiceConnection {
             case GCPService.LEAVE:
                 mLobbyListener.onPlayerLeft(msg.obj.toString());
                 break;
-
             }
         }
     });
 
     private ChatListener mChatListener;
 
+    private ArrayList<ChatListener> mChatListeners = new ArrayList<Lounge.ChatListener>(2);
+
     public void register(ChatListener listener) {
-        mChatListener = listener;
+        mChatListeners.add(listener);
     }
 
     public void unregister(ChatListener listener) {

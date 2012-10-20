@@ -19,7 +19,6 @@
         <activity
              android:name=".LoungeActivity"
             android:screenOrientation="portrait"
-           
             android:label="@string/title_activity_lounge"
             >
         </activity>

@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.SlidingDrawer;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
 
 
@@ -54,14 +55,14 @@ public class LoungeActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         Log.d("Lounge", "on START");
-        mLounge = new Lounge(this);
+        mLounge = GCPService.bind(this);
         super.onStart();
     }
 
     @Override
     protected void onStop() {
         Log.d("Lounge", "on STOP");
-        unbindService(mLounge);
+        GCPService.unbind(this, mLounge);
         super.onStop();
     }
 
