@@ -12,7 +12,7 @@
   
   * register GCP background Service and LoungActivity in AndroidManifest.xml
   ```Xml
-    <activity android:name="eu.andlabs.studiolounge.LoungeMainActivity" />
+    <activity android:name="eu.andlabs.studiolounge.LoungeActivity" />
     <service android:name="eu.andlabs.studiolounge.gcp.GCPService" />
   ```
   Themes can be applied to the Lounge Activity
@@ -35,10 +35,10 @@
   * start, bind and unbind the GCP backround service
   ```Java
     @Override
-    protected void onStart() { mLounge = new Lounge(this); }
+    protected void onStart() { mLounge = GCPService.bind(this); }
 
     @Override
-    protected void onStop() { unbindService(mLounge); }
+    protected void onStop() { GCPService.unbind(this, mLounge); }
   ```
 
   * send and receive game messages

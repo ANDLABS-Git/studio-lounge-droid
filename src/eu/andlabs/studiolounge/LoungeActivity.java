@@ -31,7 +31,7 @@ import android.widget.TabWidget;
 import eu.andlabs.studiolounge.gcp.Lounge;
 
 
-public class LoungeMainActivity extends FragmentActivity {
+public class LoungeActivity extends FragmentActivity {
     TabHost mTabHost;
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
