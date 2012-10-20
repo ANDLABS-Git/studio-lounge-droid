@@ -26,6 +26,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SlidingDrawer;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import eu.andlabs.studiolounge.gcp.Lounge;
@@ -36,28 +37,20 @@ public class LoungeMainActivity extends FragmentActivity {
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
     Lounge mLounge;
+	private LoungeFragmentAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        mLounge = new Lounge(this);
 
-        setContentView(R.layout.fragment_tabs_pager);
-        mTabHost = (TabHost)findViewById(android.R.id.tabhost);
-        mTabHost.setup();
+        setContentView(R.layout.main_pager);
+        
         mViewPager = (ViewPager)findViewById(R.id.pager);
-        mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
-
-        mTabsAdapter.addTab(mTabHost.newTabSpec("Lobby").setIndicator("Lobby"),
-                LobbyFragment.class, null);
-        mTabsAdapter.addTab(mTabHost.newTabSpec("Chat").setIndicator("Chat"),
-                ChatFragment.class, null);
-
-        if (savedInstanceState != null) {
-            mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
-        }
+        mAdapter= new LoungeFragmentAdapter(getFragmentManager());
+        mViewPager.setAdapter(mAdapter);
+        
     }
-
     @Override
     protected void onStart() {
         Log.d("Lounge", "on START");
