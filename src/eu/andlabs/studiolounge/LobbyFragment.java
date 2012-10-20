@@ -60,6 +60,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
         mPlayers.clear();
         getActivity().getWindow().setSoftInputMode(
         	      WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         super.onStart();
     }
 
@@ -159,7 +160,6 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 	}
 	
 	private void launchGameApp(String pkgName) {
-		pkgName = "de.andlabs.gravitywins";
 	    PackageManager pm = getActivity().getPackageManager();
 	    Intent i = new Intent(Intent.ACTION_MAIN);
 	    i.addCategory("eu.andlabs.lounge");

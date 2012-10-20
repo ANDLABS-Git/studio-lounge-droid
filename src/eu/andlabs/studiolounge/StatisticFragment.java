@@ -71,8 +71,6 @@ public class StatisticFragment extends Fragment implements ChatListener, OnClick
     @Override
     public void onChatMessageRecieved(ChatMessage msg) {
         mConversation.add(msg);
-        ((BaseAdapter) ((ListView) getView().findViewById(R.id.list))
-                .getAdapter()).notifyDataSetChanged();
     }
 
     @Override
