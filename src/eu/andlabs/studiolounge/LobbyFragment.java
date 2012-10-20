@@ -53,7 +53,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
     @Override
     public void onStart() {
         Log.i("Lounge", "LobbyFragment on START");
-        ((LoungeMainActivity)getActivity()).mLounge.register(this);
+        ((LoungeActivity)getActivity()).mLounge.register(this);
         mPlayers.clear();
         mPlayers.add(new Player("TEEST3"));
         mPlayers.add(new Player("TEEST2"));
@@ -70,10 +70,10 @@ public class LobbyFragment extends Fragment implements LobbyListener {
             
             @Override
             public void onClick(View v) {
-                ((LoungeMainActivity)getActivity()).mLounge.hostGame();
+
+                ((LoungeActivity)getActivity()).mLounge.hostGame();
             }
         });
-		
 		((ListView) lobby.findViewById(R.id.list))
 				.setAdapter(new BaseAdapter() {
 
@@ -99,7 +99,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 										@Override
 										public void onClick(View v) {
-										    ((LoungeMainActivity)getActivity()).mLounge
+										    ((LoungeActivity)getActivity()).mLounge
 									            .joinGame(player.getPlayername()
 									                , player.getHostedGame());
 									        launchGameApp(player.getHostedGame());										}
@@ -180,7 +180,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
     @Override
     public void onStop() {
-        ((LoungeMainActivity)getActivity()).mLounge.unregister(this);
+        ((LoungeActivity)getActivity()).mLounge.unregister(this);
         super.onStop();
     }
 }

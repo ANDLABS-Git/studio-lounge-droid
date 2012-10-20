@@ -17,16 +17,14 @@
         >
 
         <activity
-            android:name=".LoungeMainActivity"
+             android:name=".LoungeActivity"
             android:screenOrientation="portrait"
+           
             android:label="@string/title_activity_lounge"
             >
-    
         </activity>
 
-        <service
-            android:name=".gcp.GCPService" >
-        </service>
+        <service android:name=".gcp.GCPService" />
     </application>
 
 </manifest>

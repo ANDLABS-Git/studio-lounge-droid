@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +40,20 @@ import android.widget.Toast;
 
 
 public class GCPService extends Service {
+    
+    public static Lounge bind(Context ctx) {
+        Lounge lounge = new Lounge(ctx);
+        Intent intent = new Intent(ctx, GCPService.class);
+        intent.putExtra("packageName", ctx.getPackageName());
+        intent.putExtra("messenger", lounge.mMessenger);
+        ctx.startService(intent);
+        ctx.bindService(intent, lounge, ctx.BIND_AUTO_CREATE);
+        return lounge;
+    }
+    
+    public static void unbind(Context ctx, Lounge lounge) {
+        ctx.unbindService(lounge);
+    }
 
     public static String mName;
     private Handler mHandler;

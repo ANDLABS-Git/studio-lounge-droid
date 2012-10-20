@@ -36,7 +36,7 @@ public class Lounge implements ServiceConnection {
     static public void startLoungeActivity(Context context) {
         Intent i = new Intent();
         i.setPackage("eu.andlabs.studiolounge");
-        i.setClassName(context, "eu.andlabs.studiolounge.LoungeMainActivity");
+        i.setClassName(context, "eu.andlabs.studiolounge.LoungeActivity");
         context.startActivity(i);
     }
 
@@ -97,17 +97,12 @@ public class Lounge implements ServiceConnection {
 
     public Lounge(Context context) {
         Log.d("Lounge", "Lounge Constructor");
-        Intent intent = new Intent(context, GCPService.class);
-        intent.putExtra("packageName", context.getPackageName());
-        intent.putExtra("messenger", mMessenger);
-        context.startService(intent);
-        context.bindService(intent, this, context.BIND_AUTO_CREATE);
         mVibrator = (Vibrator) context
                 .getSystemService(context.VIBRATOR_SERVICE);
     }
 
     // receive incoming android system IPC messages from backround GCP service
-    final Messenger mMessenger = new Messenger(new Handler() {
+    public final Messenger mMessenger = new Messenger(new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
