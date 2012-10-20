@@ -44,7 +44,7 @@
     Bundle data = new Bundle();
     data.putString("foo", "bar");
     mLounge.sendGameMessage(data)
-```
+  ```
 
 * receive game messages
   ```Java
