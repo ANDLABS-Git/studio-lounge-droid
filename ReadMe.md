@@ -16,7 +16,6 @@
   Themes can be applied to the Lounge Activity
 
   * launch the Lounge Activity to visit the Player Lobby and Chat
-
   ```Java
     Lounge.startLoungeActivity(this);
   ```
@@ -46,7 +45,7 @@
     mLounge.sendGameMessage(data)
   ```
 
-* receive game messages
+  * receive game messages
   ```Java
     mLounge.register(new GameMsgListener() {                
       @Override
@@ -55,10 +54,11 @@
       }
     });
   ```
+
   Currently only String data is supported
 
   * register listeners to implement a custom Lounge experience
-  Java
+  ```Java
     mLounge.register( new LobbyListener() {...} );
     mLounge.register( new ChatListener() {...} );
   ```
