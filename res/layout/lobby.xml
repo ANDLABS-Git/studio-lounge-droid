@@ -101,7 +101,17 @@
             android:layout_width="wrap_content"
             android:layout_height="600dp"
             android:alpha="0.8"
-             android:background="#2b2b2b" />
+             android:background="#2b2b2b" >
+
+            <Button
+                android:layout_gravity="center"
+                android:id="@+id/btn_host"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="HOST"
+                />
+
+        </FrameLayout>
     </SlidingDrawer>
 
 </FrameLayout>

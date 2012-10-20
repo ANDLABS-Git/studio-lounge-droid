@@ -55,6 +55,9 @@ public class LobbyFragment extends Fragment implements LobbyListener {
         Log.i("Lounge", "LobbyFragment on START");
         ((LoungeMainActivity)getActivity()).mLounge.register(this);
         mPlayers.clear();
+        mPlayers.add(new Player("TEEST3"));
+        mPlayers.add(new Player("TEEST2"));
+        mPlayers.add(new Player("TEEST1"));
         super.onStart();
     }
 
@@ -63,6 +66,13 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 			ViewGroup container, Bundle savedInstanceState) {
 
 		View lobby = inflater.inflate(R.layout.lobby, container, false);
+		lobby.findViewById(R.id.btn_host).setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                ((LoungeMainActivity)getActivity()).mLounge.hostGame();
+            }
+        });
 		
 		((ListView) lobby.findViewById(R.id.list))
 				.setAdapter(new BaseAdapter() {
