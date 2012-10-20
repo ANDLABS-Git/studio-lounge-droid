@@ -195,6 +195,7 @@ public class Lounge implements ServiceConnection {
 
     private void sendMessage(int what, Object thing) {
         try {
+        	if(mService!=null)
             mService.send(Message.obtain(null, what, thing));
         } catch (RemoteException e) {
             e.printStackTrace();

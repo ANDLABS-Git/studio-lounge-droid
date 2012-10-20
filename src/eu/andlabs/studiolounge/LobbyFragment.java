@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -153,6 +153,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 	}
 	
 	private void launchGameApp(String pkgName) {
+		pkgName = "de.andlabs.gravitywins";
 	    PackageManager pm = getActivity().getPackageManager();
 	    Intent i = new Intent(Intent.ACTION_MAIN);
 	    i.addCategory("eu.andlabs.lounge");

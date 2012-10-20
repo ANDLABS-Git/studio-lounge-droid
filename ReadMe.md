@@ -1,5 +1,3 @@
-
-
 ##  * hAppy Log * 
 
 # Studio-Lounge Android-App
@@ -41,12 +39,15 @@
     protected void onStop() { GCPService.unbind(this, mLounge); }
   ```
 
-  * send and receive game messages
+  * send game messages
   ```Java
     Bundle data = new Bundle();
     data.putString("foo", "bar");
     mLounge.sendGameMessage(data)
+```
 
+* receive game messages
+  ```Java
     mLounge.register(new GameMsgListener() {                
       @Override
       public void onMessageRecieved(Bundle msg) {
@@ -57,7 +58,7 @@
   Currently only String data is supported
 
   * register listeners to implement a custom Lounge experience
-  ```Java
+  Java
     mLounge.register( new LobbyListener() {...} );
     mLounge.register( new ChatListener() {...} );
   ```
