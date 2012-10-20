@@ -17,7 +17,7 @@
 
   * launch the Lounge Activity to visit the Player Lobby and Chat
   ```Java
-    Lounge.startLoungeActivity(this);
+    startActivity(new Intent(this, LoungeActivity.class));
   ```
 
   * add category "eu.andlabs.lounge" to the Game Intent Filter

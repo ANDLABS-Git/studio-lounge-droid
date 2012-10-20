@@ -179,5 +179,4 @@ public class LoungeActivity extends FragmentActivity {
         public void onPageScrollStateChanged(int state) {
         }
     }
->>>>>>> fb02a9a82da53d2510f02a8c532283e9251fc6fc
 }
