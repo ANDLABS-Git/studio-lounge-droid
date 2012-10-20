@@ -94,13 +94,6 @@ public class ChatFragment extends Fragment implements ChatListener, OnClickListe
             }
         });
         //http://code.google.com/p/android/issues/detail?id=2516
-        mChatEditText.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mChatEditText.requestFocusFromTouch(); // bug
-                return false;
-            }
-        });
         mChatEditText.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
