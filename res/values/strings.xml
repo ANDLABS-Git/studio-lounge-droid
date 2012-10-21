@@ -4,5 +4,7 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_lounge">Lounge</string>
     <string name="lounge">LOUNGE</string>
+    <string name="playersonline">PLAYER ONLINE</string>
+    <string name="opengames">OPEN GAMES</string>
 
 </resources>

@@ -52,6 +52,7 @@ public class LoungeActivity extends FragmentActivity implements OnPageChangeList
         super.onCreate(savedInstanceState);
 //        mLounge = new Lounge(this);
 
+        	Log.i("Luc","test");
         setContentView(R.layout.main_pager);
         
         mViewPager = (ViewPager)findViewById(R.id.pager);
@@ -132,7 +133,6 @@ public class LoungeActivity extends FragmentActivity implements OnPageChangeList
 		}
 		
 	}
-
 
 
 

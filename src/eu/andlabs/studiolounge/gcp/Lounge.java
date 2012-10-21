@@ -103,11 +103,14 @@ public class Lounge implements ServiceConnection {
             ChatMessage message;
             switch (msg.what) {
             case GCPService.LOGIN:
-                Log.d(TAG, "Lounge on LOGIN " + msg.obj);
-                if (mName == null)
+                Log.d(TAG, mLobbyListener+" Lounge on LOGIN " + msg.obj);
+                if (mName == null){
                     mName = (String) msg.obj;
-                if (mLobbyListener != null)
+                }
+                Log.i("Luc","Lobby Listner "+mLobbyListener);
+                if (mLobbyListener != null){
                     mLobbyListener.onPlayerLoggedIn(msg.obj.toString());
+                }
                 break;
             case GCPService.CHAT:
                 mVibrator.vibrate(230);
@@ -203,8 +206,8 @@ public class Lounge implements ServiceConnection {
         sendMessage(GCPService.CHAT, msg.text);
     }
 
-    public void hostGame() {
-        sendMessage(GCPService.HOST, null);
+    public void hostGame(String pkgName) {
+        sendMessage(GCPService.HOST, pkgName);
     }
 
     public void joinGame(String hostplayer, String gamepackage) {

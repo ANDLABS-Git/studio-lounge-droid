@@ -209,7 +209,7 @@ public class GCPService extends Service {
                         break;
                     case HOST:
                         json.put("host", mName);
-                        json.put("game", packagename);
+                        json.put("game", msg.obj);
                         mSocketIO.emit("host", json);
                         
                         break;

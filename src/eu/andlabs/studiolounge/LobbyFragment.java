@@ -18,6 +18,7 @@ package eu.andlabs.studiolounge;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.color;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -40,6 +41,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,12 +49,16 @@ import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 
-public class LobbyFragment extends Fragment implements LobbyListener {
+public class LobbyFragment extends Fragment implements LobbyListener, OnClickListener {
 	private ArrayList<Player> mPlayers = new ArrayList<Player>();
 	private ListView lobbyList;
 	private ImageView pulseBeacon;
 	private ImageView staticBeacon;
 	private AnimatorSet scaleDown;
+	private LinearLayout gamePoints;
+	private LinearLayout gameGravityWins;
+	private String selectedGame;
+	private LinearLayout gameAtomDroid;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -80,12 +86,20 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 		View lobby = inflater.inflate(R.layout.lobby, container, false);
 		pulseBeacon = (ImageView)lobby.findViewById(R.id.ic_lobby_host_pulse);
 		staticBeacon = (ImageView)lobby.findViewById(R.id.ic_lobby_host_static_pulse);
+		gamePoints = (LinearLayout)lobby.findViewById(R.id.points);
+		gamePoints.setOnClickListener(this);
+		
+		gameGravityWins = (LinearLayout)lobby.findViewById(R.id.gravity_wins);
+		gameGravityWins.setOnClickListener(this);
+		
+		gameAtomDroid = (LinearLayout)lobby.findViewById(R.id.atomdroid);
+		gameAtomDroid.setOnClickListener(this);
 		lobby.findViewById(R.id.btn_host).setOnClickListener(new OnClickListener() {
             
             @Override
             public void onClick(View v) {
 
-                ((LoungeActivity)getActivity()).mLounge.hostGame();
+                ((LoungeActivity)getActivity()).mLounge.hostGame(selectedGame);
                 animateHostMode();
             }
         });
@@ -107,10 +121,11 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 						final Player player = mPlayers.get(position);
 						playerLabel.setText(player.getPlayername());
 						Button b = (Button) view.findViewById(R.id.joinbtn);
+						LinearLayout join = (LinearLayout)view.findViewById(R.id.join_btn_area);
 						if (player.getHostedGame() != null) {
 							b.setText(player.getHostedGame().split("\\.")[4]);
-							b.setVisibility(View.VISIBLE);
-							b.setOnClickListener(new OnClickListener() {
+							join.setVisibility(View.VISIBLE);
+							join.setOnClickListener(new OnClickListener() {
 
 										@Override
 										public void onClick(View v) {
@@ -239,4 +254,36 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 //          scaleDown.play(alphaAnimation).with(scaleXAnimation).with(scaleYAnimation);
 //          scaleDown.start();
     }
+
+	@Override
+	public void onClick(View v) {
+		
+		if(v.getId()==R.id.points){
+			gamePoints.setBackgroundResource(R.drawable.light_gray2);
+			gameGravityWins.setBackgroundDrawable(null);
+			gameGravityWins.setBackgroundColor(color.transparent);
+			gameAtomDroid.setBackgroundColor(color.transparent);
+			Log.i("gray"," points");
+			selectedGame="eu.andlabs.gcp.examples.points";
+		}else
+		
+		if(v.getId()==R.id.gravity_wins){
+			gameGravityWins.setBackgroundResource(R.drawable.light_gray2);
+			gamePoints.setBackgroundDrawable(null);
+			gameAtomDroid.setBackgroundColor(color.transparent);
+			Log.i("gray"," gw");
+			selectedGame="de.andlabs.gravitywins";
+		}
+		else
+			
+			if(v.getId()==R.id.atomdroid){
+				gameAtomDroid.setBackgroundResource(R.drawable.light_gray2);
+				gamePoints.setBackgroundDrawable(null);
+				gameGravityWins.setBackgroundColor(color.transparent);
+				Log.i("gray"," atom");
+				selectedGame="com.badlogic.androidgames.atomdroid";
+			}
+		
+	
+	}
 }
