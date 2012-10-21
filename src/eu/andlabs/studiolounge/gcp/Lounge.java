@@ -185,31 +185,61 @@ public class Lounge implements ServiceConnection {
     private ChatListener mChatListener;
 
     private ArrayList<ChatListener> mChatListeners = new ArrayList<Lounge.ChatListener>(2);
-
+    
+    /**
+     * subscribe to chat messages
+     * 
+     * @param listener callback interface
+     */
     public void register(ChatListener listener) {
         mChatListeners.add(listener);
     }
 
+    /**
+     * unsubscribe chat messages
+     * 
+     * @param listener callback interface
+     */
     public void unregister(ChatListener listener) {
         mChatListener = null;
     }
 
     private LobbyListener mLobbyListener;
 
+    /**
+     * subscribe to game arrangement messages
+     * 
+     * @param listener callback interface
+     */
     public void register(LobbyListener listener) {
         mLobbyListener = listener;
     }
 
+    /**
+     * unsubscribe game arrangement game messages
+     * 
+     * @param listener callback interface
+     */
     public void unregister(LobbyListener listener) {
         mLobbyListener = null;
     }
 
     private GameMsgListener mMsgListener;
 
+    /**
+     * subscribe to custom game messages
+     * 
+     * @param listener callback interface
+     */
     public void register(GameMsgListener listener) {
         mMsgListener = listener;
     }
 
+    /**
+     * unsubscribe custom game messages
+     * 
+     * @param listener callback interface
+     */
     public void unregister(GameMsgListener listener) {
         mMsgListener = null;
     }
@@ -250,6 +280,11 @@ public class Lounge implements ServiceConnection {
         sendMessage(GCPService.JOIN, b);
     }
 
+    /**
+     * send custom game message
+     * 
+     * @param msg the data to send
+     */
     public void sendGameMessage(Bundle msg) {
         sendMessage(GCPService.CUSTOM, msg);
     }

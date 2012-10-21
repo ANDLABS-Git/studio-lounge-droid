@@ -35,37 +35,38 @@ import android.widget.TabWidget;
 import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
 
-public class LoungeActivity extends FragmentActivity implements OnPageChangeListener {
-	private static final float ALPHA_OFF = 0.3f;
-	TabHost mTabHost;
-	ViewPager mViewPager;
-	Lounge mLounge;
-	private LoungeFragmentAdapter mAdapter;
-	private ImageView mLobbyIcon;
-	private ImageView mChatIcon;
-	private ImageView mStatsIcon;
-	private ImageView mAboutIcon;
-
+public class LoungeActivity extends FragmentActivity implements
+        OnPageChangeListener {
+    private static final float ALPHA_OFF = 0.3f;
+    TabHost mTabHost;
+    ViewPager mViewPager;
+    Lounge mLounge;
+    private LoungeFragmentAdapter mAdapter;
+    private ImageView mLobbyIcon;
+    private ImageView mChatIcon;
+    private ImageView mStatsIcon;
+    private ImageView mAboutIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mLounge = new Lounge(this);
+        // mLounge = new Lounge(this);
 
-        	Log.i("Luc","test");
+        Log.i("Luc", "test");
         setContentView(R.layout.main_pager);
-        
-        mViewPager = (ViewPager)findViewById(R.id.pager);
-        mAdapter= new LoungeFragmentAdapter(getFragmentManager());
+
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mAdapter = new LoungeFragmentAdapter(getFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOnPageChangeListener(this);
-        
-        mLobbyIcon=(ImageView)findViewById(R.id.ic_tab_lobby);
-        mChatIcon=(ImageView)findViewById(R.id.ic_tab_chat);
-        mStatsIcon=(ImageView)findViewById(R.id.ic_tab_stat);
-        mAboutIcon=(ImageView)findViewById(R.id.ic_tab_about);
-        
+
+        mLobbyIcon = (ImageView) findViewById(R.id.ic_tab_lobby);
+        mChatIcon = (ImageView) findViewById(R.id.ic_tab_chat);
+        mStatsIcon = (ImageView) findViewById(R.id.ic_tab_stat);
+        mAboutIcon = (ImageView) findViewById(R.id.ic_tab_about);
+
     }
+
     @Override
     protected void onStart() {
         Log.d("Lounge", "on START");
@@ -84,56 +85,57 @@ public class LoungeActivity extends FragmentActivity implements OnPageChangeList
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
-	@Override
-	public void onPageScrollStateChanged(int arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void onPageSelected(int arg0) {
-		switch (arg0) {
-		case 0:
-			mLobbyIcon.setAlpha(1.0f);
-			mChatIcon.setAlpha(ALPHA_OFF);
-			mStatsIcon.setAlpha(ALPHA_OFF);
-			mAboutIcon.setAlpha(ALPHA_OFF);
-			break;
-			
-	case 1:
-		mLobbyIcon.setAlpha(ALPHA_OFF);
-		mChatIcon.setAlpha(1.0f);
-		mStatsIcon.setAlpha(ALPHA_OFF);
-		mAboutIcon.setAlpha(ALPHA_OFF);
-			
-			break;
-			
-	case 2:
-		mLobbyIcon.setAlpha(ALPHA_OFF);
-		mChatIcon.setAlpha(ALPHA_OFF);
-		mStatsIcon.setAlpha(1.0f);
-		mAboutIcon.setAlpha(ALPHA_OFF);
-		
-		break;
-		
-	case 3:
-		mLobbyIcon.setAlpha(ALPHA_OFF);
-		mChatIcon.setAlpha(ALPHA_OFF);
-		mStatsIcon.setAlpha(ALPHA_OFF);
-		mAboutIcon.setAlpha(1.0f);
-		
-		break;
 
-		default:
-			break;
-		}
-		
-	}
+    @Override
+    public void onPageScrollStateChanged(int arg0) {
+        // TODO Auto-generated method stub
 
+    }
 
+    @Override
+    public void onPageScrolled(int arg0, float arg1, int arg2) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onPageSelected(int arg0) {
+        switch (arg0) {
+        case 0:
+            mLobbyIcon.setAlpha(1.0f);
+            mChatIcon.setAlpha(ALPHA_OFF);
+            mStatsIcon.setAlpha(ALPHA_OFF);
+            mAboutIcon.setAlpha(ALPHA_OFF);
+            break;
+
+        case 1:
+            mLobbyIcon.setAlpha(ALPHA_OFF);
+            mChatIcon.setAlpha(1.0f);
+            mStatsIcon.setAlpha(ALPHA_OFF);
+            mAboutIcon.setAlpha(ALPHA_OFF);
+
+            break;
+
+        case 2:
+            mLobbyIcon.setAlpha(ALPHA_OFF);
+            mChatIcon.setAlpha(ALPHA_OFF);
+            mStatsIcon.setAlpha(1.0f);
+            mAboutIcon.setAlpha(ALPHA_OFF);
+
+            break;
+
+        case 3:
+            mLobbyIcon.setAlpha(ALPHA_OFF);
+            mChatIcon.setAlpha(ALPHA_OFF);
+            mStatsIcon.setAlpha(ALPHA_OFF);
+            mAboutIcon.setAlpha(1.0f);
+
+            break;
+
+        default:
+            break;
+        }
+
+    }
 
 }

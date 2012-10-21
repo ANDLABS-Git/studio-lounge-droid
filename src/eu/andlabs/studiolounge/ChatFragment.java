@@ -38,7 +38,8 @@ import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
-public class ChatFragment extends Fragment implements ChatListener, OnClickListener {
+public class ChatFragment extends Fragment implements ChatListener,
+        OnClickListener {
     ArrayList<ChatMessage> mConversation = new ArrayList<ChatMessage>();
     private EditText mChatEditText;
 
@@ -57,7 +58,7 @@ public class ChatFragment extends Fragment implements ChatListener, OnClickListe
     @Override
     public void onStart() {
         Log.i("Lounge", "ChatFragment on START");
-        ((LoungeActivity)getActivity()).mLounge.register(this);
+        ((LoungeActivity) getActivity()).mLounge.register(this);
         mConversation.clear();
         super.onStart();
     }
@@ -67,7 +68,8 @@ public class ChatFragment extends Fragment implements ChatListener, OnClickListe
         Log.d("THIS", "on create view");
         final View chat = infl.inflate(R.layout.chat, p, false);
         mChatEditText = ((EditText) chat.findViewById(R.id.msg_field));
-        ((ImageButton) chat.findViewById(R.id.btn_msgSend)).setOnClickListener(this);
+        ((ImageButton) chat.findViewById(R.id.btn_msgSend))
+                .setOnClickListener(this);
         ((ListView) chat.findViewById(R.id.list)).setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
@@ -94,7 +96,7 @@ public class ChatFragment extends Fragment implements ChatListener, OnClickListe
                 return null;
             }
         });
-        //http://code.google.com/p/android/issues/detail?id=2516
+        // http://code.google.com/p/android/issues/detail?id=2516
         mChatEditText.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -121,7 +123,7 @@ public class ChatFragment extends Fragment implements ChatListener, OnClickListe
     public void onClick(View v) {
         ChatMessage msg = new ChatMessage();
         msg.text = mChatEditText.getText().toString();
-        ((LoungeActivity)getActivity()).mLounge.sendChatMessage(msg);
+        ((LoungeActivity) getActivity()).mLounge.sendChatMessage(msg);
         mChatEditText.requestFocusFromTouch();
         mChatEditText.setText("");
         onChatMessageRecieved(msg);
@@ -129,7 +131,7 @@ public class ChatFragment extends Fragment implements ChatListener, OnClickListe
 
     @Override
     public void onStop() {
-        ((LoungeActivity)getActivity()).mLounge.unregister(this);
+        ((LoungeActivity) getActivity()).mLounge.unregister(this);
         super.onStop();
     }
 

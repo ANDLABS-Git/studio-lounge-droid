@@ -37,7 +37,8 @@ import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
-public class AboutFragment extends Fragment implements ChatListener, OnClickListener {
+public class AboutFragment extends Fragment implements ChatListener,
+        OnClickListener {
     ArrayList<ChatMessage> mConversation = new ArrayList<ChatMessage>();
     private EditText mChatEditText;
 
@@ -56,7 +57,7 @@ public class AboutFragment extends Fragment implements ChatListener, OnClickList
     @Override
     public void onStart() {
         Log.i("Lounge", "ChatFragment on START");
-        ((LoungeActivity)getActivity()).mLounge.register(this);
+        ((LoungeActivity) getActivity()).mLounge.register(this);
         super.onStart();
     }
 
@@ -64,20 +65,20 @@ public class AboutFragment extends Fragment implements ChatListener, OnClickList
     public View onCreateView(final LayoutInflater infl, ViewGroup p, Bundle b) {
         Log.d("THIS", "on create view");
         final View stats = infl.inflate(R.layout.fragment_about, p, false);
-       
+
         return stats;
     }
 
     @Override
     public void onChatMessageRecieved(ChatMessage msg) {
-      
+
     }
 
     @Override
     public void onClick(View v) {
         ChatMessage msg = new ChatMessage();
         msg.text = mChatEditText.getText().toString();
-        ((LoungeActivity)getActivity()).mLounge.sendChatMessage(msg);
+        ((LoungeActivity) getActivity()).mLounge.sendChatMessage(msg);
         mChatEditText.requestFocusFromTouch();
         mChatEditText.setText("");
         onChatMessageRecieved(msg);
@@ -85,7 +86,7 @@ public class AboutFragment extends Fragment implements ChatListener, OnClickList
 
     @Override
     public void onStop() {
-        ((LoungeActivity)getActivity()).mLounge.unregister(this);
+        ((LoungeActivity) getActivity()).mLounge.unregister(this);
         super.onStop();
     }
 
