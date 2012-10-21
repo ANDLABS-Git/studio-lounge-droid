@@ -19,6 +19,7 @@
                
                
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_marginTop="45dp"
@@ -56,22 +57,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#3F3F3F"
         android:layout_gravity="bottom" >
-
+
         <EditText
             android:id="@+id/msg_field"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:ems="12"
             android:textStyle="bold" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_msgSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Send" />
+            android:src="@drawable/ic_chat_send" />
+   
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_gravity="bottom"
+        android:background="#155F40"
+        android:orientation="vertical" >
+
     </LinearLayout>
 
 </FrameLayout>
