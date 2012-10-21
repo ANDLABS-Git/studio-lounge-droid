@@ -18,30 +18,8 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="45dp"
-            android:layout_height="10dp" >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="#90472C"
-                android:layout_weight="0.8"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="#155F40"
-                                android:layout_weight="0.2"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-        </LinearLayout>
-
         <ListView
+            android:layout_marginTop="55dp"
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
@@ -54,8 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
     </LinearLayout>
-
-    
 
     <SlidingDrawer
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -67,51 +43,83 @@
         android:handle="@+id/handle"
         android:orientation="vertical"
         >
-
-        <LinearLayout
+
+        <FrameLayout
             android:id="@+id/handle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-         
-            <FrameLayout
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:background="#90472C" >
-               
+            android:layout_height="80dp" >
 
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_search" />
-               
-            </FrameLayout>
              <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:background="#90472C" />
+                 android:layout_width="match_parent"
+                 android:layout_height="10dp"
+                 android:layout_gravity="bottom"
+                 android:background="#90472C" />
+
+             <FrameLayout
+                 android:layout_width="80dp"
+                 android:layout_height="69dp"
+                 android:layout_gravity="center"
+                 android:layout_marginTop="10dp"
+                 ma=""
+                 android:background="#90472C" >
+
+                 <ImageView
+                     android:id="@+id/imageView2"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center"
+                     android:src="@drawable/ic_lobby_host_core" />
+
+                 <ImageView
+                     android:id="@+id/ic_lobby_host_static_pulse"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center"
+                     android:src="@drawable/ic_lobby_host_static_pulse" />
+
+                 <ImageView
+                     android:id="@+id/ic_lobby_host_pulse"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center"
+                     android:src="@drawable/ic_lobby_host_pulse"
+                     android:visibility="invisible" />
+             </FrameLayout>
             
-        </LinearLayout>
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/content"
             android:layout_width="wrap_content"
-            android:layout_height="600dp"
-            android:alpha="0.8"
+            android:layout_height="560dp"
+            android:alpha="0.95"
              android:background="#2b2b2b" >
 
-            <Button
-                android:layout_gravity="center"
-                android:id="@+id/btn_host"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="HOST"
-                />
+         <include layout="@layout/host_game_drawer"/>
 
         </FrameLayout>
     </SlidingDrawer>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginTop="125dp" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:background="#90472C"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:background="#155F40"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
 
 </FrameLayout>

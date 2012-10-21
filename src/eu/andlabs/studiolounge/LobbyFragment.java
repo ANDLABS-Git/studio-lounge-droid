@@ -18,6 +18,8 @@ package eu.andlabs.studiolounge;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ComponentName;
@@ -32,9 +34,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,12 +50,16 @@ import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 public class LobbyFragment extends Fragment implements LobbyListener {
 	private ArrayList<Player> mPlayers = new ArrayList<Player>();
 	private ListView lobbyList;
+	private ImageView pulseBeacon;
+	private ImageView staticBeacon;
+	private AnimatorSet scaleDown;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    Log.i("Lounge", "LobbyFragment on CREATE");
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
+	
 	}
 
     @Override
@@ -69,12 +78,15 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 			ViewGroup container, Bundle savedInstanceState) {
 
 		View lobby = inflater.inflate(R.layout.lobby, container, false);
+		pulseBeacon = (ImageView)lobby.findViewById(R.id.ic_lobby_host_pulse);
+		staticBeacon = (ImageView)lobby.findViewById(R.id.ic_lobby_host_static_pulse);
 		lobby.findViewById(R.id.btn_host).setOnClickListener(new OnClickListener() {
             
             @Override
             public void onClick(View v) {
 
                 ((LoungeActivity)getActivity()).mLounge.hostGame();
+                animateHostMode();
             }
         });
 		((ListView) lobby.findViewById(R.id.list))
@@ -184,5 +196,47 @@ public class LobbyFragment extends Fragment implements LobbyListener {
     public void onStop() {
         ((LoungeActivity)getActivity()).mLounge.unregister(this);
         super.onStop();
+    }
+    
+    private void stopAnimatingHostMode(){
+    	if(scaleDown!=null){
+    		scaleDown.cancel();
+    	}
+    	pulseBeacon.setVisibility(View.INVISIBLE);
+    	staticBeacon.setVisibility(View.VISIBLE);
+    }
+    
+    private void animateHostMode(){
+    	pulseBeacon.setVisibility(View.VISIBLE);
+    	staticBeacon.setVisibility(View.INVISIBLE);
+    	
+    	Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.pulse);
+    	hyperspaceJumpAnimation.setRepeatMode(Animation.INFINITE);
+    	hyperspaceJumpAnimation.setRepeatCount(1000);
+    	pulseBeacon.startAnimation(hyperspaceJumpAnimation);
+    	
+    	
+//    	  final ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(pulseBeacon, "alpha", 0);
+//
+//          final ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(pulseBeacon, "scaleX", 1);
+//
+//          final ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(pulseBeacon, "scaleY", 1);
+//
+//          long duration= 300;
+//		alphaAnimation.setDuration(duration);
+//
+//          scaleXAnimation.setDuration(duration);
+//
+//          scaleYAnimation.setDuration(duration);
+//
+//          scaleYAnimation.setRepeatMode(ObjectAnimator.INFINITE);
+//          scaleXAnimation.setRepeatMode(ObjectAnimator.INFINITE);
+//          alphaAnimation.setRepeatMode(ObjectAnimator.INFINITE);
+//
+//          scaleDown = new AnimatorSet();
+//
+//          
+//          scaleDown.play(alphaAnimation).with(scaleXAnimation).with(scaleYAnimation);
+//          scaleDown.start();
     }
 }

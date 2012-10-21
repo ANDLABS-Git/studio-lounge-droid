@@ -63,16 +63,14 @@ public class AboutFragment extends Fragment implements ChatListener, OnClickList
     @Override
     public View onCreateView(final LayoutInflater infl, ViewGroup p, Bundle b) {
         Log.d("THIS", "on create view");
-        final View stats = infl.inflate(R.layout.fragment_stats, p, false);
+        final View stats = infl.inflate(R.layout.fragment_about, p, false);
        
         return stats;
     }
 
     @Override
     public void onChatMessageRecieved(ChatMessage msg) {
-        mConversation.add(msg);
-        ((BaseAdapter) ((ListView) getView().findViewById(R.id.list))
-                .getAdapter()).notifyDataSetChanged();
+      
     }
 
     @Override

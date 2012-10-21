@@ -73,7 +73,7 @@ public class GCPService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mName = "Tester";
+        mName = "LUKAS";
         mHandler = new Handler();
         
         log("starting GCP Service");

@@ -33,13 +33,44 @@
         android:layout_marginTop="80dp"
         android:layout_height="match_parent"
         android:orientation="vertical" >
-        
-
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            
             android:background="#2b2b2b" >
+
+            <ImageView
+                android:id="@+id/ic_tab_lobby"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:src="@drawable/ic_tab_lobby" />
+
+            <ImageView
+                android:id="@+id/ic_tab_chat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:src="@drawable/ic_tab_chat" />
+
+            <ImageView
+                android:id="@+id/ic_tab_stat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:src="@drawable/ic_tab_stat" />
+
+            <ImageView
+                android:id="@+id/ic_tab_about"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:src="@drawable/ic_tab_about" />
+
         </LinearLayout>
 
     </LinearLayout>

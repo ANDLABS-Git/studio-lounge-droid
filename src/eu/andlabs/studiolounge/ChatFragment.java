@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.andlabs.studiolounge.gcp.Lounge;
@@ -66,7 +67,7 @@ public class ChatFragment extends Fragment implements ChatListener, OnClickListe
         Log.d("THIS", "on create view");
         final View chat = infl.inflate(R.layout.chat, p, false);
         mChatEditText = ((EditText) chat.findViewById(R.id.msg_field));
-        ((Button) chat.findViewById(R.id.btn_msgSend)).setOnClickListener(this);
+        ((ImageButton) chat.findViewById(R.id.btn_msgSend)).setOnClickListener(this);
         ((ListView) chat.findViewById(R.id.list)).setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {

@@ -2,52 +2,57 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-
+    android:orientation="vertical"
+    android:background="#2b2b2b" >
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        
-           <LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="#154452"
             android:orientation="vertical" >
-
-               
-               
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="45dp"
-            android:layout_height="10dp" >
+            android:layout_height="10dp"
+            android:layout_marginTop="45dp" >
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                 android:background="#154452"
                 android:layout_weight="0.8"
+                android:background="#154452"
                 android:orientation="vertical" >
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_weight="0.2"
                 android:background="#742f43"
-                                android:layout_weight="0.2"
                 android:orientation="vertical" >
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_gravity="bottom"
+        android:background="#154452"
+        android:orientation="vertical" >
+
     </LinearLayout>
 
 </FrameLayout>
