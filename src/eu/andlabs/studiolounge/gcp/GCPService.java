@@ -38,7 +38,16 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
-
+/**
+ * <p>The {@link eu.andlabs.studiolounge.gcp.GCPService GCPService} background system service
+ * acts like a router, forwarding and translating messages between online nodes and Mobile Apps.
+ * It sends and receives <a href="https://github.com/ANDLABS-Git/studio-lounge-node/blob/master/spec/protocol.coffee">
+ * GCP</a> protocol messages over Socket.io/TCP/IP and translates them to <a href="https://github.com/ANDLABS-Git/studio-lounge-node/blob/master/spec/protocol.coffee">
+ * GCP</a> protocol over Android Binder IPC messages.</p>
+ * 
+ * <p>Mobile Apps can use the messaging API directly by starting and binding to the service
+ * or use the convenience client implementation @link eu.andlabs.studiolounge.gcp.Lounge Lounge}.</p>
+ */
 public class GCPService extends Service {
     
     public static Lounge bind(Context ctx) {
@@ -129,7 +138,10 @@ public class GCPService extends Service {
                             dispatchMessage(HOST, b);
                         } else if (type.equals("join")){
                             JSONObject json = (JSONObject) data[0];
-                            dispatchMessage(JOIN, json.get("guest"));
+                            Bundle b = new Bundle();
+                            b.putString("game", json.getString("game"));
+                            b.putString("guest", json.getString("guset"));
+                            dispatchMessage(JOIN, b);
                         } else if (type.equals("move")){
                             JSONObject json = (JSONObject) data[0];
                             

@@ -154,7 +154,7 @@ public class LobbyFragment extends Fragment implements LobbyListener {
 
 
 	@Override
-	public void onPlayerJoined(String player) {
+	public void onPlayerJoined(String player, String game) {
 		if (!player.equals(GCPService.mName))
 		    launchGameApp(getActivity().getPackageName());
 	}
