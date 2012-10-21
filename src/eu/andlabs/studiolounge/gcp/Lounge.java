@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.andlabs.studiolounge.gcp;
 
 import java.util.ArrayList;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,59 +29,91 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.Vibrator;
 import android.util.Log;
-
+/**
+ * <p>The Lounge class starts and binds the background {@link eu.andlabs.studiolounge.gcp.GCPService GCPService}
+ * and provides an object oriented interface to integrate Lounge into Mobile Apps.
+ * 
+ * The ServiceConnection needs to bind and unbind during Activity flow.
+ * <pre>
+ * @Override
+ * protected void onStart() { mLounge = GCPService.bind(this); }
+ *
+ *  @Override
+ *  protected void onStop() { GCPService.unbind(this, mLounge); }
+ * </pre>
+ */
 public class Lounge implements ServiceConnection {
 
     protected static final String TAG = "Lounge";
-
+    
+    /**
+     * This callback interface is used to subscribe game arrangement messages
+     */
     public interface LobbyListener {
 
         /**
          * is called after every successful login
          * 
-         * @param name
-         *            the player who has joined
+         * @param player name of the player who logged in.
          */
         public void onPlayerLoggedIn(String player);
 
         /**
          * is called after every logout operation
          * 
-         * @param name
-         *            the player who has left
+         * @param player name of the player who has left.
          */
         public void onPlayerLeft(String player);
 
-        public void onNewHostedGame(String player, String Game);
+        /**
+         * is called when new games are hosted
+         * 
+         * @param player name of the host player
+         * @param game package identifier of the hosted game
+         */
+        public void onNewHostedGame(String player, String game);
 
-        public void onPlayerJoined(String player);
+        /**
+         * is called when player join games.
+         * 
+         * @param player name of the player who has joined
+         * @param game package identifier of the hosted game
+         */
+        public void onPlayerJoined(String player, String game);
 
     }
 
+    /**
+     * This callback interface is used to subscribe chat messages.
+     */
     public interface ChatListener {
 
         /**
          * is called when a chat message arrives
          * 
-         * @param text
-         *            the content of the message
+         * @param text text content of the chat message
          */
         public void onChatMessageRecieved(ChatMessage msg);
 
     }
 
+    /**
+     * This callback interface is used to subscribe custom game messages.
+     */
     public interface GameMsgListener {
 
         /**
          * is called when custom game messages come in
          * 
-         * @param msg
-         *            the content of the json message
+         * @param the content of the custom game message
          */
         public void onMessageRecieved(Bundle msg);
 
     }
 
+    /**
+     * This class encapsulates chat messages.
+     */
     public static class ChatMessage {
         public String player;
         public String text;
@@ -133,7 +165,8 @@ public class Lounge implements ServiceConnection {
                 break;
             case GCPService.JOIN:
                 if (mLobbyListener != null) {
-                    mLobbyListener.onPlayerJoined((String) msg.obj);
+                    Bundle b = (Bundle) msg.obj;
+                    mLobbyListener.onPlayerJoined(b.getString("guest"), b.getString("game"));
                 }
                 break;
             case GCPService.CUSTOM:
