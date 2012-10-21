@@ -26,7 +26,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.Vibrator;
 import android.util.Log;
@@ -34,13 +33,6 @@ import android.util.Log;
 public class Lounge implements ServiceConnection {
 
     protected static final String TAG = "Lounge";
-
-    static public void startLoungeActivity(Context context) {
-        Intent i = new Intent();
-        i.setPackage("eu.andlabs.studiolounge");
-        i.setClassName(context, "eu.andlabs.studiolounge.LoungeActivity");
-        context.startActivity(i);
-    }
 
     public interface LobbyListener {
 
