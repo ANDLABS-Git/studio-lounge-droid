@@ -46,7 +46,7 @@ import android.widget.Toast;
  * GCP</a> protocol over Android Binder IPC messages.</p>
  * 
  * <p>Mobile Apps can use the messaging API directly by starting and binding to the service
- * or use the convenience client implementation @link eu.andlabs.studiolounge.gcp.Lounge Lounge}.</p>
+ * or use the convenience client implementation {@link eu.andlabs.studiolounge.gcp.Lounge Lounge}.</p>
  */
 public class GCPService extends Service {
     

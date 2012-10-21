@@ -4,6 +4,8 @@
 
 ![http://andlabs.eu](http://andlabs.info/pix/android_andlabs_logo.png)
 
+[API docs](http://andlabs-git.github.com/studio-lounge-droid/docs/index.html)
+
 ### Usage
 
   * include StudioLounge as [Android Library Project](http://developer.android.com/tools/projects/index.html)

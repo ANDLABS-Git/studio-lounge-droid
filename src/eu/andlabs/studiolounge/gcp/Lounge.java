@@ -30,8 +30,17 @@ import android.os.RemoteException;
 import android.os.Vibrator;
 import android.util.Log;
 /**
- * <p>This class starts and binds to the background {@link eu.andlabs.studiolounge.gcp.GCPService GCPService}
+ * <p>The Lounge class starts and binds the background {@link eu.andlabs.studiolounge.gcp.GCPService GCPService}
  * and provides an object oriented interface to integrate Lounge into Mobile Apps.
+ * 
+ * The ServiceConnection needs to bind and unbind during Activity flow.
+ * <pre>
+ * @Override
+ * protected void onStart() { mLounge = GCPService.bind(this); }
+ *
+ *  @Override
+ *  protected void onStop() { GCPService.unbind(this, mLounge); }
+ * </pre>
  */
 public class Lounge implements ServiceConnection {
 
@@ -39,7 +48,6 @@ public class Lounge implements ServiceConnection {
     
     /**
      * This callback interface is used to subscribe game arrangement messages
-     * in {@link eu.studiolounge.gcp.Lounge#register register(..)}.
      */
     public interface LobbyListener {
 
