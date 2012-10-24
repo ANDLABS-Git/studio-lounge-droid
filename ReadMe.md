@@ -1,8 +1,13 @@
 ##  * hAppy Log * 
 
-# Studio-Lounge Android-App
+# Studio-Lounge Android-Library
+Multi Platform
+Multi-Player
+Multi-App
 
 ![http://andlabs.eu](http://andlabs.info/pix/android_andlabs_logo.png)
+
+Licensed under the Apache License, Version 2.0
 
 [API docs](http://andlabs-git.github.com/studio-lounge-droid/docs/index.html)
 
