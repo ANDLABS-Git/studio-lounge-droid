@@ -22,16 +22,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.TabHost;
 import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
+import eu.andlabs.studiolounge.lobby.LoginManager;
 
 public class LoungeActivity extends FragmentActivity implements
 		OnPageChangeListener {
 	private static final float ALPHA_OFF = 0.3f;
-	TabHost mTabHost;
-	ViewPager mViewPager;
-	Lounge mLounge;
+	private ViewPager mViewPager;
+	private Lounge mLounge;
 	private LoungeFragmentAdapter mAdapter;
 	private ImageView mLobbyIcon;
 	private ImageView mChatIcon;
@@ -128,5 +127,9 @@ public class LoungeActivity extends FragmentActivity implements
 	
 	public void hostGame(ComponentName hostComponent) {
 		this.mLounge.hostGame(hostComponent);
+	}
+	
+	public Lounge getLounge() {
+		return mLounge;
 	}
 }
