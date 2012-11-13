@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 http://andlabs.eu
+ * Copyright (C) 2012 ANDLABS. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -119,12 +120,9 @@ public class Lounge implements ServiceConnection {
         public String text;
     }
 
-    private Vibrator mVibrator;
 
     public Lounge(Context context) {
         Log.d("Lounge", "Lounge Constructor");
-        mVibrator = (Vibrator) context
-                .getSystemService(context.VIBRATOR_SERVICE);
     }
 
     // receive incoming android system IPC messages from backround GCP service
@@ -145,7 +143,6 @@ public class Lounge implements ServiceConnection {
                 }
                 break;
             case GCPService.CHAT:
-                mVibrator.vibrate(230);
                 String[] msplit = msg.obj.toString().split(":");
                 message = new ChatMessage();
                 message.player = msplit[0];
@@ -267,6 +264,10 @@ public class Lounge implements ServiceConnection {
 
     public void sendChatMessage(ChatMessage msg) {
         sendMessage(GCPService.CHAT, msg.text);
+    }
+    
+    public void hostGame(ComponentName componentName) {
+    	hostGame(componentName.getPackageName());
     }
 
     public void hostGame(String pkgName) {

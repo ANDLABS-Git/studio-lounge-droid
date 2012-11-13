@@ -1,8 +1,13 @@
 ##  * hAppy Log * 
 
-# Studio-Lounge Android-App
+# Studio-Lounge Android-Library
+Multi Platform
+Multi-Player
+Multi-App
 
 ![http://andlabs.eu](http://andlabs.info/pix/android_andlabs_logo.png)
+
+Licensed under the Apache License, Version 2.0
 
 [API docs](http://andlabs-git.github.com/studio-lounge-droid/docs/index.html)
 
@@ -30,6 +35,16 @@
     </intent-filter>
   ```
   This activity will be started once players joined for a game
+
+  * add the permission 
+  ```Xml
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+  ```
+  for authentication and
+  ```Xml
+    <uses-permission android:name="android.permission.INTERNET"/>
+  ```
+  for internet access. 
 
   * start, bind and unbind the GCP backround service
   ```Java

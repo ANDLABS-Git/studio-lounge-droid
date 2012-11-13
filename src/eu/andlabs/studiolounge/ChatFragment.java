@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 http://andlabs.eu
+ * Copyright (C) 2012 ANDLABS. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,19 +22,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
