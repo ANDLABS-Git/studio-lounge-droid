@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -267,6 +268,10 @@ public class Lounge implements ServiceConnection {
 
     public void sendChatMessage(ChatMessage msg) {
         sendMessage(GCPService.CHAT, msg.text);
+    }
+    
+    public void hostGame(ComponentName componentName) {
+    	hostGame(componentName.getPackageName());
     }
 
     public void hostGame(String pkgName) {

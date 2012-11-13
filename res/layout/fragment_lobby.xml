@@ -35,7 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/button_background_normal"
-            android:onClick="hostGame"
             android:text="Host Game"
             android:textColor="@android:color/background_light" />
 

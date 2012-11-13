@@ -19,5 +19,7 @@
     <string name="lounge">LOUNGE</string>
     <string name="playersonline">PLAYER ONLINE</string>
     <string name="opengames">OPEN GAMES</string>
+    <string name="practise">Practise</string>
+    <string name="points">Points</string>
 
 </resources>

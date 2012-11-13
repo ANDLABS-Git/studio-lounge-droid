@@ -16,7 +16,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <LinearLayout
+    <ListView 
+        android:layout_marginTop="58dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/installed_games"
+        />
+    
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
@@ -29,102 +36,12 @@
             android:text="Host Game" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_practise"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Practise" />
+            android:text="@string/practise" />
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="58dp"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:id="@+id/atomdroid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true" >
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:src="@drawable/atomdroid" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:text="Atom Droid"
-                android:textSize="30dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/gravity_wins"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true" >
-
-            <ImageView
-                android:id="@+id/ImageView01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:src="@drawable/launcher_logo" />
-
-            <TextView
-                android:id="@+id/TextView01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:text="Gravity Wins"
-                android:textSize="30dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/points"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="vertical" >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" >
-
-                <ImageView
-                    android:id="@+id/imageView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_launcher" />
-
-                <TextView
-                    android:id="@+id/textView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="1"
-                    android:text="Points"
-                    android:textSize="30dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:alpha="0.2"
-                android:background="@android:color/white"
-                android:orientation="vertical" >
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
+    
 
 </FrameLayout>

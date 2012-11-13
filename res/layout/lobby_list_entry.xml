@@ -92,7 +92,5 @@
         android:layout_marginRight="10dp"
         android:src="@drawable/ic_lobbylist_join" />
 
-    <LinearLayout>
-    </LinearLayout>
 
 </FrameLayout>
