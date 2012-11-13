@@ -120,12 +120,9 @@ public class Lounge implements ServiceConnection {
         public String text;
     }
 
-    private Vibrator mVibrator;
 
     public Lounge(Context context) {
         Log.d("Lounge", "Lounge Constructor");
-        mVibrator = (Vibrator) context
-                .getSystemService(context.VIBRATOR_SERVICE);
     }
 
     // receive incoming android system IPC messages from backround GCP service
@@ -146,7 +143,6 @@ public class Lounge implements ServiceConnection {
                 }
                 break;
             case GCPService.CHAT:
-                mVibrator.vibrate(230);
                 String[] msplit = msg.obj.toString().split(":");
                 message = new ChatMessage();
                 message.player = msplit[0];
