@@ -56,6 +56,8 @@ public class LoungeActivity extends FragmentActivity implements
 		mStatsIcon = (ImageView) findViewById(R.id.ic_tab_stat);
 		mAboutIcon = (ImageView) findViewById(R.id.ic_tab_about);
 
+		//TODO: Use to init lounge.
+		String userId = LoginManager.getInstance(this).getUserId();
 	}
 
 	@Override
