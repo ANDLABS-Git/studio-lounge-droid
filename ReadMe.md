@@ -40,7 +40,7 @@ Licensed under the Apache License, Version 2.0
   ```Xml
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
   ```
-  for authentcation and
+  for authentication and
   ```Xml
     <uses-permission android:name="android.permission.INTERNET"/>
   ```
