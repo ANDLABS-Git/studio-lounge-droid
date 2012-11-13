@@ -36,6 +36,16 @@ Licensed under the Apache License, Version 2.0
   ```
   This activity will be started once players joined for a game
 
+  * add the permission 
+  ```Xml
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+  ```
+  for authentcation and
+  ```Xml
+    <uses-permission android:name="android.permission.INTERNET"/>
+  ```
+  for internet access. 
+
   * start, bind and unbind the GCP backround service
   ```Java
     @Override
