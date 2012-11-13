@@ -16,7 +16,9 @@
 package eu.andlabs.studiolounge;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.R.color;
 import android.animation.AnimatorSet;
@@ -107,6 +109,8 @@ public class LobbyFragment extends Fragment implements LobbyListener, OnClickLis
 
                     @Override
                     public int getCount() {
+                        
+                        
                         return mPlayers.size();
                     }
 
@@ -160,6 +164,12 @@ public class LobbyFragment extends Fragment implements LobbyListener, OnClickLis
     @Override
     public void onPlayerLoggedIn(String player) {
         // Toast.makeText(getActivity(), player + " joined", 3000).show();
+        for(Player p:mPlayers){
+            if(p.getPlayername().equalsIgnoreCase(player)){
+                return; // To avoid player duplicates in list
+            }
+        }
+        
         mPlayers.add(new Player(player));
         ((BaseAdapter) lobbyList.getAdapter()).notifyDataSetChanged();
     }
