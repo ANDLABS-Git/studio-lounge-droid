@@ -22,21 +22,21 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.TabHost;
 import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
+import eu.andlabs.studiolounge.lobby.LoginManager;
 
 public class LoungeActivity extends FragmentActivity implements
 		OnPageChangeListener {
 	private static final float ALPHA_OFF = 0.3f;
-	TabHost mTabHost;
-	ViewPager mViewPager;
-	Lounge mLounge;
+	private ViewPager mViewPager;
+	private Lounge mLounge;
 	private LoungeFragmentAdapter mAdapter;
 	private ImageView mLobbyIcon;
 	private ImageView mChatIcon;
 	private ImageView mStatsIcon;
 	private ImageView mAboutIcon;
+	private String mName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +56,13 @@ public class LoungeActivity extends FragmentActivity implements
 		mStatsIcon = (ImageView) findViewById(R.id.ic_tab_stat);
 		mAboutIcon = (ImageView) findViewById(R.id.ic_tab_about);
 
-		//TODO: Use to init lounge.
-		String userId = LoginManager.getInstance(this).getUserId();
+		 mName = LoginManager.getInstance(this).getUserId();
 	}
 
 	@Override
 	protected void onStart() {
 		Log.d("Lounge", "on START");
-		mLounge = GCPService.bind(this);
+		mLounge = GCPService.bind(this, mName);
 		super.onStart();
 	}
 
@@ -128,5 +127,9 @@ public class LoungeActivity extends FragmentActivity implements
 	
 	public void hostGame(ComponentName hostComponent) {
 		this.mLounge.hostGame(hostComponent);
+	}
+	
+	public Lounge getLounge() {
+		return mLounge;
 	}
 }
