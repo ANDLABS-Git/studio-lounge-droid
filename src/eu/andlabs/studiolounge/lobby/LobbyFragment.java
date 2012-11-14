@@ -234,4 +234,5 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         // TODO Auto-generated method stub
         return getActivity();
     }
+
 }
