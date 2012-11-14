@@ -54,7 +54,7 @@ public class ChatFragment extends Fragment implements ChatListener,
     @Override
     public void onStart() {
         Log.i("Lounge", "ChatFragment on START");
-        ((LoungeActivity) getActivity()).mLounge.register(this);
+        ((LoungeActivity) getActivity()).getLounge().register(this);
         mConversation.clear();
         super.onStart();
     }
@@ -119,7 +119,7 @@ public class ChatFragment extends Fragment implements ChatListener,
     public void onClick(View v) {
         ChatMessage msg = new ChatMessage();
         msg.text = mChatEditText.getText().toString();
-        ((LoungeActivity) getActivity()).mLounge.sendChatMessage(msg);
+        ((LoungeActivity) getActivity()).getLounge().sendChatMessage(msg);
         mChatEditText.requestFocusFromTouch();
         mChatEditText.setText("");
         onChatMessageRecieved(msg);
@@ -127,7 +127,7 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public void onStop() {
-        ((LoungeActivity) getActivity()).mLounge.unregister(this);
+        ((LoungeActivity) getActivity()).getLounge().unregister(this);
         super.onStop();
     }
 
