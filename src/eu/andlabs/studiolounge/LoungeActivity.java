@@ -16,6 +16,7 @@
 package eu.andlabs.studiolounge;
 
 import android.content.ComponentName;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -45,7 +46,7 @@ public class LoungeActivity extends FragmentActivity implements
 
 		Log.i("Luc", "test");
 		setContentView(R.layout.main_pager);
-
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new LoungeFragmentAdapter(getFragmentManager());
 		mViewPager.setAdapter(mAdapter);
