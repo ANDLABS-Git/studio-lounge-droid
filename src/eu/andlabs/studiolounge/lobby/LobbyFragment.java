@@ -120,8 +120,9 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 
 								@Override
 								public void onClick(View v) {
-									((LoungeActivity) getActivity()).getLounge()
-											.joinGame(player.getPlayername(),
+									((LoungeActivity) getActivity())
+											.getLounge().joinGame(
+													player.getPlayername(),
 													player.getHostedGame());
 									launchGameApp(player.getHostedGame());
 								}
@@ -156,7 +157,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 
 	@Override
 	public void onPlayerLeft(String player) {
-		Toast.makeText(getActivity(), player + " left", 3000).show();
+		Toast.makeText(getActivity(), player + " left", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -170,29 +171,30 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 	}
 
 	@Override
-	public void onPlayerJoined(String player, String game) {
-		if (!player.equals(GCPService.mName))
-			launchGameApp(getActivity().getPackageName());
+	public void onPlayerJoined(String playerName, String game) {
+		final Player player = new Player(playerName);
+		player.setHostedGame(game);
+		
+		if (!player.getPlayername().equals(GCPService.mName)) {
+			launchGameApp(player.getHostedGamePackage());
+		}
 	}
 
 	private void launchGameApp(String pkgName) {
 		PackageManager pm = getActivity().getPackageManager();
-		Intent i = new Intent(Intent.ACTION_MAIN);
+		Intent i = new Intent();
 		i.addCategory(CATEGORY);
 		List<ResolveInfo> list = pm.queryIntentActivities(i, 0);
 
 		for (ResolveInfo info : list) {
-			Intent launch = new Intent(Intent.ACTION_MAIN);
-			Log.i("debug", "found package " + info.activityInfo.packageName);
+			Intent launch = new Intent();
 			if (info.activityInfo.packageName.equalsIgnoreCase(pkgName)) {
 				Log.i("debug", "Packge Match found");
 				launch.setComponent(new ComponentName(
 						info.activityInfo.packageName, info.activityInfo.name));
-			} else {
-				Log.i("debug", "NO Package Match");
-				launch = pm.getLaunchIntentForPackage(pkgName);
+
+				startActivity(launch);
 			}
-			startActivity(launch);
 		}
 	}
 
@@ -258,13 +260,14 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 				animateHostMode();
 			}
 			if (v.getId() == R.id.btn_practise) {
-				final Intent intent = new Intent();
-				intent.setComponent(launchComponent);
+				final Intent intent = getActivity().getPackageManager()
+						.getLaunchIntentForPackage(
+								launchComponent.getPackageName());
 				startActivity(intent);
 			}
 		} else {
 			Toast.makeText(getActivity(), "Please select a game",
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 }
