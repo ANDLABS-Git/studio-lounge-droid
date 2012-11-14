@@ -7,6 +7,7 @@ import java.util.zip.Inflater;
 import eu.andlabs.studiolounge.LoungeActivity;
 import eu.andlabs.studiolounge.R;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,12 @@ public class LobbyAdapter extends BaseAdapter {
 
     private ArrayList<Player> mPlayers = new ArrayList<Player>();
     private LobbyFragment lobbyFragment;
+    private String mOwnID;
 
     public LobbyAdapter(LobbyFragment lobbyFragment) {
         this.lobbyFragment = lobbyFragment;
+        mOwnID = LoginManager.getInstance(lobbyFragment.getContext())
+                .getUserId();
     }
 
     public List<Player> getPlayerList() {
@@ -48,12 +52,18 @@ public class LobbyAdapter extends BaseAdapter {
 
         final TextView playerLabel = (TextView) v.findViewById(R.id.playername);
         final Player player = mPlayers.get(position);
-        playerLabel.setText(player.getPlayername());
-        Button b = (Button) v.findViewById(R.id.joinbtn);
-        LinearLayout join = (LinearLayout) v.findViewById(R.id.join_btn_area);
+        playerLabel.setText(player.getShortPlayername());
+        View join = v.findViewById(R.id.join_btn_area);
         if (player.getHostedGame() != null) {
-            b.setText(player.getHostedGameName());
+            ((TextView) v.findViewById(R.id.gamename)).setText(player
+                    .getHostedGamePackage());
             join.setVisibility(View.VISIBLE);
+            if (player.getPlayername().equalsIgnoreCase(mOwnID)) {
+                join.setAlpha(0.5f);
+                join.setEnabled(false);
+            }
+            Log.i("debug", "show login btn: " + player.getShortPlayername()
+                    + " #" + player.getHostedGame());
             join.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -65,7 +75,6 @@ public class LobbyAdapter extends BaseAdapter {
                 }
             });
         } else {
-            b.setVisibility(View.GONE);
         }
         return v;
     }

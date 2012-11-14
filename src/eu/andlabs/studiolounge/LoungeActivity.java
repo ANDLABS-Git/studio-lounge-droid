@@ -51,7 +51,8 @@ public class LoungeActivity extends FragmentActivity implements
 		mAdapter = new LoungeFragmentAdapter(getFragmentManager());
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(this);
-
+		mViewPager.setOverScrollMode(ViewPager.OVER_SCROLL_ALWAYS);
+		mViewPager.setOffscreenPageLimit(5);
 		mLobbyIcon = (ImageView) findViewById(R.id.ic_tab_lobby);
 		mChatIcon = (ImageView) findViewById(R.id.ic_tab_chat);
 		mStatsIcon = (ImageView) findViewById(R.id.ic_tab_stat);

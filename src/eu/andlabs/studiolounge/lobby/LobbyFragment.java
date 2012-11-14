@@ -57,7 +57,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     private AnimatorSet scaleDown;
     private ListView mHostList;
     private HostGameAdapter mAdapter;
-    private LobbyAdapter lobbyAdapter;
+    private  LobbyAdapter lobbyAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +96,6 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         lobby.findViewById(R.id.btn_practise).setOnClickListener(this);
         lobbyAdapter = new LobbyAdapter(this);
         ((ListView) lobby.findViewById(R.id.list)).setAdapter(lobbyAdapter);
-
         lobbyList = (ListView) lobby.findViewById(R.id.list);
         return lobby;
     }

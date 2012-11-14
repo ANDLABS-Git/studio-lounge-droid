@@ -15,6 +15,8 @@
  */
 package eu.andlabs.studiolounge.lobby;
 
+import android.util.Log;
+
 public class Player {
 
 	private String mPlayerName;
@@ -30,9 +32,7 @@ public class Player {
 	}
 	
 	public String getShortPlayername() {
-		if(this.mPlayerName.contains(".")) {
-			return mPlayerName.split(".")[0];
-		} else if (this.mPlayerName.contains("@")) {
+		 if (this.mPlayerName.contains("@")) {
 			return mPlayerName.split("@")[0];
 		}
 		return this.mPlayerName;
