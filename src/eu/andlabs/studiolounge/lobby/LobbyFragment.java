@@ -43,9 +43,6 @@ import android.widget.Toast;
 import eu.andlabs.studiolounge.LoungeActivity;
 import eu.andlabs.studiolounge.LoungeConstants;
 import eu.andlabs.studiolounge.R;
-import eu.andlabs.studiolounge.R.anim;
-import eu.andlabs.studiolounge.R.id;
-import eu.andlabs.studiolounge.R.layout;
 import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 
@@ -56,13 +53,8 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 	private ImageView pulseBeacon;
 	private ImageView staticBeacon;
 	private AnimatorSet scaleDown;
-	// private LinearLayout gamePoints;
-	// private LinearLayout gameGravityWins;
-	private String selectedGame;
 	private ListView mHostList;
 	private HostGameAdapter mAdapter;
-
-	// private LinearLayout gameAtomDroid;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -122,7 +114,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 						LinearLayout join = (LinearLayout) view
 								.findViewById(R.id.join_btn_area);
 						if (player.getHostedGame() != null) {
-							b.setText(player.getHostedGame().split("\\.")[4]);
+							b.setText(player.getHostedGameName());
 							join.setVisibility(View.VISIBLE);
 							join.setOnClickListener(new OnClickListener() {
 
@@ -175,7 +167,6 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 				((BaseAdapter) lobbyList.getAdapter()).notifyDataSetChanged();
 			}
 		}
-
 	}
 
 	@Override
@@ -262,7 +253,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 				.getSelectedItemPackage();
 		if (launchComponent != null) { // haz package
 			if (v.getId() == R.id.btn_host) {
-				// TODO: Use interface
+				// TODO: Use an interface
 				((LoungeActivity) getActivity()).hostGame(launchComponent);
 				animateHostMode();
 			}

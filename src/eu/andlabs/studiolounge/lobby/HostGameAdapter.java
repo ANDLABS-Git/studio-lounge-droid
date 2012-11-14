@@ -79,11 +79,11 @@ public class HostGameAdapter extends BaseAdapter implements LoungeConstants,
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position,
-			long arg3) {
+			long smthn) {
 		if (this.mLastMarkedView != null) {
 			this.mLastMarkedView.setBackgroundColor(Color.TRANSPARENT);
 		}
-		view.setBackgroundColor(Color.GRAY);
+		view.setBackgroundColor(Color.argb(80, 73, 206, 255));
 		this.mLastMarkedView = view;
 		this.mSelectedItem = position;
 	}

@@ -255,8 +255,9 @@ public class Lounge implements ServiceConnection {
 
     private void sendMessage(int what, Object thing) {
         try {
-        	if(mService!=null)
-            mService.send(Message.obtain(null, what, thing));
+        	if(mService!=null) {
+        		mService.send(Message.obtain(null, what, thing));
+        	}
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -267,7 +268,7 @@ public class Lounge implements ServiceConnection {
     }
     
     public void hostGame(ComponentName componentName) {
-    	hostGame(componentName.getPackageName());
+    	hostGame(componentName.flattenToShortString());
     }
 
     public void hostGame(String pkgName) {

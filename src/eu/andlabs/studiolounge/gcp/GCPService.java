@@ -50,13 +50,14 @@ import android.widget.Toast;
  */
 public class GCPService extends Service {
     
-    public static Lounge bind(Context ctx) {
+    public static Lounge bind(Context ctx, String name) {
         Lounge lounge = new Lounge(ctx);
         Intent intent = new Intent(ctx, GCPService.class);
         intent.putExtra("packageName", ctx.getPackageName());
         intent.putExtra("messenger", lounge.mMessenger);
+        intent.putExtra("name", name);
         ctx.startService(intent);
-        ctx.bindService(intent, lounge, ctx.BIND_AUTO_CREATE);
+        ctx.bindService(intent, lounge, Context.BIND_AUTO_CREATE);
         return lounge;
     }
     
@@ -82,7 +83,8 @@ public class GCPService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mName = "LUKAS";
+   
+//        mName = "LUKAS";
         mHandler = new Handler();
         
         log("starting GCP Service");
@@ -186,6 +188,7 @@ public class GCPService extends Service {
         log("on startCommand id="+startId+"  flags="+flags);
         mApp = (Messenger) intent.getParcelableExtra("messenger");
         packagename = intent.getExtras().getString("packageName");
+        mName = intent.getExtras().getString("name");
         if (mSocketIO.isConnected()) mSocketIO.emit("login", "I am " + mName);
         else connect();
         return START_NOT_STICKY;
