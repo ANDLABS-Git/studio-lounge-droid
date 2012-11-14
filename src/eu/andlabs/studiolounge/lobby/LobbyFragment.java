@@ -109,7 +109,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 						final TextView playerLabel = (TextView) view
 								.findViewById(R.id.playername);
 						final Player player = mPlayers.get(position);
-						playerLabel.setText(player.getPlayername());
+						playerLabel.setText(player.getShortPlayername());
 						Button b = (Button) view.findViewById(R.id.joinbtn);
 						LinearLayout join = (LinearLayout) view
 								.findViewById(R.id.join_btn_area);
@@ -175,7 +175,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 		final Player player = new Player(playerName);
 		player.setHostedGame(game);
 		
-		if (!player.getPlayername().equals(GCPService.mName)) {
+		if (!player.getPlayername().equals(GCPService.mName)) {			
 			launchGameApp(player.getHostedGamePackage());
 		}
 	}

@@ -25,6 +25,16 @@ public class Player {
 	}
 
 	public String getPlayername() {
+		
+		return this.mPlayerName;
+	}
+	
+	public String getShortPlayername() {
+		if(this.mPlayerName.contains(".")) {
+			return mPlayerName.split(".")[0];
+		} else if (this.mPlayerName.contains("@")) {
+			return mPlayerName.split("@")[0];
+		}
 		return this.mPlayerName;
 	}
 
