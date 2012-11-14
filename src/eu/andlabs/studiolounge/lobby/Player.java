@@ -17,28 +17,42 @@ package eu.andlabs.studiolounge.lobby;
 
 public class Player {
 
-    private String playername;
-    private String hostedGame;
+	private String mPlayerName;
+	private String mHostedGame;
 
-    public Player(String playername) {
-        super();
-        this.playername = playername;
-    }
+	public Player(String playername) {
+		this.mPlayerName = playername;
+	}
 
-    public String getPlayername() {
-        return playername;
-    }
+	public String getPlayername() {
+		return this.mPlayerName;
+	}
 
-    public void setPlayername(String playername) {
-        this.playername = playername;
-    }
+	public void setPlayername(String playername) {
+		this.mPlayerName = playername;
+	}
 
-    public String getHostedGame() {
-        return hostedGame;
-    }
+	public String getHostedGame() {
+		return mHostedGame;
+	}
 
-    public void setHostedGame(String hostedGame) {
-        this.hostedGame = hostedGame;
-    }
+	public String getHostedGameName() {
+		final String[] split = this.mHostedGame.split("/");
+		if(split.length > 1) {
+			return split[1];
+		}
+		return "";
+	}
 
+	public String getHostedGamePackage() {
+		final String[] split = this.mHostedGame.split("/");
+		if(split.length > 0) {
+			return split[0];
+		}
+		return "";
+	}
+
+	public void setHostedGame(String hostedGame) {
+		this.mHostedGame = hostedGame;
+	}
 }

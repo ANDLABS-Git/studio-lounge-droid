@@ -36,6 +36,7 @@ public class LoungeActivity extends FragmentActivity implements
 	private ImageView mChatIcon;
 	private ImageView mStatsIcon;
 	private ImageView mAboutIcon;
+	private String mName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +56,13 @@ public class LoungeActivity extends FragmentActivity implements
 		mStatsIcon = (ImageView) findViewById(R.id.ic_tab_stat);
 		mAboutIcon = (ImageView) findViewById(R.id.ic_tab_about);
 
-		//TODO: Use to init lounge.
-		String userId = LoginManager.getInstance(this).getUserId();
+		 mName = LoginManager.getInstance(this).getUserId();
 	}
 
 	@Override
 	protected void onStart() {
 		Log.d("Lounge", "on START");
-		mLounge = GCPService.bind(this);
+		mLounge = GCPService.bind(this, mName);
 		super.onStart();
 	}
 
