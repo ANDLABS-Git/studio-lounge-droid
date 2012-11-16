@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import eu.andlabs.studiolounge.LoungeConstants;
 
@@ -29,16 +30,20 @@ public class Utils implements LoungeConstants {
 
 	private static ResolveInfo getInstalledGameInfo(Context context, String packageName) {
 		final PackageManager pm = context.getPackageManager();
-		final Intent intent = new Intent();
-		intent.addCategory(CATEGORY);
-		List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
-		
-		for (ResolveInfo info : list) {
-			if (info.activityInfo.packageName.equalsIgnoreCase(packageName)) {
-				return info;
-			}
+		final Intent intent = pm.getLaunchIntentForPackage(packageName);
+		if(intent == null) {
+			return null;
 		}
-		return null;
+		return pm.queryIntentActivities(intent, 0).get(0);
+	}
+	
+	static Drawable getGameIcon(Context context, String packageName) {
+		ResolveInfo info = getInstalledGameInfo(context, packageName);
+		if(info == null) {
+			return null;
+		} else {
+			return info.loadIcon(context.getPackageManager());
+		}
 	}
 	
 	static void openPlay(Context context, String packageName) {

@@ -49,7 +49,7 @@ public class Player implements LoungeConstants {
 
 	public String getHostedGameName() {
 		if (this.mHostedGame == null) {
-			return null;
+			return "";
 		}
 		final String[] split = this.mHostedGame
 				.split(PACKAGE_APPNAME_SEPERATOR);
@@ -67,7 +67,7 @@ public class Player implements LoungeConstants {
 	public String getHostedGamePackage() {
 
 		if (this.mHostedGame == null) {
-			return null;
+			return "";
 		}
 		final String[] split = this.mHostedGame
 				.split(PACKAGE_APPNAME_SEPERATOR);
