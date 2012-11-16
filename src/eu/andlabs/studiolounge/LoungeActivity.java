@@ -23,6 +23,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.lobby.LoginManager;
@@ -38,6 +39,7 @@ public class LoungeActivity extends FragmentActivity implements
 	private ImageView mStatsIcon;
 	private ImageView mAboutIcon;
 	private String mName;
+    private TextView sectionLabel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +59,15 @@ public class LoungeActivity extends FragmentActivity implements
 		mChatIcon = (ImageView) findViewById(R.id.ic_tab_chat);
 		mStatsIcon = (ImageView) findViewById(R.id.ic_tab_stat);
 		mAboutIcon = (ImageView) findViewById(R.id.ic_tab_about);
+		sectionLabel=(TextView)findViewById(R.id.sectionlabel);
 
-		 mName = LoginManager.getInstance(this).getUserId();
+		
 	}
 
 	@Override
 	protected void onStart() {
 		Log.d("Lounge", "on START");
-		mLounge = GCPService.bind(this, mName);
+		mLounge = GCPService.bind(this);
 		super.onStart();
 	}
 
@@ -96,6 +99,7 @@ public class LoungeActivity extends FragmentActivity implements
 			mChatIcon.setAlpha(ALPHA_OFF);
 			mStatsIcon.setAlpha(ALPHA_OFF);
 			mAboutIcon.setAlpha(ALPHA_OFF);
+			sectionLabel.setText("Lobby");
 			break;
 
 		case 1:
@@ -103,7 +107,7 @@ public class LoungeActivity extends FragmentActivity implements
 			mChatIcon.setAlpha(1.0f);
 			mStatsIcon.setAlpha(ALPHA_OFF);
 			mAboutIcon.setAlpha(ALPHA_OFF);
-
+			sectionLabel.setText("Chat");
 			break;
 
 		case 2:
@@ -111,7 +115,7 @@ public class LoungeActivity extends FragmentActivity implements
 			mChatIcon.setAlpha(ALPHA_OFF);
 			mStatsIcon.setAlpha(1.0f);
 			mAboutIcon.setAlpha(ALPHA_OFF);
-
+			sectionLabel.setText("Statistics");
 			break;
 
 		case 3:
@@ -119,7 +123,7 @@ public class LoungeActivity extends FragmentActivity implements
 			mChatIcon.setAlpha(ALPHA_OFF);
 			mStatsIcon.setAlpha(ALPHA_OFF);
 			mAboutIcon.setAlpha(1.0f);
-
+			sectionLabel.setText("About");
 			break;
 
 		default:

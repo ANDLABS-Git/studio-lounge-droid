@@ -26,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import eu.andlabs.studiolounge.lobby.LoginManager;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -58,11 +60,10 @@ import android.widget.Toast;
  */
 public class GCPService extends Service {
 
-	public static Lounge bind(Context ctx) {
-		return bind(ctx);
-	}
 
-	public static Lounge bind(Context ctx, String name) {
+
+	public static Lounge bind(Context ctx) {
+	    String name = LoginManager.getInstance(ctx).getUserId();
 		Lounge lounge = new Lounge(ctx);
 		Intent intent = new Intent(ctx, GCPService.class);
 		intent.putExtra("packageName", ctx.getPackageName());

@@ -25,8 +25,7 @@ public class LobbyAdapter extends BaseAdapter {
 
     public LobbyAdapter(LobbyFragment lobbyFragment) {
         this.lobbyFragment = lobbyFragment;
-        mOwnID = LoginManager.getInstance(lobbyFragment.getContext())
-                .getUserId();
+        mOwnID = LoginManager.getInstance(lobbyFragment.getContext()).getUserId();
     }
 
     public List<Player> getPlayerList() {
@@ -41,37 +40,39 @@ public class LobbyAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         View v = view;
-        final LayoutInflater inflater = (LayoutInflater) lobbyFragment
-                .getContext()
+        final LayoutInflater inflater = (LayoutInflater) lobbyFragment.getContext()
 
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (view == null) {
             v = inflater.inflate(R.layout.lobby_list_entry, null);
         }
-
+        v.setClickable(false);
         final TextView playerLabel = (TextView) v.findViewById(R.id.playername);
         final Player player = mPlayers.get(position);
         playerLabel.setText(player.getShortPlayername());
         View join = v.findViewById(R.id.join_btn_area);
+        // Log.i("Players",
+        // player.getShortPlayername() + " - "
+        // + player.getHostedGamePackage());
         if (player.getHostedGame() != null) {
-            ((TextView) v.findViewById(R.id.gamename)).setText(player
-                    .getHostedGamePackage());
+            ((TextView) v.findViewById(R.id.gamename)).setText(player.getHostedGamePackage());
             join.setVisibility(View.VISIBLE);
             if (player.getPlayername().equalsIgnoreCase(mOwnID)) {
+                Log.i("Players", player.getShortPlayername() + "  Own ID: " + mOwnID);
                 join.setAlpha(0.5f);
                 join.setEnabled(false);
             }
-            Log.i("debug", "show login btn: " + player.getShortPlayername()
-                    + " #" + player.getHostedGame());
+            Log.i("debug",
+                    "show login btn: " + player.getShortPlayername() + " #"
+                            + player.getHostedGame());
             join.setOnClickListener(new OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    ((LoungeActivity) lobbyFragment.getContext()).getLounge()
-                            .joinGame(player.getPlayername(),
-                                    player.getHostedGame());
-                    lobbyFragment.launchGameApp(player.getHostedGame());
+                    ((LoungeActivity) lobbyFragment.getContext()).getLounge().joinGame(
+                            player.getPlayername(), player.getHostedGame());
+                    lobbyFragment.launchGameApp(player.getHostedGamePackage(),200);
                 }
             });
         } else {

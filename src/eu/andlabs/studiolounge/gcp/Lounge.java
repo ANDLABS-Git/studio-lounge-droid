@@ -131,6 +131,7 @@ public class Lounge implements ServiceConnection {
         @Override
         public void handleMessage(Message msg) {
             ChatMessage message;
+            Log.i("GCP","Handler Code: "+msg.what);
             switch (msg.what) {
             case GCPService.LOGIN:
                 Log.d(TAG, mLobbyListener+" Lounge on LOGIN " + msg.obj);
@@ -276,6 +277,7 @@ public class Lounge implements ServiceConnection {
     }
 
     public void joinGame(String hostplayer, String gamepackage) {
+        Log.i("Players","Join game "+hostplayer + " "+gamepackage); 
         Bundle b = new Bundle();
         b.putString("host", hostplayer);
         b.putString("game", gamepackage);

@@ -55,10 +55,12 @@ public class Player {
 	}
 
 	public String getHostedGamePackage() {
+	    if(mHostedGame!=null){
 		final String[] split = this.mHostedGame.split("/");
 		if(split.length > 0) {
 			return split[0];
 		}
+	    }
 		return "";
 	}
 

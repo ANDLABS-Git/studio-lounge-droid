@@ -134,23 +134,25 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         player.setHostedGame(game);
 
         if (!player.getPlayername().equals(GCPService.mName)) {
-            launchGameApp(player.getHostedGamePackage());
+            launchGameApp(player.getHostedGamePackage(),100);
+            Log.i("debug", " player joined"+playerName + " .. "+game);
         }
     }
 
-    void launchGameApp(String pkgName) {
+    void launchGameApp(String pkgName,int isHost) {
         PackageManager pm = getActivity().getPackageManager();
-        Intent i = new Intent();
-        i.addCategory(CATEGORY);
-        List<ResolveInfo> list = pm.queryIntentActivities(i, 0);
-        Log.i("debug", "Packge Name " + pkgName);
+        final Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(CATEGORY);
+        List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
+        Log.i("pkg",list.size()+ " size");
         for (ResolveInfo info : list) {
             Intent launch = new Intent();
+            Log.i("pkg",info.activityInfo.packageName+ " Packge Name " + pkgName);
             if (info.activityInfo.packageName.equalsIgnoreCase(pkgName)) {
                 Log.i("debug", "Packge Match found");
                 launch.setComponent(new ComponentName(
                         info.activityInfo.packageName, info.activityInfo.name));
-
+                launch.putExtra("HOST", isHost);
                 startActivity(launch);
             }
         }
