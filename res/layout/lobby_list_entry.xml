@@ -62,7 +62,7 @@
         android:textSize="27dp" />
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="40dp"
-        android:text="Waiting in Lobby..." />
+        android:text="@string/waiting_in_lobby" />
 
     <LinearLayout
         android:layout_width="match_parent"

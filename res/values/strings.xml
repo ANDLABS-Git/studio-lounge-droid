@@ -21,5 +21,7 @@
     <string name="opengames">OPEN GAMES</string>
     <string name="practise">Practise</string>
     <string name="points">Points</string>
+    <string name="host_game">Host Game</string>
+    <string name="waiting_in_lobby">Waiting in Lobby...</string>
 
 </resources>

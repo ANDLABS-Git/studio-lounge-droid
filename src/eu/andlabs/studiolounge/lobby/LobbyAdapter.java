@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import eu.andlabs.studiolounge.LoungeActivity;
 import eu.andlabs.studiolounge.Player;
@@ -48,7 +49,7 @@ public class LobbyAdapter extends BaseAdapter {
 				.findViewById(R.id.playername);
 		final Player player = mPlayers.get(position);
 		playerLabel.setText(player.getShortPlayername());
-
+		
 		final View join = view.findViewById(R.id.join_btn_area);
 		if (player.getHostedGame() != null) {
 			((TextView) view.findViewById(R.id.gamename)).setText(player
@@ -78,7 +79,15 @@ public class LobbyAdapter extends BaseAdapter {
 					}
 				}
 			});
+			
+			final ImageView icon = (ImageView) view.findViewById(R.id.icon);
+			Drawable drawable = Utils.getGameIcon(this.mContext, player.getHostedGamePackage());
+			if(drawable == null) {
+				drawable = this.mContext.getResources().getDrawable(R.drawable.ic_play);
+			}
+			icon.setImageDrawable(drawable);
 		} else {
+			// Remove the join stuff
 		}
 		return view;
 	}
