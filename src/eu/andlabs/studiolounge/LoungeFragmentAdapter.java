@@ -15,14 +15,14 @@
  */
 package eu.andlabs.studiolounge;
 
-import eu.andlabs.studiolounge.about.AboutFragment;
-import eu.andlabs.studiolounge.chat.ChatFragment;
-import eu.andlabs.studiolounge.lobby.LobbyFragment;
-import eu.andlabs.studiolounge.statistic.StatisticFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.util.Log;
+import eu.andlabs.studiolounge.about.AboutFragment;
+import eu.andlabs.studiolounge.chat.ChatFragment;
+import eu.andlabs.studiolounge.lobby.LobbyFragment;
+import eu.andlabs.studiolounge.statistic.StatisticFragment;
 
 public class LoungeFragmentAdapter extends FragmentStatePagerAdapter {
 

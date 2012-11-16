@@ -15,7 +15,6 @@
  */
 package eu.andlabs.studiolounge;
 
-import android.util.Log;
 
 public class Player implements LoungeConstants {
 
