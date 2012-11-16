@@ -32,15 +32,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.andlabs.studiolounge.LoungeActivity;
+import eu.andlabs.studiolounge.Player;
 import eu.andlabs.studiolounge.R;
-import eu.andlabs.studiolounge.R.id;
-import eu.andlabs.studiolounge.R.layout;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
 public class ChatFragment extends Fragment implements ChatListener,
         OnClickListener {
-    ArrayList<ChatMessage> mConversation = new ArrayList<ChatMessage>();
+    private ArrayList<ChatMessage> mConversation = new ArrayList<ChatMessage>();
     private EditText mChatEditText;
 
     static ChatFragment newInstance(int num) {
@@ -50,14 +49,12 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("THIS", "on create chat fragment");
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
 
     @Override
     public void onStart() {
-        Log.i("Lounge", "ChatFragment on START");
         ((LoungeActivity) getActivity()).getLounge().register(this);
         mConversation.clear();
         super.onStart();
@@ -65,7 +62,6 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public View onCreateView(final LayoutInflater infl, ViewGroup p, Bundle b) {
-        Log.d("THIS", "on create view");
         final View chat = infl.inflate(R.layout.chat, p, false);
         mChatEditText = ((EditText) chat.findViewById(R.id.msg_field));
         ((ImageButton) chat.findViewById(R.id.btn_msgSend))
@@ -80,8 +76,9 @@ public class ChatFragment extends Fragment implements ChatListener,
             public View getView(int position, View view, ViewGroup parent) {
                 if (view == null)
                     view = infl.inflate(R.layout.chat_list_entry, null);
-                ChatMessage msg = mConversation.get(position);
-                ((TextView) view.findViewById(R.id.sender)).setText(msg.player);
+                final ChatMessage msg = mConversation.get(position);
+                final Player player = new Player(msg.player);
+                ((TextView) view.findViewById(R.id.sender)).setText(player.getShortPlayername());
                 ((TextView) view.findViewById(R.id.msg_text)).setText(msg.text);
                 return view;
             }
@@ -137,7 +134,6 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public void onDestroyView() {
-        Log.d("THIS", "on destroy view chat fragment");
         super.onDestroyView();
     }
 }

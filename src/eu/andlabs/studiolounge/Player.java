@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.andlabs.studiolounge.lobby;
+package eu.andlabs.studiolounge;
 
-import android.util.Log;
 
-public class Player {
+public class Player implements LoungeConstants {
 
 	private String mPlayerName;
 	private String mHostedGame;
@@ -27,12 +26,14 @@ public class Player {
 	}
 
 	public String getPlayername() {
-		
+
 		return this.mPlayerName;
 	}
-	
+
 	public String getShortPlayername() {
-		 if (this.mPlayerName.contains("@")) {
+		if (this.mPlayerName.contains(".")) {
+			return mPlayerName.split("\\.")[0]; // Because split expects a regex
+		} else if (this.mPlayerName.contains("@")) {
 			return mPlayerName.split("@")[0];
 		}
 		return this.mPlayerName;
@@ -47,19 +48,32 @@ public class Player {
 	}
 
 	public String getHostedGameName() {
-		final String[] split = this.mHostedGame.split("/");
-		if(split.length > 1) {
-			return split[1];
+		if (this.mHostedGame == null) {
+			return null;
+		}
+		final String[] split = this.mHostedGame
+				.split(PACKAGE_APPNAME_SEPERATOR);
+		if (split.length > 1) {
+			String[] split2 = split[1].split(".");
+			if (split2.length > 1) {
+				return split2[split2.length - 1];
+			} else {
+				return split[1];
+			}
 		}
 		return "";
 	}
 
 	public String getHostedGamePackage() {
-	    if(mHostedGame!=null){
-		final String[] split = this.mHostedGame.split("/");
-		if(split.length > 0) {
-			return split[0];
+
+		if (this.mHostedGame == null) {
+			return null;
 		}
+		final String[] split = this.mHostedGame
+				.split(PACKAGE_APPNAME_SEPERATOR);
+		if (split.length > 0) {
+			return split[0];
+		
 	    }
 		return "";
 	}

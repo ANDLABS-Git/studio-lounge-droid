@@ -2,92 +2,97 @@ package eu.andlabs.studiolounge.lobby;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
-import eu.andlabs.studiolounge.LoungeActivity;
-import eu.andlabs.studiolounge.R;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import eu.andlabs.studiolounge.LoungeActivity;
+import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Player;
+import eu.andlabs.studiolounge.R;
 
 public class LobbyAdapter extends BaseAdapter {
 
-    private ArrayList<Player> mPlayers = new ArrayList<Player>();
-    private LobbyFragment lobbyFragment;
-    private String mOwnID;
 
-    public LobbyAdapter(LobbyFragment lobbyFragment) {
-        this.lobbyFragment = lobbyFragment;
-        mOwnID = LoginManager.getInstance(lobbyFragment.getContext()).getUserId();
-    }
+	private ArrayList<Player> mPlayers = new ArrayList<Player>();
+	private Context mContext;
+	private String mOwnID;
 
-    public List<Player> getPlayerList() {
-        return mPlayers;
-    }
+	public LobbyAdapter(Context context) {
+		this.mContext = context;
+		this.mOwnID = LoginManager.getInstance(this.mContext).getUserId();
+	}
 
-    @Override
-    public int getCount() {
-        return mPlayers.size();
-    }
+	public List<Player> getPlayerList() {
+		return this.mPlayers;
+	}
 
-    @Override
-    public View getView(final int position, View view, ViewGroup parent) {
-        View v = view;
-        final LayoutInflater inflater = (LayoutInflater) lobbyFragment.getContext()
+	@Override
+	public int getCount() {
+		return this.mPlayers.size();
+	}
 
-        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	@Override
+	public View getView(final int position, View convertView, ViewGroup parent) {
+		View view = convertView;
+		final LayoutInflater inflater = LayoutInflater.from(this.mContext);
 
-        if (view == null) {
-            v = inflater.inflate(R.layout.lobby_list_entry, null);
-        }
-        v.setClickable(false);
-        final TextView playerLabel = (TextView) v.findViewById(R.id.playername);
-        final Player player = mPlayers.get(position);
-        playerLabel.setText(player.getShortPlayername());
-        View join = v.findViewById(R.id.join_btn_area);
-        // Log.i("Players",
-        // player.getShortPlayername() + " - "
-        // + player.getHostedGamePackage());
-        if (player.getHostedGame() != null) {
-            ((TextView) v.findViewById(R.id.gamename)).setText(player.getHostedGamePackage());
-            join.setVisibility(View.VISIBLE);
-            if (player.getPlayername().equalsIgnoreCase(mOwnID)) {
-                Log.i("Players", player.getShortPlayername() + "  Own ID: " + mOwnID);
-                join.setAlpha(0.5f);
-                join.setEnabled(false);
-            }
-            Log.i("debug",
-                    "show login btn: " + player.getShortPlayername() + " #"
-                            + player.getHostedGame());
-            join.setOnClickListener(new OnClickListener() {
+		if (view == null) {
+			view = inflater.inflate(R.layout.lobby_list_entry, null);
+		}
 
-                @Override
-                public void onClick(View v) {
-                    ((LoungeActivity) lobbyFragment.getContext()).getLounge().joinGame(
-                            player.getPlayername(), player.getHostedGame());
-                    lobbyFragment.launchGameApp(player.getHostedGamePackage(),200);
-                }
-            });
-        } else {
-        }
-        return v;
-    }
+		final TextView playerLabel = (TextView) view
+				.findViewById(R.id.playername);
+		final Player player = mPlayers.get(position);
+		playerLabel.setText(player.getShortPlayername());
 
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
+		final View join = view.findViewById(R.id.join_btn_area);
+		if (player.getHostedGame() != null) {
+			((TextView) view.findViewById(R.id.gamename)).setText(player
+					.getHostedGameName());
+			join.setVisibility(View.VISIBLE);
 
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
+			if (player.getPlayername().equalsIgnoreCase(mOwnID)) {
+				join.setAlpha(0.5f);
+				join.setEnabled(false);
+			}
+
+			join.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					if (Utils.isGameInstalled(LobbyAdapter.this.mContext, player.getHostedGamePackage())) {
+						((LoungeActivity) LobbyAdapter.this.mContext)
+								.getLounge().joinGame(player.getPlayername(),
+										player.getHostedGame());
+
+						// TODO: needs to be triggered when the min of players
+						// is reached, not by default (postponed to GCP 0.4)
+						Utils.launchGameApp(LobbyAdapter.this.mContext,
+								player.getHostedGame(),LoungeConstants.GUEST_FLAG);
+					} else {
+						Utils.openPlay(LobbyAdapter.this.mContext, player.getHostedGamePackage());
+					}
+				}
+			});
+		} else {
+		}
+		return view;
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return 0;
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return null;
+	}
 
 }

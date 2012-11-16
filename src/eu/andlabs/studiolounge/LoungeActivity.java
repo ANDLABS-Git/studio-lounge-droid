@@ -15,7 +15,6 @@
  */
 package eu.andlabs.studiolounge;
 
-import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -129,10 +128,6 @@ public class LoungeActivity extends FragmentActivity implements
 		default:
 			break;
 		}
-	}
-	
-	public void hostGame(ComponentName hostComponent) {
-		this.mLounge.hostGame(hostComponent);
 	}
 	
 	public Lounge getLounge() {
