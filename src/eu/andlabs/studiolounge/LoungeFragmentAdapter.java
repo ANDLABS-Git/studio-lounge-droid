@@ -15,9 +15,9 @@
  */
 package eu.andlabs.studiolounge;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 import eu.andlabs.studiolounge.about.AboutFragment;
 import eu.andlabs.studiolounge.chat.ChatFragment;
@@ -82,8 +82,6 @@ public class LoungeFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return NUM_PAGES;
     }
-
 }

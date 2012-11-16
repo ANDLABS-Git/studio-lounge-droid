@@ -15,12 +15,10 @@
  */
 package eu.andlabs.studiolounge.lobby;
 
-import android.animation.AnimatorSet;
-import android.app.Fragment;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +44,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     private ListView lobbyList;
     private ImageView pulseBeacon;
     private ImageView staticBeacon;
-    private AnimatorSet scaleDown;
+//    private AnimatorSet scaleDown;
     private ListView mHostList;
     private HostGameAdapter mAdapter;
     private  LobbyAdapter lobbyAdapter;
@@ -145,9 +143,9 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     }
 
     private void stopAnimatingHostMode() {
-        if (scaleDown != null) {
-            scaleDown.cancel();
-        }
+//        if (scaleDown != null) {
+//            scaleDown.cancel();
+//        }
         pulseBeacon.setVisibility(View.INVISIBLE);
         staticBeacon.setVisibility(View.VISIBLE);
     }

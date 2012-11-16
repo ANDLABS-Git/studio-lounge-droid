@@ -31,12 +31,15 @@ public class Player implements LoungeConstants {
 	}
 
 	public String getShortPlayername() {
-		if (this.mPlayerName.contains(".")) {
-			return mPlayerName.split("\\.")[0]; // Because split expects a regex
-		} else if (this.mPlayerName.contains("@")) {
-			return mPlayerName.split("@")[0];
-		}
-		return this.mPlayerName;
+	    String shortName = this.mPlayerName;
+	 
+	    if (this.mPlayerName.contains("@")) {
+            shortName = shortName.split("@")[0];
+        }
+		if (shortName.contains(".")) {
+			shortName = shortName.split("\\.")[0]; // Because split expects a regex
+		} 
+		return shortName;
 	}
 
 	public void setPlayername(String playername) {

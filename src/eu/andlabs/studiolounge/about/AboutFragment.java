@@ -17,8 +17,8 @@ package eu.andlabs.studiolounge.about;
 
 import java.util.ArrayList;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import eu.andlabs.studiolounge.LoungeActivity;
 import eu.andlabs.studiolounge.R;
-import eu.andlabs.studiolounge.R.layout;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 

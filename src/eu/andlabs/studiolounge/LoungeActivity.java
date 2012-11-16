@@ -25,11 +25,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
-import eu.andlabs.studiolounge.lobby.LoginManager;
 
 public class LoungeActivity extends FragmentActivity implements
 		OnPageChangeListener {
-	private static final float ALPHA_OFF = 0.3f;
+	private static final int ALPHA_OFF = (int) (255 * 0.3f);
 	private ViewPager mViewPager;
 	private Lounge mLounge;
 	private LoungeFragmentAdapter mAdapter;
@@ -49,10 +48,9 @@ public class LoungeActivity extends FragmentActivity implements
 		setContentView(R.layout.main_pager);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mAdapter = new LoungeFragmentAdapter(getFragmentManager());
+		mAdapter = new LoungeFragmentAdapter(getSupportFragmentManager());
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(this);
-		mViewPager.setOverScrollMode(ViewPager.OVER_SCROLL_ALWAYS);
 		mViewPager.setOffscreenPageLimit(5);
 		mLobbyIcon = (ImageView) findViewById(R.id.ic_tab_lobby);
 		mChatIcon = (ImageView) findViewById(R.id.ic_tab_chat);
@@ -60,7 +58,7 @@ public class LoungeActivity extends FragmentActivity implements
 		mAboutIcon = (ImageView) findViewById(R.id.ic_tab_about);
 		sectionLabel=(TextView)findViewById(R.id.sectionlabel);
 
-		
+		onPageSelected(0);
 	}
 
 	@Override
@@ -94,7 +92,7 @@ public class LoungeActivity extends FragmentActivity implements
 	public void onPageSelected(int position) {
 		switch (position) {
 		case 0:
-			mLobbyIcon.setAlpha(1.0f);
+			mLobbyIcon.setAlpha(255);
 			mChatIcon.setAlpha(ALPHA_OFF);
 			mStatsIcon.setAlpha(ALPHA_OFF);
 			mAboutIcon.setAlpha(ALPHA_OFF);
@@ -103,7 +101,7 @@ public class LoungeActivity extends FragmentActivity implements
 
 		case 1:
 			mLobbyIcon.setAlpha(ALPHA_OFF);
-			mChatIcon.setAlpha(1.0f);
+			mChatIcon.setAlpha(255);
 			mStatsIcon.setAlpha(ALPHA_OFF);
 			mAboutIcon.setAlpha(ALPHA_OFF);
 			sectionLabel.setText("Chat");
@@ -112,7 +110,7 @@ public class LoungeActivity extends FragmentActivity implements
 		case 2:
 			mLobbyIcon.setAlpha(ALPHA_OFF);
 			mChatIcon.setAlpha(ALPHA_OFF);
-			mStatsIcon.setAlpha(1.0f);
+			mStatsIcon.setAlpha(255);
 			mAboutIcon.setAlpha(ALPHA_OFF);
 			sectionLabel.setText("Statistics");
 			break;
@@ -121,7 +119,7 @@ public class LoungeActivity extends FragmentActivity implements
 			mLobbyIcon.setAlpha(ALPHA_OFF);
 			mChatIcon.setAlpha(ALPHA_OFF);
 			mStatsIcon.setAlpha(ALPHA_OFF);
-			mAboutIcon.setAlpha(1.0f);
+			mAboutIcon.setAlpha(255);
 			sectionLabel.setText("About");
 			break;
 
