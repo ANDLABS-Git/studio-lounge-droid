@@ -88,12 +88,13 @@ public class HostGameAdapter extends BaseAdapter implements LoungeConstants,
 		this.mSelectedItem = position;
 	}
 
-	public ComponentName getSelectedItemPackage() {
-		if(this.mSelectedItem == -1) {
+	public String getSelectedItemPackage() {
+		if (this.mSelectedItem == -1) {
 			return null;
 		}
+		
 		final ResolveInfo info = this.mContent.get(this.mSelectedItem);
-		return new ComponentName(
-				info.activityInfo.packageName, info.activityInfo.name);
+		return info.activityInfo.packageName + "/"
+				+ info.loadLabel(this.mPackageManager);
 	}
 }

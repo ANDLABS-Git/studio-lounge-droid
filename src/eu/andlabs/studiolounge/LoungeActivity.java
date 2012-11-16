@@ -127,10 +127,6 @@ public class LoungeActivity extends FragmentActivity implements
 		}
 	}
 	
-	public void hostGame(ComponentName hostComponent) {
-		this.mLounge.hostGame(hostComponent);
-	}
-	
 	public Lounge getLounge() {
 		return mLounge;
 	}

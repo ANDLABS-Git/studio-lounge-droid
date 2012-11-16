@@ -15,17 +15,11 @@
  */
 package eu.andlabs.studiolounge.lobby;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.animation.AnimatorSet;
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,17 +29,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import eu.andlabs.studiolounge.LoungeActivity;
 import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Player;
 import eu.andlabs.studiolounge.R;
 import eu.andlabs.studiolounge.gcp.GCPService;
+import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 
 public class LobbyFragment extends Fragment implements LobbyListener,
@@ -58,19 +50,22 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     private ListView mHostList;
     private HostGameAdapter mAdapter;
     private  LobbyAdapter lobbyAdapter;
+    private Lounge mLounge;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i("Lounge", "LobbyFragment on CREATE");
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        
+        this.mLounge = ((LoungeActivity) getActivity()).getLounge();
 
     }
 
     @Override
     public void onStart() {
         Log.i("Lounge", "LobbyFragment on START");
-        ((LoungeActivity) getActivity()).getLounge().register(this);
+        this.mLounge.register(this);
         lobbyAdapter.getPlayerList().clear();
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -94,7 +89,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 
         lobby.findViewById(R.id.btn_host).setOnClickListener(this);
         lobby.findViewById(R.id.btn_practise).setOnClickListener(this);
-        lobbyAdapter = new LobbyAdapter(this);
+        lobbyAdapter = new LobbyAdapter(getContext());
         ((ListView) lobby.findViewById(R.id.list)).setAdapter(lobbyAdapter);
         lobbyList = (ListView) lobby.findViewById(R.id.list);
         return lobby;
@@ -134,31 +129,13 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         player.setHostedGame(game);
 
         if (!player.getPlayername().equals(GCPService.mName)) {
-            launchGameApp(player.getHostedGamePackage());
-        }
-    }
-
-    void launchGameApp(String pkgName) {
-        PackageManager pm = getActivity().getPackageManager();
-        Intent i = new Intent();
-        i.addCategory(CATEGORY);
-        List<ResolveInfo> list = pm.queryIntentActivities(i, 0);
-        Log.i("debug", "Packge Name " + pkgName);
-        for (ResolveInfo info : list) {
-            Intent launch = new Intent();
-            if (info.activityInfo.packageName.equalsIgnoreCase(pkgName)) {
-                Log.i("debug", "Packge Match found");
-                launch.setComponent(new ComponentName(
-                        info.activityInfo.packageName, info.activityInfo.name));
-
-                startActivity(launch);
-            }
+            Utils.launchGameApp(getContext(), player.getHostedGamePackage());
         }
     }
 
     @Override
     public void onStop() {
-        ((LoungeActivity) getActivity()).getLounge().unregister(this);
+        this.mLounge.unregister(this);
         super.onStop();
     }
 
@@ -209,18 +186,17 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 
     @Override
     public void onClick(View v) {
-        final ComponentName launchComponent = this.mAdapter
+        final String launchString = this.mAdapter
                 .getSelectedItemPackage();
-        if (launchComponent != null) { // haz package
+        if (launchString != null) { // haz package
             if (v.getId() == R.id.btn_host) {
-                // TODO: Use an interface
-                ((LoungeActivity) getActivity()).hostGame(launchComponent);
+                this.mLounge.hostGame(launchString);
                 animateHostMode();
             }
             if (v.getId() == R.id.btn_practise) {
                 final Intent intent = getActivity().getPackageManager()
                         .getLaunchIntentForPackage(
-                                launchComponent.getPackageName());
+                        		launchString.split(PACKAGE_APPNAME_SEPERATOR)[0]);
                 startActivity(intent);
             }
         } else {
