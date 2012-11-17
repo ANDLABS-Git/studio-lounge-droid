@@ -160,6 +160,7 @@ public class Lounge implements ServiceConnection {
             case GCPService.HOST:
                 Log.d(TAG, "Lounge on HOST " + msg.obj);
                 b = (Bundle) msg.obj;
+                if(!mPlayers.isEmpty()){
                 Player p = mPlayers.get(mPlayers.indexOf(new Player(b.getString("host"))));
                 p.setHostedGame(b.getString("game"));
                 p.joined = b.getInt("joined");
@@ -170,6 +171,10 @@ public class Lounge implements ServiceConnection {
                     mLobbyListener.onNewHostedGame(b.getString("game"));
                     
                 }
+                }else{
+                    Log.i("GCP-Service","Player Array is empty in   case GCPService.HOST:");
+                }
+                
                 break;
             case GCPService.UNHOST:
                 b = (Bundle) msg.obj;
@@ -184,6 +189,7 @@ public class Lounge implements ServiceConnection {
             case GCPService.JOIN:
                 b = (Bundle) msg.obj;
                 String game = b.getString("game");
+                Log.i("Lobby", "player joined "+game);
                 if (!game.equals(myGame) && mLobbyListener != null) {
                     mLobbyListener.onPlayerJoined(b.getString("guest"), game);
                 }
@@ -195,7 +201,7 @@ public class Lounge implements ServiceConnection {
                 }
                 break;
             case GCPService.LEAVE:
-                mLobbyListener.onPlayerLeft(msg.obj.toString());
+                mLobbyListener.onPlayerLeft(msg.obj.toString()); 
                 break;
             }
         }

@@ -17,8 +17,8 @@ public class Utils implements LoungeConstants {
         final ResolveInfo info = getInstalledGameInfo(context, packageName);
         if (info != null) {
             final Intent intent = new Intent();
-            intent.setComponent(new ComponentName(
-                    info.activityInfo.packageName, info.activityInfo.name));
+            intent.setComponent(new ComponentName(info.activityInfo.packageName,
+                    info.activityInfo.name));
             intent.putExtra("HOST", isHost);
             context.startActivity(intent);
         }
@@ -28,16 +28,21 @@ public class Utils implements LoungeConstants {
         return getInstalledGameInfo(context, packageName) != null;
     }
 
-    private static ResolveInfo getInstalledGameInfo(Context context,
-            String packageName) {
+    private static ResolveInfo getInstalledGameInfo(Context context, String packageName) {
         final PackageManager pm = context.getPackageManager();
         // final Intent intent = pm.getLaunchIntentForPackage(packageName);
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory("eu.andlabs.lounge");
-        if (intent == null) {
-            return null;
+
+        List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
+
+        for (ResolveInfo info : list) {
+            if (info.activityInfo.packageName.equalsIgnoreCase(packageName)) {
+                return info;
+            }
         }
-        return pm.queryIntentActivities(intent, 0).get(0);
+        return null;
+
     }
 
     static Drawable getGameIcon(Context context, String packageName) {
@@ -51,9 +56,7 @@ public class Utils implements LoungeConstants {
 
     static void openPlay(Context context, String packageName) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri
-                .parse("http://play.google.com/store/apps/details?id="
-                        + packageName));
+        intent.setData(Uri.parse("http://play.google.com/store/apps/details?id=" + packageName));
 
         context.startActivity(intent);
     }

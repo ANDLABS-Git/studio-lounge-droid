@@ -21,6 +21,7 @@ import io.socket.SocketIO;
 import io.socket.SocketIOException;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -136,7 +137,7 @@ public class GCPService extends Service {
 
                 @Override
                 public void on(String type, IOAcknowledge ack, Object... data) {
-                    // log("incoming message:" + type + " --- " + data);
+                     log("incoming message:" + type + " --- " + data);
                     try {
                         if (type.equals("login")) {
                             loggedIn = true;
@@ -188,9 +189,9 @@ public class GCPService extends Service {
                                     .hasNext();) {
                                 String key = i.next();
                                 b.putString(key, json.getString(key));
-                                // Log.i("json",
-                                // "converting -  key:"+key +
-                                // "  /  Value: "+json.getString(key));
+                                 Log.i("json",
+                                 "converting -  key:"+key +
+                                 "  /  Value: "+json.getString(key));
                             }
                             dispatchMessage(CUSTOM, b);
                         } else if (type.equals("unhost")) {
@@ -291,9 +292,11 @@ public class GCPService extends Service {
                     case CUSTOM:
                         Bundle b = (Bundle) msg.obj;
                         json.put("who", mName);
-                        json.put("color", b.getString("color"));
-                        json.put("x", b.getLong("x"));
-                        json.put("y", b.getLong("y"));
+                        Set<String> keys = b.keySet();
+                        for (String key : keys) {
+                            json.put(key, b.get(key));
+                            Log.i("json",key + " : "+b.getByte(key));
+                        }
                         mSocketIO.emit("move", json);
                         break;
                     }
