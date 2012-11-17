@@ -40,6 +40,7 @@ public class AboutFragment extends Fragment implements ChatListener,
         return f;
     }
 
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("THIS", "on create chat fragment");

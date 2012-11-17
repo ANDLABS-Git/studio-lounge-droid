@@ -27,108 +27,108 @@ import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
 
 public class LoungeActivity extends FragmentActivity implements
-		OnPageChangeListener {
-	private static final int ALPHA_OFF = (int) (255 * 0.3f);
-	private ViewPager mViewPager;
-	private Lounge mLounge;
-	private LoungeFragmentAdapter mAdapter;
-	private ImageView mLobbyIcon;
-	private ImageView mChatIcon;
-	private ImageView mStatsIcon;
-	private ImageView mAboutIcon;
-	private String mName;
+        OnPageChangeListener {
+    private static final int ALPHA_OFF = (int) (255 * 0.3f);
+    private ViewPager mViewPager;
+    private Lounge mLounge;
+    private LoungeFragmentAdapter mAdapter;
+    private ImageView mLobbyIcon;
+    private ImageView mChatIcon;
+    private ImageView mStatsIcon;
+    private ImageView mAboutIcon;
+    private String mName;
     private TextView sectionLabel;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		// mLounge = new Lounge(this);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // mLounge = new Lounge(this);
 
-		Log.i("Luc", "test");
-		setContentView(R.layout.main_pager);
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mAdapter = new LoungeFragmentAdapter(getSupportFragmentManager());
-		mViewPager.setAdapter(mAdapter);
-		mViewPager.setOnPageChangeListener(this);
-		mViewPager.setOffscreenPageLimit(5);
-		mLobbyIcon = (ImageView) findViewById(R.id.ic_tab_lobby);
-		mChatIcon = (ImageView) findViewById(R.id.ic_tab_chat);
-		mStatsIcon = (ImageView) findViewById(R.id.ic_tab_stat);
-		mAboutIcon = (ImageView) findViewById(R.id.ic_tab_about);
-		sectionLabel=(TextView)findViewById(R.id.sectionlabel);
+        Log.i("Luc", "test");
+        setContentView(R.layout.main_pager);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mAdapter = new LoungeFragmentAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setOnPageChangeListener(this);
+        mViewPager.setOffscreenPageLimit(5);
+        mLobbyIcon = (ImageView) findViewById(R.id.ic_tab_lobby);
+        mChatIcon = (ImageView) findViewById(R.id.ic_tab_chat);
+        mStatsIcon = (ImageView) findViewById(R.id.ic_tab_stat);
+        mAboutIcon = (ImageView) findViewById(R.id.ic_tab_about);
+        sectionLabel = (TextView) findViewById(R.id.sectionlabel);
 
-		onPageSelected(0);
-	}
+        onPageSelected(0);
+    }
 
-	@Override
-	protected void onStart() {
-		Log.d("Lounge", "on START");
-		mLounge = GCPService.bind(this);
-		super.onStart();
-	}
+    @Override
+    protected void onStart() {
+        Log.d("Lounge", "on START");
+        mLounge = GCPService.bind(this);
+        super.onStart();
+    }
 
-	@Override
-	protected void onStop() {
-		Log.d("Lounge", "on STOP");
-		GCPService.unbind(this, mLounge);
-		super.onStop();
-	}
+    @Override
+    protected void onStop() {
+        Log.d("Lounge", "on STOP");
+        GCPService.unbind(this, mLounge);
+        super.onStop();
+    }
 
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-	}
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
-	@Override
-	public void onPageScrollStateChanged(int arg0) {
-	}
+    @Override
+    public void onPageScrollStateChanged(int arg0) {
+    }
 
-	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2) {
-	}
+    @Override
+    public void onPageScrolled(int arg0, float arg1, int arg2) {
+    }
 
-	@Override
-	public void onPageSelected(int position) {
-		switch (position) {
-		case 0:
-			mLobbyIcon.setAlpha(255);
-			mChatIcon.setAlpha(ALPHA_OFF);
-			mStatsIcon.setAlpha(ALPHA_OFF);
-			mAboutIcon.setAlpha(ALPHA_OFF);
-			sectionLabel.setText("Lobby");
-			break;
+    @Override
+    public void onPageSelected(int position) {
+        switch (position) {
+        case 0:
+            mLobbyIcon.setAlpha(255);
+            mChatIcon.setAlpha(ALPHA_OFF);
+            mStatsIcon.setAlpha(ALPHA_OFF);
+            mAboutIcon.setAlpha(ALPHA_OFF);
+            sectionLabel.setText("Lobby");
+            break;
 
-		case 1:
-			mLobbyIcon.setAlpha(ALPHA_OFF);
-			mChatIcon.setAlpha(255);
-			mStatsIcon.setAlpha(ALPHA_OFF);
-			mAboutIcon.setAlpha(ALPHA_OFF);
-			sectionLabel.setText("Chat");
-			break;
+        case 1:
+            mLobbyIcon.setAlpha(ALPHA_OFF);
+            mChatIcon.setAlpha(255);
+            mStatsIcon.setAlpha(ALPHA_OFF);
+            mAboutIcon.setAlpha(ALPHA_OFF);
+            sectionLabel.setText("Chat");
+            break;
 
-		case 2:
-			mLobbyIcon.setAlpha(ALPHA_OFF);
-			mChatIcon.setAlpha(ALPHA_OFF);
-			mStatsIcon.setAlpha(255);
-			mAboutIcon.setAlpha(ALPHA_OFF);
-			sectionLabel.setText("Statistics");
-			break;
+        case 2:
+            mLobbyIcon.setAlpha(ALPHA_OFF);
+            mChatIcon.setAlpha(ALPHA_OFF);
+            mStatsIcon.setAlpha(255);
+            mAboutIcon.setAlpha(ALPHA_OFF);
+            sectionLabel.setText("Statistics");
+            break;
 
-		case 3:
-			mLobbyIcon.setAlpha(ALPHA_OFF);
-			mChatIcon.setAlpha(ALPHA_OFF);
-			mStatsIcon.setAlpha(ALPHA_OFF);
-			mAboutIcon.setAlpha(255);
-			sectionLabel.setText("About");
-			break;
+        case 3:
+            mLobbyIcon.setAlpha(ALPHA_OFF);
+            mChatIcon.setAlpha(ALPHA_OFF);
+            mStatsIcon.setAlpha(ALPHA_OFF);
+            mAboutIcon.setAlpha(255);
+            sectionLabel.setText("About");
+            break;
 
-		default:
-			break;
-		}
-	}
-	
-	public Lounge getLounge() {
-		return mLounge;
-	}
+        default:
+            break;
+        }
+    }
+
+    public Lounge getLounge() {
+        return mLounge;
+    }
 }

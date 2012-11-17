@@ -30,23 +30,31 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.Vibrator;
 import android.util.Log;
+
 /**
- * <p>The Lounge class starts and binds the background {@link eu.andlabs.studiolounge.gcp.GCPService GCPService}
- * and provides an object oriented interface to integrate Lounge into Mobile Apps.
+ * <p>
+ * The Lounge class starts and binds the background
+ * {@link eu.andlabs.studiolounge.gcp.GCPService GCPService} and provides an
+ * object oriented interface to integrate Lounge into Mobile Apps.
  * 
  * The ServiceConnection needs to bind and unbind during Activity flow.
+ * 
  * <pre>
- * @Override
- * protected void onStart() { mLounge = GCPService.bind(this); }
- *
- *  @Override
- *  protected void onStop() { GCPService.unbind(this, mLounge); }
+ * &#064;Override
+ * protected void onStart() {
+ *     mLounge = GCPService.bind(this);
+ * }
+ * 
+ * &#064;Override
+ * protected void onStop() {
+ *     GCPService.unbind(this, mLounge);
+ * }
  * </pre>
  */
 public class Lounge implements ServiceConnection {
 
     protected static final String TAG = "Lounge";
-    
+
     /**
      * This callback interface is used to subscribe game arrangement messages
      */
@@ -55,30 +63,36 @@ public class Lounge implements ServiceConnection {
         /**
          * is called after every successful login
          * 
-         * @param player name of the player who logged in.
+         * @param player
+         *            name of the player who logged in.
          */
         public void onPlayerLoggedIn(String player);
 
         /**
          * is called after every logout operation
          * 
-         * @param player name of the player who has left.
+         * @param player
+         *            name of the player who has left.
          */
         public void onPlayerLeft(String player);
 
         /**
          * is called when new games are hosted
          * 
-         * @param player name of the host player
-         * @param game package identifier of the hosted game
+         * @param player
+         *            name of the host player
+         * @param game
+         *            package identifier of the hosted game
          */
         public void onNewHostedGame(String player, String game);
 
         /**
          * is called when player join games.
          * 
-         * @param player name of the player who has joined
-         * @param game package identifier of the hosted game
+         * @param player
+         *            name of the player who has joined
+         * @param game
+         *            package identifier of the hosted game
          */
         public void onPlayerJoined(String player, String game);
 
@@ -92,7 +106,8 @@ public class Lounge implements ServiceConnection {
         /**
          * is called when a chat message arrives
          * 
-         * @param text text content of the chat message
+         * @param text
+         *            text content of the chat message
          */
         public void onChatMessageRecieved(ChatMessage msg);
 
@@ -106,7 +121,8 @@ public class Lounge implements ServiceConnection {
         /**
          * is called when custom game messages come in
          * 
-         * @param the content of the custom game message
+         * @param the
+         *            content of the custom game message
          */
         public void onMessageRecieved(Bundle msg);
 
@@ -120,7 +136,6 @@ public class Lounge implements ServiceConnection {
         public String text;
     }
 
-
     public Lounge(Context context) {
         Log.d("Lounge", "Lounge Constructor");
     }
@@ -131,15 +146,15 @@ public class Lounge implements ServiceConnection {
         @Override
         public void handleMessage(Message msg) {
             ChatMessage message;
-            Log.i("GCP","Handler Code: "+msg.what);
+            Log.i("GCP", "Handler Code: " + msg.what);
             switch (msg.what) {
             case GCPService.LOGIN:
-                Log.d(TAG, mLobbyListener+" Lounge on LOGIN " + msg.obj);
-                if (mName == null){
+                Log.d(TAG, mLobbyListener + " Lounge on LOGIN " + msg.obj);
+                if (mName == null) {
                     mName = (String) msg.obj;
                 }
-                Log.i("Luc","Lobby Listner "+mLobbyListener);
-                if (mLobbyListener != null){
+                Log.i("Luc", "Lobby Listner " + mLobbyListener);
+                if (mLobbyListener != null) {
                     mLobbyListener.onPlayerLoggedIn(msg.obj.toString());
                 }
                 break;
@@ -149,7 +164,7 @@ public class Lounge implements ServiceConnection {
                 message.player = msplit[0];
                 message.text = msplit[1];
                 Log.d(TAG, "CHATLISTENER " + mChatListener);
-                for (ChatListener l : mChatListeners) { 
+                for (ChatListener l : mChatListeners) {
                     l.onChatMessageRecieved(message);
                 }
                 break;
@@ -164,7 +179,8 @@ public class Lounge implements ServiceConnection {
             case GCPService.JOIN:
                 if (mLobbyListener != null) {
                     Bundle b = (Bundle) msg.obj;
-                    mLobbyListener.onPlayerJoined(b.getString("guest"), b.getString("game"));
+                    mLobbyListener.onPlayerJoined(b.getString("guest"),
+                            b.getString("game"));
                 }
                 break;
             case GCPService.CUSTOM:
@@ -182,12 +198,14 @@ public class Lounge implements ServiceConnection {
 
     private ChatListener mChatListener;
 
-    private ArrayList<ChatListener> mChatListeners = new ArrayList<Lounge.ChatListener>(2);
-    
+    private ArrayList<ChatListener> mChatListeners = new ArrayList<Lounge.ChatListener>(
+            2);
+
     /**
      * subscribe to chat messages
      * 
-     * @param listener callback interface
+     * @param listener
+     *            callback interface
      */
     public void register(ChatListener listener) {
         mChatListeners.add(listener);
@@ -196,7 +214,8 @@ public class Lounge implements ServiceConnection {
     /**
      * unsubscribe chat messages
      * 
-     * @param listener callback interface
+     * @param listener
+     *            callback interface
      */
     public void unregister(ChatListener listener) {
         mChatListener = null;
@@ -207,7 +226,8 @@ public class Lounge implements ServiceConnection {
     /**
      * subscribe to game arrangement messages
      * 
-     * @param listener callback interface
+     * @param listener
+     *            callback interface
      */
     public void register(LobbyListener listener) {
         mLobbyListener = listener;
@@ -216,7 +236,8 @@ public class Lounge implements ServiceConnection {
     /**
      * unsubscribe game arrangement game messages
      * 
-     * @param listener callback interface
+     * @param listener
+     *            callback interface
      */
     public void unregister(LobbyListener listener) {
         mLobbyListener = null;
@@ -227,7 +248,8 @@ public class Lounge implements ServiceConnection {
     /**
      * subscribe to custom game messages
      * 
-     * @param listener callback interface
+     * @param listener
+     *            callback interface
      */
     public void register(GameMsgListener listener) {
         mMsgListener = listener;
@@ -236,7 +258,8 @@ public class Lounge implements ServiceConnection {
     /**
      * unsubscribe custom game messages
      * 
-     * @param listener callback interface
+     * @param listener
+     *            callback interface
      */
     public void unregister(GameMsgListener listener) {
         mMsgListener = null;
@@ -256,9 +279,9 @@ public class Lounge implements ServiceConnection {
 
     private void sendMessage(int what, Object thing) {
         try {
-        	if(mService!=null) {
-        		mService.send(Message.obtain(null, what, thing));
-        	}
+            if (mService != null) {
+                mService.send(Message.obtain(null, what, thing));
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -267,9 +290,9 @@ public class Lounge implements ServiceConnection {
     public void sendChatMessage(ChatMessage msg) {
         sendMessage(GCPService.CHAT, msg.text);
     }
-    
+
     public void hostGame(ComponentName componentName) {
-    	hostGame(componentName.flattenToShortString());
+        hostGame(componentName.flattenToShortString());
     }
 
     public void hostGame(String pkgName) {
@@ -277,7 +300,7 @@ public class Lounge implements ServiceConnection {
     }
 
     public void joinGame(String hostplayer, String gamepackage) {
-        Log.i("Players","Join game "+hostplayer + " "+gamepackage); 
+        Log.i("Players", "Join game " + hostplayer + " " + gamepackage);
         Bundle b = new Bundle();
         b.putString("host", hostplayer);
         b.putString("game", gamepackage);
@@ -287,7 +310,8 @@ public class Lounge implements ServiceConnection {
     /**
      * send custom game message
      * 
-     * @param msg the data to send
+     * @param msg
+     *            the data to send
      */
     public void sendGameMessage(Bundle msg) {
         sendMessage(GCPService.CUSTOM, msg);

@@ -59,7 +59,8 @@ public class LobbyAdapter extends BaseAdapter {
             join.setVisibility(View.VISIBLE);
 
             if (player.getPlayername().equalsIgnoreCase(mOwnID)) {
-                // Using alpha animation as a workaround since setAlpha is not supported in API
+                // Using alpha animation as a workaround since setAlpha is not
+                // supported in API
                 // level < 11.
                 AlphaAnimation animation = new AlphaAnimation(1, 0.5f);
                 animation.setDuration(0);

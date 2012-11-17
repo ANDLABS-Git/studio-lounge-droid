@@ -44,10 +44,10 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     private ListView lobbyList;
     private ImageView pulseBeacon;
     private ImageView staticBeacon;
-//    private AnimatorSet scaleDown;
+    // private AnimatorSet scaleDown;
     private ListView mHostList;
     private HostGameAdapter mAdapter;
-    private  LobbyAdapter lobbyAdapter;
+    private LobbyAdapter lobbyAdapter;
     private Lounge mLounge;
 
     @Override
@@ -55,7 +55,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         Log.i("Lounge", "LobbyFragment on CREATE");
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        
+
         this.mLounge = ((LoungeActivity) getActivity()).getLounge();
 
     }
@@ -127,13 +127,11 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         player.setHostedGame(game);
 
         if (!player.getPlayername().equals(GCPService.mName)) {
-            Log.i("debug", " player joined"+playerName + " .. "+game);
-            Utils.launchGameApp(getContext(), player.getHostedGamePackage(),LoungeConstants.HOST_FLAG);
+            Log.i("debug", " player joined" + playerName + " .. " + game);
+            Utils.launchGameApp(getContext(), player.getHostedGamePackage(),
+                    LoungeConstants.HOST_FLAG);
         }
-  
-   
-           
-        
+
     }
 
     @Override
@@ -143,9 +141,9 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     }
 
     private void stopAnimatingHostMode() {
-//        if (scaleDown != null) {
-//            scaleDown.cancel();
-//        }
+        // if (scaleDown != null) {
+        // scaleDown.cancel();
+        // }
         pulseBeacon.setVisibility(View.INVISIBLE);
         staticBeacon.setVisibility(View.VISIBLE);
     }
@@ -189,17 +187,17 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 
     @Override
     public void onClick(View v) {
-        final String launchString = this.mAdapter
-                .getSelectedItemPackage();
+        final String launchString = this.mAdapter.getSelectedItemPackage();
         if (launchString != null) { // haz package
             if (v.getId() == R.id.btn_host) {
                 this.mLounge.hostGame(launchString);
                 animateHostMode();
             }
             if (v.getId() == R.id.btn_practise) {
-                final Intent intent = getActivity().getPackageManager()
+                final Intent intent = getActivity()
+                        .getPackageManager()
                         .getLaunchIntentForPackage(
-                        		launchString.split(PACKAGE_APPNAME_SEPERATOR)[0]);
+                                launchString.split(PACKAGE_APPNAME_SEPERATOR)[0]);
                 startActivity(intent);
             }
         } else {
