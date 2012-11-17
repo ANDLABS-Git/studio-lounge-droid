@@ -18,6 +18,10 @@ package eu.andlabs.studiolounge.gcp;
 
 import java.util.ArrayList;
 
+import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Player;
+import eu.andlabs.studiolounge.lobby.Utils;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
@@ -70,9 +74,8 @@ public class Lounge implements ServiceConnection {
          * is called when new games are hosted
          * 
          * @param player name of the host player
-         * @param game package identifier of the hosted game
          */
-        public void onNewHostedGame(String player, String game);
+        public void onNewHostedGame(String player);
 
         /**
          * is called when player join games.
@@ -124,30 +127,31 @@ public class Lounge implements ServiceConnection {
     public Lounge(Context context) {
         Log.d("Lounge", "Lounge Constructor");
     }
-
+    
+    ArrayList<Player> mPlayers = new ArrayList<Player>();
+    
     // receive incoming android system IPC messages from backround GCP service
     public final Messenger mMessenger = new Messenger(new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
-            ChatMessage message;
             Log.i("GCP","Handler Code: "+msg.what);
+            ChatMessage message;
+            Bundle b;
             switch (msg.what) {
             case GCPService.LOGIN:
-                Log.d(TAG, mLobbyListener+" Lounge on LOGIN " + msg.obj);
-                if (mName == null){
-                    mName = (String) msg.obj;
-                }
-                Log.i("Luc","Lobby Listner "+mLobbyListener);
+                Player player = new Player(msg.obj.toString());
+                Log.d(TAG, mLobbyListener+" Lounge on LOGIN " + player.getPlayername());
+                if (!mPlayers.contains(player)) mPlayers.add(player);
                 if (mLobbyListener != null){
-                    mLobbyListener.onPlayerLoggedIn(msg.obj.toString());
+                    mLobbyListener.onPlayerLoggedIn(player.getPlayername());
                 }
                 break;
             case GCPService.CHAT:
-                String[] msplit = msg.obj.toString().split(":");
+                b = (Bundle) msg.obj;
                 message = new ChatMessage();
-                message.player = msplit[0];
-                message.text = msplit[1];
+                message.player = b.getString("player");
+                message.text = b.getString("msg");
                 Log.d(TAG, "CHATLISTENER " + mChatListener);
                 for (ChatListener l : mChatListeners) { 
                     l.onChatMessageRecieved(message);
@@ -155,16 +159,33 @@ public class Lounge implements ServiceConnection {
                 break;
             case GCPService.HOST:
                 Log.d(TAG, "Lounge on HOST " + msg.obj);
+                b = (Bundle) msg.obj;
+                Player p = mPlayers.get(mPlayers.indexOf(new Player(b.getString("host"))));
+                p.setHostedGame(b.getString("game"));
+                p.joined = b.getInt("joined");
+                p.min = b.getInt("min");
+                p.max = b.getInt("max");
+
                 if (mLobbyListener != null) {
-                    Bundle b = (Bundle) msg.obj;
-                    mLobbyListener.onNewHostedGame(b.getString("host"),
-                            b.getString("game"));
+                    mLobbyListener.onNewHostedGame(b.getString("game"));
+                    
+                }
+                break;
+            case GCPService.UNHOST:
+                b = (Bundle) msg.obj;
+                Log.d(TAG, "Lounge on UNHOST " + msg.obj);
+                Player pp = mPlayers.get(mPlayers.indexOf(new Player(b.getString("host"))));
+                pp.setHostedGame(null);
+                if (mLobbyListener != null) {
+                    b = (Bundle) msg.obj;
+                    mLobbyListener.onNewHostedGame(b.getString("game"));
                 }
                 break;
             case GCPService.JOIN:
-                if (mLobbyListener != null) {
-                    Bundle b = (Bundle) msg.obj;
-                    mLobbyListener.onPlayerJoined(b.getString("guest"), b.getString("game"));
+                b = (Bundle) msg.obj;
+                String game = b.getString("game");
+                if (!game.equals(myGame) && mLobbyListener != null) {
+                    mLobbyListener.onPlayerJoined(b.getString("guest"), game);
                 }
                 break;
             case GCPService.CUSTOM:
@@ -180,6 +201,10 @@ public class Lounge implements ServiceConnection {
         }
     });
 
+    public ArrayList<Player> getPlayers() {
+        return mPlayers;
+    }
+    
     private ChatListener mChatListener;
 
     private ArrayList<ChatListener> mChatListeners = new ArrayList<Lounge.ChatListener>(2);
@@ -245,20 +270,19 @@ public class Lounge implements ServiceConnection {
     // send android system IPC message to backround GCP service
     private Messenger mService;
 
-    private String mName;
+    private String myGame;
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         Log.d("Lounge", "Service Connected " + service);
         mService = new Messenger(service);
-        sendMessage(GCPService.REGISTER, mMessenger);
     }
 
     private void sendMessage(int what, Object thing) {
         try {
-        	if(mService!=null) {
-        		mService.send(Message.obtain(null, what, thing));
-        	}
+            if (mService != null) {
+                mService.send(Message.obtain(null, what, thing));
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -274,14 +298,13 @@ public class Lounge implements ServiceConnection {
 
     public void hostGame(String pkgName) {
         sendMessage(GCPService.HOST, pkgName);
+        myGame = pkgName;
     }
 
-    public void joinGame(String hostplayer, String gamepackage) {
-        Log.i("Players","Join game "+hostplayer + " "+gamepackage); 
-        Bundle b = new Bundle();
-        b.putString("host", hostplayer);
-        b.putString("game", gamepackage);
-        sendMessage(GCPService.JOIN, b);
+    public void joinGame(String game) {
+        Log.i("Players","Join game "+game); 
+        sendMessage(GCPService.JOIN, game);
+        myGame = game;
     }
 
     /**
@@ -291,10 +314,6 @@ public class Lounge implements ServiceConnection {
      */
     public void sendGameMessage(Bundle msg) {
         sendMessage(GCPService.CUSTOM, msg);
-    }
-
-    public String getName() {
-        return mName;
     }
 
     @Override

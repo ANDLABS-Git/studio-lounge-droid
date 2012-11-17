@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,12 +21,13 @@ import eu.andlabs.studiolounge.R;
 
 public class LobbyAdapter extends BaseAdapter {
 
-    private ArrayList<Player> mPlayers = new ArrayList<Player>();
+    private ArrayList<Player> mPlayers;
     private Context mContext;
     private String mOwnID;
 
-    public LobbyAdapter(Context context) {
+    public LobbyAdapter(Context context, ArrayList<Player> mPlayers) {
         this.mContext = context;
+        this.mPlayers = mPlayers;
         this.mOwnID = LoginManager.getInstance(this.mContext).getUserId();
     }
 
@@ -53,53 +55,64 @@ public class LobbyAdapter extends BaseAdapter {
         playerLabel.setText(player.getShortPlayername());
 
         final View join = view.findViewById(R.id.join_btn_area);
+        final ImageView icon = (ImageView) view.findViewById(R.id.icon);
+        final TextView minmax = ((TextView) view.findViewById(R.id.minmax));
+        final TextView gameLabel = ((TextView) view.findViewById(R.id.gamename));
+        
         if (player.getHostedGame() != null) {
-            ((TextView) view.findViewById(R.id.gamename)).setText(player
-                    .getHostedGameName());
+            gameLabel.setText(player.getHostedGameName());
+            minmax.setVisibility(View.VISIBLE);
+            minmax.setText(player.joined+"/"+player.max);
             join.setVisibility(View.VISIBLE);
-
             if (player.getPlayername().equalsIgnoreCase(mOwnID)) {
-                // Using alpha animation as a workaround since setAlpha is not supported in API
-                // level < 11.
+                // Using alpha animation as a workaround since setAlpha is not supported in API level < 11.
+                join.setEnabled(false);
                 AlphaAnimation animation = new AlphaAnimation(1, 0.5f);
                 animation.setDuration(0);
                 animation.setFillAfter(true);
                 join.startAnimation(animation);
-                join.setEnabled(false);
+            } else {
+                join.setEnabled(true);
+                AlphaAnimation animation = new AlphaAnimation(0.5f, 1);
+                animation.setDuration(0);
+                animation.setFillAfter(true);
+                join.startAnimation(animation);
             }
 
             join.setOnClickListener(new OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    if (Utils.isGameInstalled(LobbyAdapter.this.mContext,
-                            player.getHostedGamePackage())) {
-                        ((LoungeActivity) LobbyAdapter.this.mContext)
-                                .getLounge().joinGame(player.getPlayername(),
-                                        player.getHostedGame());
+                    if (Utils.isGameInstalled(mContext, player.getHostedGamePkg())) {
+                        ((LoungeActivity) mContext).getLounge()
+                            .joinGame(player.getHostedGame());
 
                         // TODO: needs to be triggered when the min of players
                         // is reached, not by default (postponed to GCP 0.4)
                         Utils.launchGameApp(LobbyAdapter.this.mContext,
-                                player.getHostedGame(),
+                                player.getHostedGamePkg(),
                                 LoungeConstants.GUEST_FLAG);
                     } else {
                         Utils.openPlay(LobbyAdapter.this.mContext,
-                                player.getHostedGamePackage());
+                                player.getHostedGamePkg());
                     }
                 }
             });
 
-            final ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            icon.setVisibility(View.VISIBLE);
             Drawable drawable = Utils.getGameIcon(this.mContext,
-                    player.getHostedGamePackage());
+                    player.getHostedGamePkg());
             if (drawable == null) {
                 drawable = this.mContext.getResources().getDrawable(
                         R.drawable.ic_play);
             }
             icon.setImageDrawable(drawable);
         } else {
-            join.setVisibility(View.INVISIBLE);
+            join.setVisibility(View.GONE);
+            icon.setVisibility(View.GONE);
+            minmax.setVisibility(View.GONE);
+            gameLabel.setText("Waiting in Lobby..");
+            view.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
         }
         return view;
     }

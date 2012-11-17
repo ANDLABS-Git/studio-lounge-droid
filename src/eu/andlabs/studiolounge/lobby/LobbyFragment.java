@@ -15,6 +15,7 @@
  */
 package eu.andlabs.studiolounge.lobby;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -67,10 +68,27 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         lobbyAdapter.getPlayerList().clear();
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         super.onStart();
     }
 
+    @Override
+    public void onDestroyView() {
+        Log.d("Lounge", "LobbyFragment on DestroyView");
+        super.onDestroyView();
+    }
+    
+    @Override
+    public void onAttach(Activity activity) {
+        Log.d("Lounge", "LobbyFragment on AttachActivity");
+        super.onAttach(activity);
+    }
+    
+    @Override
+    public void onResume() {
+        Log.d("Lounge", "LobbyFragment on Resume");
+        super.onResume();
+    }
+    
     @Override
     public View onCreateView(final LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -87,7 +105,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 
         lobby.findViewById(R.id.btn_host).setOnClickListener(this);
         lobby.findViewById(R.id.btn_practise).setOnClickListener(this);
-        lobbyAdapter = new LobbyAdapter(getContext());
+        lobbyAdapter = new LobbyAdapter(getContext(), mLounge.getPlayers());
         ((ListView) lobby.findViewById(R.id.list)).setAdapter(lobbyAdapter);
         lobbyList = (ListView) lobby.findViewById(R.id.list);
         return lobby;
@@ -95,45 +113,34 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 
     @Override
     public void onPlayerLoggedIn(String player) {
-        // Toast.makeText(getActivity(), player + " joined", 3000).show();
-        for (Player p : lobbyAdapter.getPlayerList()) {
-            if (p.getPlayername().equalsIgnoreCase(player)) {
-                return;
-            }
-        }
-        lobbyAdapter.getPlayerList().add(new Player(player));
         lobbyAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onPlayerLeft(String player) {
-        Toast.makeText(getActivity(), player + " left", Toast.LENGTH_SHORT)
-                .show();
+        Toast.makeText(getActivity(), player + " left", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onNewHostedGame(String player, String hostedGame) {
+    public void onNewHostedGame(String hostedGame) {
+        lobbyAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onPlayerJoined(String player, String game) {
         for (Player p : lobbyAdapter.getPlayerList()) {
-            if (p.getPlayername().equals(player)) {
-                p.setHostedGame(hostedGame);
+            Log.d("Selbsterkenntnis", "HIIER");
+            if (p.getHostedGame() != null && p.getHostedGame().equals(game)) {
+                p.joined++;
                 lobbyAdapter.notifyDataSetChanged();
+                Log.d("Selbsterkenntnis", p.getPlayername());
+                Log.d("Selbsterkenntnis", GCPService.mName);
+                if (p.getPlayername().equals(GCPService.mName)) { // Selbsterkenntnis!
+                    Utils.launchGameApp(getContext(), p.getHostedGamePkg(),LoungeConstants.HOST_FLAG);
+                }
             }
+            lobbyAdapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public void onPlayerJoined(String playerName, String game) {
-        final Player player = new Player(playerName);
-        player.setHostedGame(game);
-
-        if (!player.getPlayername().equals(GCPService.mName)) {
-            Log.i("debug", " player joined"+playerName + " .. "+game);
-            Utils.launchGameApp(getContext(), player.getHostedGamePackage(),LoungeConstants.HOST_FLAG);
-        }
-  
-   
-           
-        
     }
 
     @Override
@@ -189,8 +196,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
 
     @Override
     public void onClick(View v) {
-        final String launchString = this.mAdapter
-                .getSelectedItemPackage();
+        final String launchString = this.mAdapter.getSelectedItemPackage();
         if (launchString != null) { // haz package
             if (v.getId() == R.id.btn_host) {
                 this.mLounge.hostGame(launchString);

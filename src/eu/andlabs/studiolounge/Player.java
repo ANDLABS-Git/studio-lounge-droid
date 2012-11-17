@@ -16,10 +16,14 @@
 package eu.andlabs.studiolounge;
 
 
+
 public class Player implements LoungeConstants {
 
 	private String mPlayerName;
 	private String mHostedGame;
+    public int joined;
+    public int min;
+    public int max;
 
 	public Player(String playername) {
 		this.mPlayerName = playername;
@@ -67,8 +71,7 @@ public class Player implements LoungeConstants {
 		return "";
 	}
 
-	public String getHostedGamePackage() {
-
+	public String getHostedGamePkg() {
 		if (this.mHostedGame == null) {
 			return "";
 		}
@@ -76,7 +79,6 @@ public class Player implements LoungeConstants {
 				.split(PACKAGE_APPNAME_SEPERATOR);
 		if (split.length > 0) {
 			return split[0];
-		
 	    }
 		return "";
 	}
@@ -84,4 +86,14 @@ public class Player implements LoungeConstants {
 	public void setHostedGame(String hostedGame) {
 		this.mHostedGame = hostedGame;
 	}
+	
+    @Override
+    public boolean equals(Object o) {
+        return mPlayerName.equals(((Player) o).getPlayername());
+    }
+
+    @Override
+    public int hashCode() {
+        return mPlayerName.hashCode();
+    }
 }

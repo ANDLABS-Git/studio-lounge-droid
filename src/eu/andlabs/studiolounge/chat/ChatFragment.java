@@ -34,6 +34,7 @@ import android.widget.TextView;
 import eu.andlabs.studiolounge.LoungeActivity;
 import eu.andlabs.studiolounge.Player;
 import eu.andlabs.studiolounge.R;
+import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
@@ -110,7 +111,6 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public void onChatMessageRecieved(ChatMessage msg) {
-        Log.d("Lounge", "CHAT " + msg);
         mConversation.add(msg);
         ((BaseAdapter) ((ListView) getView().findViewById(R.id.list))
                 .getAdapter()).notifyDataSetChanged();
@@ -120,6 +120,7 @@ public class ChatFragment extends Fragment implements ChatListener,
     public void onClick(View v) {
         ChatMessage msg = new ChatMessage();
         msg.text = mChatEditText.getText().toString();
+        msg.player = GCPService.mName;
         ((LoungeActivity) getActivity()).getLounge().sendChatMessage(msg);
         mChatEditText.requestFocusFromTouch();
         mChatEditText.setText("");
