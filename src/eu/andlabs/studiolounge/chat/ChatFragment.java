@@ -57,7 +57,6 @@ public class ChatFragment extends Fragment implements ChatListener,
     @Override
     public void onStart() {
         ((LoungeActivity) getActivity()).getLounge().register(this);
-        mConversation.clear();
         super.onStart();
     }
 

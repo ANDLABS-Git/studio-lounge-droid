@@ -65,7 +65,6 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     public void onStart() {
         Log.i("Lounge", "LobbyFragment on START");
         this.mLounge.register(this);
-        lobbyAdapter.getPlayerList().clear();
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         super.onStart();
