@@ -15,73 +15,73 @@
  */
 package eu.andlabs.studiolounge;
 
-
 public class Player implements LoungeConstants {
 
-	private String mPlayerName;
-	private String mHostedGame;
+    private String mPlayerName;
+    private String mHostedGame;
 
-	public Player(String playername) {
-		this.mPlayerName = playername;
-	}
+    public Player(String playername) {
+        this.mPlayerName = playername;
+    }
 
-	public String getPlayername() {
+    public String getPlayername() {
 
-		return this.mPlayerName;
-	}
+        return this.mPlayerName;
+    }
 
-	public String getShortPlayername() {
-	    String shortName = this.mPlayerName;
-	 
-	    if (this.mPlayerName.contains("@")) {
+    public String getShortPlayername() {
+        String shortName = this.mPlayerName;
+
+        if (this.mPlayerName.contains("@")) {
             shortName = shortName.split("@")[0];
         }
-		if (shortName.contains(".")) {
-			shortName = shortName.split("\\.")[0]; // Because split expects a regex
-		} 
-		return shortName;
-	}
+        if (shortName.contains(".")) {
+            shortName = shortName.split("\\.")[0]; // Because split expects a
+                                                   // regex
+        }
+        return shortName;
+    }
 
-	public void setPlayername(String playername) {
-		this.mPlayerName = playername;
-	}
+    public void setPlayername(String playername) {
+        this.mPlayerName = playername;
+    }
 
-	public String getHostedGame() {
-		return mHostedGame;
-	}
+    public String getHostedGame() {
+        return mHostedGame;
+    }
 
-	public String getHostedGameName() {
-		if (this.mHostedGame == null) {
-			return "";
-		}
-		final String[] split = this.mHostedGame
-				.split(PACKAGE_APPNAME_SEPERATOR);
-		if (split.length > 1) {
-			String[] split2 = split[1].split(".");
-			if (split2.length > 1) {
-				return split2[split2.length - 1];
-			} else {
-				return split[1];
-			}
-		}
-		return "";
-	}
+    public String getHostedGameName() {
+        if (this.mHostedGame == null) {
+            return "";
+        }
+        final String[] split = this.mHostedGame
+                .split(PACKAGE_APPNAME_SEPERATOR);
+        if (split.length > 1) {
+            String[] split2 = split[1].split(".");
+            if (split2.length > 1) {
+                return split2[split2.length - 1];
+            } else {
+                return split[1];
+            }
+        }
+        return "";
+    }
 
-	public String getHostedGamePackage() {
+    public String getHostedGamePackage() {
 
-		if (this.mHostedGame == null) {
-			return "";
-		}
-		final String[] split = this.mHostedGame
-				.split(PACKAGE_APPNAME_SEPERATOR);
-		if (split.length > 0) {
-			return split[0];
-		
-	    }
-		return "";
-	}
+        if (this.mHostedGame == null) {
+            return "";
+        }
+        final String[] split = this.mHostedGame
+                .split(PACKAGE_APPNAME_SEPERATOR);
+        if (split.length > 0) {
+            return split[0];
 
-	public void setHostedGame(String hostedGame) {
-		this.mHostedGame = hostedGame;
-	}
+        }
+        return "";
+    }
+
+    public void setHostedGame(String hostedGame) {
+        this.mHostedGame = hostedGame;
+    }
 }
