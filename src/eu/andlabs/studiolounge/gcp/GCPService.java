@@ -111,8 +111,8 @@ public class GCPService extends Service {
         log("connecting");
         try {
             connecting = true;
-//            mSocketIO = new SocketIO("http://may.base45.de:7777", new IOCallback() {
-            mSocketIO = new SocketIO("http://192.168.2.109:7777", new IOCallback() {
+            mSocketIO = new SocketIO("http://may.base45.de:7777", new IOCallback() {
+//            mSocketIO = new SocketIO("http://192.168.2.109:7777", new IOCallback() {
 
                 @Override
                 public void onConnect() { // auto login
