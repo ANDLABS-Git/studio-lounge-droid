@@ -9,21 +9,21 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ListView 
-        android:layout_marginTop="58dp"
+    <ListView
+        android:id="@+id/installed_games"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/installed_games"
-        />
-    
-      <LinearLayout
+        android:layout_marginTop="58dp"
+         />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
@@ -42,8 +42,8 @@
             android:layout_weight="1"
             android:text="@string/practise" />
     </LinearLayout>
-
-      <TextView
+
+    <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
