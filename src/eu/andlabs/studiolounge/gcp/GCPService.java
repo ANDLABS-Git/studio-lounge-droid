@@ -66,7 +66,7 @@ public class GCPService extends Service {
 
     public static Lounge bind(Context ctx) {
         Log.d("GCP-Service", "binding GCP Service");
-        String name = LoginManager.getInstance(ctx).getUserId();
+        String name = LoginManager.getInstance(ctx).getUserId().getPlayername();
         Lounge lounge = new Lounge(ctx);
         Intent intent = new Intent(ctx, GCPService.class);
         intent.putExtra("packageName", ctx.getPackageName());

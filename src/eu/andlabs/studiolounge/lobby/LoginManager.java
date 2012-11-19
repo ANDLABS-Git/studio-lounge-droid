@@ -3,6 +3,7 @@ package eu.andlabs.studiolounge.lobby;
 import java.util.Random;
 
 import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Player;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -28,14 +29,14 @@ public class LoginManager implements LoungeConstants {
         return sInstance;
     }
 
-    public String getUserId() {
+    public Player getUserId() {
         String login = mPrefs.getString(LOGIN, null);
         if (login == null) {
             login = retrieveUserId();
             mPrefs.edit().putString(LOGIN, login).commit();
         }
 
-        return login;
+        return new Player(login);
     }
 
     private String retrieveUserId() {

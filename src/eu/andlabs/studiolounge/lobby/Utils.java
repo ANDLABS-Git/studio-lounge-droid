@@ -13,13 +13,15 @@ import eu.andlabs.studiolounge.LoungeConstants;
 
 public class Utils implements LoungeConstants {
 
-    static void launchGameApp(Context context, String packageName, int isHost) {
+    static void launchGameApp(Context context, String packageName, int isHost,String hostName,String guestName) {
         final ResolveInfo info = getInstalledGameInfo(context, packageName);
         if (info != null) {
             final Intent intent = new Intent();
             intent.setComponent(new ComponentName(info.activityInfo.packageName,
                     info.activityInfo.name));
             intent.putExtra("HOST", isHost);
+            intent.putExtra("HOSTNAME",hostName);
+            intent.putExtra("GUESTNAME", guestName);
             context.startActivity(intent);
         }
     }

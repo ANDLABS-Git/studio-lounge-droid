@@ -128,14 +128,14 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     @Override
     public void onPlayerJoined(String player, String game) {
         for (Player p : lobbyAdapter.getPlayerList()) {
-            Log.d("Selbsterkenntnis", "HIIER");
+            Log.d("Selbsterkenntnis", "HIIER "+player);
             if (p.getHostedGame() != null && p.getHostedGame().equals(game)) {
                 p.joined++;
                 lobbyAdapter.notifyDataSetChanged();
                 Log.d("Selbsterkenntnis", p.getPlayername());
                 Log.d("Selbsterkenntnis", GCPService.mName);
                 if (p.getPlayername().equals(GCPService.mName)) { // Selbsterkenntnis!
-                    Utils.launchGameApp(getContext(), p.getHostedGamePkg(),LoungeConstants.HOST_FLAG);
+                    Utils.launchGameApp(getContext(), p.getHostedGamePkg(),LoungeConstants.HOST_FLAG,LoginManager.getInstance(getActivity()).getUserId().getShortPlayername(),new Player(player).getShortPlayername());
                 }
             }
             lobbyAdapter.notifyDataSetChanged();
