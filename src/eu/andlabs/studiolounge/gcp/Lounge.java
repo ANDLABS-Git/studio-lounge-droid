@@ -111,7 +111,7 @@ public class Lounge implements ServiceConnection {
          * 
          * @param the content of the custom game message
          */
-        public void onMessageRecieved(Bundle msg);
+        public void onMessageReceived(Bundle msg);
 
     }
 
@@ -191,7 +191,7 @@ public class Lounge implements ServiceConnection {
             case GCPService.CUSTOM:
                 if (mMsgListener != null) {
                     Log.d(TAG, "CUSTOM " + msg.obj);
-                    mMsgListener.onMessageRecieved((Bundle) msg.obj);
+                    mMsgListener.onMessageReceived((Bundle) msg.obj);
                 }
                 break;
             case GCPService.LEAVE:
