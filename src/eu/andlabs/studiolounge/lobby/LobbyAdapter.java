@@ -28,7 +28,7 @@ public class LobbyAdapter extends BaseAdapter {
     public LobbyAdapter(Context context, ArrayList<Player> mPlayers) {
         this.mContext = context;
         this.mPlayers = mPlayers;
-        this.mOwnID = LoginManager.getInstance(this.mContext).getUserId();
+        this.mOwnID = LoginManager.getInstance(this.mContext).getUserId().getPlayername();
     }
 
     public List<Player> getPlayerList() {
@@ -91,7 +91,7 @@ public class LobbyAdapter extends BaseAdapter {
                         // is reached, not by default (postponed to GCP 0.4)
                         Utils.launchGameApp(LobbyAdapter.this.mContext,
                                 player.getHostedGamePkg(),
-                                LoungeConstants.GUEST_FLAG);
+                                LoungeConstants.GUEST_FLAG,player.getShortPlayername(),LoginManager.getInstance(mContext).getUserId().getShortPlayername());
                     } else {
                         Utils.openPlay(LobbyAdapter.this.mContext,
                                 player.getHostedGamePkg());
