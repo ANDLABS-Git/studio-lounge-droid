@@ -39,16 +39,16 @@ import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 
-public class LobbyFragment extends Fragment implements LobbyListener,
-        OnClickListener, LoungeConstants {
+public class LobbyFragment extends Fragment implements LobbyListener, OnClickListener,
+        LoungeConstants {
 
     private ListView lobbyList;
     private ImageView pulseBeacon;
     private ImageView staticBeacon;
-//    private AnimatorSet scaleDown;
+    // private AnimatorSet scaleDown;
     private ListView mHostList;
     private HostGameAdapter mAdapter;
-    private  LobbyAdapter lobbyAdapter;
+    private LobbyAdapter lobbyAdapter;
     private Lounge mLounge;
 
     @Override
@@ -56,7 +56,7 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         Log.i("Lounge", "LobbyFragment on CREATE");
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        
+
         this.mLounge = ((LoungeActivity) getActivity()).getLounge();
 
     }
@@ -75,27 +75,26 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         Log.d("Lounge", "LobbyFragment on DestroyView");
         super.onDestroyView();
     }
-    
+
     @Override
     public void onAttach(Activity activity) {
         Log.d("Lounge", "LobbyFragment on AttachActivity");
         super.onAttach(activity);
     }
-    
+
     @Override
     public void onResume() {
         Log.d("Lounge", "LobbyFragment on Resume");
         super.onResume();
     }
-    
+
     @Override
-    public View onCreateView(final LayoutInflater inflater,
-            ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
 
         View lobby = inflater.inflate(R.layout.lobby, container, false);
         pulseBeacon = (ImageView) lobby.findViewById(R.id.ic_lobby_host_pulse);
-        staticBeacon = (ImageView) lobby
-                .findViewById(R.id.ic_lobby_host_static_pulse);
+        staticBeacon = (ImageView) lobby.findViewById(R.id.ic_lobby_host_static_pulse);
 
         this.mHostList = (ListView) lobby.findViewById(R.id.installed_games);
         this.mAdapter = new HostGameAdapter(getActivity());
@@ -128,14 +127,17 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     @Override
     public void onPlayerJoined(String player, String game) {
         for (Player p : lobbyAdapter.getPlayerList()) {
-            Log.d("Selbsterkenntnis", "HIIER "+player);
+            Log.d("Selbsterkenntnis", "HIIER " + player);
             if (p.getHostedGame() != null && p.getHostedGame().equals(game)) {
                 p.joined++;
                 lobbyAdapter.notifyDataSetChanged();
                 Log.d("Selbsterkenntnis", p.getPlayername());
                 Log.d("Selbsterkenntnis", GCPService.mName);
                 if (p.getPlayername().equals(GCPService.mName)) { // Selbsterkenntnis!
-                    Utils.launchGameApp(getContext(), p.getHostedGamePkg(),LoungeConstants.HOST_FLAG,LoginManager.getInstance(getActivity()).getUserId().getShortPlayername(),new Player(player).getShortPlayername());
+                    Utils.launchGameApp(getContext(), p.getHostedGamePkg(),
+                            LoungeConstants.HOST_FLAG, LoginManager.getInstance(getActivity())
+                                    .getUserId().getShortPlayername(),
+                            new Player(player).getShortPlayername());
                 }
             }
             lobbyAdapter.notifyDataSetChanged();
@@ -149,9 +151,9 @@ public class LobbyFragment extends Fragment implements LobbyListener,
     }
 
     private void stopAnimatingHostMode() {
-//        if (scaleDown != null) {
-//            scaleDown.cancel();
-//        }
+        // if (scaleDown != null) {
+        // scaleDown.cancel();
+        // }
         pulseBeacon.setVisibility(View.INVISIBLE);
         staticBeacon.setVisibility(View.VISIBLE);
     }
@@ -160,8 +162,8 @@ public class LobbyFragment extends Fragment implements LobbyListener,
         pulseBeacon.setVisibility(View.VISIBLE);
         staticBeacon.setVisibility(View.INVISIBLE);
 
-        Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(
-                getActivity(), R.anim.pulse);
+        Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(),
+                R.anim.pulse);
         hyperspaceJumpAnimation.setRepeatMode(Animation.INFINITE);
         hyperspaceJumpAnimation.setRepeatCount(1000);
         pulseBeacon.startAnimation(hyperspaceJumpAnimation);
@@ -202,14 +204,12 @@ public class LobbyFragment extends Fragment implements LobbyListener,
                 animateHostMode();
             }
             if (v.getId() == R.id.btn_practise) {
-                final Intent intent = getActivity().getPackageManager()
-                        .getLaunchIntentForPackage(
-                        		launchString.split(PACKAGE_APPNAME_SEPERATOR)[0]);
+                final Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage(
+                        launchString.split(PACKAGE_APPNAME_SEPERATOR)[0]);
                 startActivity(intent);
             }
         } else {
-            Toast.makeText(getActivity(), "Please select a game",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please select a game", Toast.LENGTH_SHORT).show();
         }
     }
 
