@@ -14,7 +14,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="match_parent"
     android:orientation="horizontal" >
 
     <FrameLayout
@@ -56,6 +56,8 @@
         android:layout_marginLeft="80dp"
         android:layout_marginTop="4dp"
         android:text="Medium Text"
+        android:singleLine="true"
+        android:ellipsize="marquee"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="27dp" />
 
@@ -73,6 +75,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_marginLeft="80dp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
         android:layout_marginTop="40dp"
         android:text="@string/waiting_in_lobby" />
 
