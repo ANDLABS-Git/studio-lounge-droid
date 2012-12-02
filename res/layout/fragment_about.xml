@@ -92,7 +92,7 @@
   </LinearLayout>
 
   <ImageView
-    android:id="@+id/imageView1"
+    android:id="@+id/placeholder_for_some_real_shit"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
