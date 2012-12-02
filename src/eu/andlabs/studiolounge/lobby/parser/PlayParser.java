@@ -105,6 +105,8 @@ public class PlayParser {
                         imageWidth);
                 urlTask.execute(PLAY_BASE_URL + packageName);
             }
+        } else {
+            mIsQuerying = false;
         }
     }
 
