@@ -102,149 +102,136 @@ public class GCPService extends Service {
         super.onCreate();
         // mName = "LUKAS";
         mHandler = new Handler();
-        log("starting GCP Service", false);
+        log("starting GCP Service");
         connect();
     }
 
     private void connect() {
         if (connecting)
             return;
-        log("connecting", false);
+        log("connecting");
         try {
             connecting = true;
-            mSocketIO = new SocketIO("http://may.base45.de:7777",
-                    new IOCallback() {
-                        // mSocketIO = new SocketIO("http://192.168.2.109:7777",
-                        // new IOCallback() {
+            mSocketIO = new SocketIO("http://may.base45.de:7777", new IOCallback() {
+//            mSocketIO = new SocketIO("http://192.168.2.109:7777", new IOCallback() {
 
-                        @Override
-                        public void onConnect() { // auto login
-                            log("connected to GCP game server!", false);
-                            if (mApp != null) {
-                                mSocketIO.emit("login", "I am " + mName);
-                                mSocketIO.emit("state");
-                            }
-                            connecting = false;
-                        }
+                @Override
+                public void onConnect() { // auto login
+                    log("connected to GCP game server!");
+                    if (mApp != null) {
+                        mSocketIO.emit("login", "I am " + mName);
+                        mSocketIO.emit("state");
+                    }
+                    connecting = false;
+                }
 
-                        @Override
-                        public void onMessage(String text, IOAcknowledge ack) {
+                @Override
+                public void onMessage(String text, IOAcknowledge ack) {
+                    Bundle b = new Bundle();
+                    String[] msplit = text.split(":");
+                    b.putString("player", msplit[0]);
+                    b.putString("msg", msplit[1]);
+                    Log.d("CHAT", msplit[0]);
+                    dispatchMessage(CHAT, b);
+                }
+
+                @Override
+                public void on(String type, IOAcknowledge ack, Object... data) {
+                     log("incoming message:" + type + " --- " + data);
+                    try {
+                        if (type.equals("login")) {
+                            loggedIn = true;
+                            dispatchMessage(LOGIN, data[0].toString());
+                        } else if (type.equals("welcome")) {
+                            // dispatchMessage(LOGIN,
+                            // data[0].toString().split("in as ")[1]);
+                        } else if (type.equals("host")) {
+                            JSONObject json = (JSONObject) data[0];
                             Bundle b = new Bundle();
-                            String[] msplit = text.split(":");
-                            b.putString("player", msplit[0]);
-                            b.putString("msg", msplit[1]);
-                            Log.d("CHAT", msplit[0]);
-                            dispatchMessage(CHAT, b);
-                        }
-
-                        @Override
-                        public void on(String type, IOAcknowledge ack,
-                                Object... data) {
-                            log("incoming message:" + type + " --- " + data, false);
-                            try {
-                                if (type.equals("login")) {
-                                    loggedIn = true;
-                                    dispatchMessage(LOGIN, data[0].toString());
-                                } else if (type.equals("welcome")) {
-                                    // dispatchMessage(LOGIN,
-                                    // data[0].toString().split("in as ")[1]);
-                                } else if (type.equals("host")) {
-                                    JSONObject json = (JSONObject) data[0];
+                            b.putString("game", json.getString("game"));
+                            b.putString("host", json.getString("host"));
+                            dispatchMessage(HOST, b);
+                        } else if (type.equals("join")) {
+                            JSONObject json = (JSONObject) data[0];
+                            Bundle b = new Bundle();
+                            b.putString("game", json.getString("game"));
+                            b.putString("guest",json.getString("guest"));
+                            dispatchMessage(JOIN, b);
+                        } else if (type.equals("state")) {
+                            JSONObject json = (JSONObject) data[0];
+                            JSONArray players = json.getJSONArray("players");
+                            for (int i = 0; i < players.length(); i++) {
+                                JSONObject player = players.getJSONObject(i);
+                                dispatchMessage(LOGIN, player.getString("name"));
+                                if (player.has("game")) {
                                     Bundle b = new Bundle();
-                                    b.putString("game", json.getString("game"));
-                                    b.putString("host", json.getString("host"));
+                                    JSONObject game = player.getJSONObject("game");
+                                    b.putString("game", game.getString("id"));
+                                    b.putString("host", player.getString("name"));
+                                    b.putInt("joined", game.getInt("joined"));
+                                    b.putInt("min", game.getInt("min"));
+                                    b.putInt("max", game.getInt("max"));
                                     dispatchMessage(HOST, b);
-                                } else if (type.equals("join")) {
-                                    JSONObject json = (JSONObject) data[0];
-                                    Bundle b = new Bundle();
-                                    b.putString("game", json.getString("game"));
-                                    b.putString("guest",
-                                            json.getString("guest"));
-                                    dispatchMessage(JOIN, b);
-                                } else if (type.equals("state")) {
-                                    JSONObject json = (JSONObject) data[0];
-                                    JSONArray players = json
-                                            .getJSONArray("players");
-                                    for (int i = 0; i < players.length(); i++) {
-                                        JSONObject player = players
-                                                .getJSONObject(i);
-                                        dispatchMessage(LOGIN,
-                                                player.getString("name"));
-                                        if (player.has("game")) {
-                                            Bundle b = new Bundle();
-                                            JSONObject game = player
-                                                    .getJSONObject("game");
-                                            b.putString("game",
-                                                    game.getString("id"));
-                                            b.putString("host",
-                                                    player.getString("name"));
-                                            b.putInt("joined",
-                                                    game.getInt("joined"));
-                                            b.putInt("min", game.getInt("min"));
-                                            b.putInt("max", game.getInt("max"));
-                                            dispatchMessage(HOST, b);
-                                        }
-                                    }
-                                    JSONArray chat = json.getJSONArray("chat");
-                                    for (int i = 0; i < chat.length(); i++) {
-                                        JSONObject msg = chat.getJSONObject(i);
-                                        Bundle b = new Bundle();
-                                        b.putString("player",
-                                                msg.getString("player"));
-                                        b.putString("msg", msg.getString("msg"));
-                                        dispatchMessage(CHAT, b);
-                                    }
-                                } else if (type.equals("move")) {
-                                    JSONObject json = (JSONObject) data[0];
-                                    Bundle b = new Bundle();
-                                    for (Iterator<String> i = json.keys(); i
-                                            .hasNext();) {
-                                        String key = i.next();
-                                        b.putString(key, json.getString(key));
-                                        Log.i("json",
-                                                "converting -  key:" + key
-                                                        + "  /  Value: "
-                                                        + json.getString(key));
-                                    }
-                                    dispatchMessage(CUSTOM, b);
-                                } else if (type.equals("unhost")) {
-                                    Bundle b = new Bundle();
-                                    JSONObject json = (JSONObject) data[0];
-                                    b.putString("host", json.getString("host"));
-                                    b.putString("game", json.getString("game"));
-                                    dispatchMessage(UNHOST, b);
-                                } else {
-                                    dispatchMessage(CHAT,
-                                            "BAD protocol message: " + type);
-                                    Log.d("GCP", ""
-                                            + data[0].getClass().getName());
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
                             }
+                            JSONArray chat = json.getJSONArray("chat");
+                            for (int i = 0; i < chat.length(); i++) {
+                                JSONObject msg = chat.getJSONObject(i);
+                                Bundle b = new Bundle();
+                                b.putString("player", msg.getString("player"));
+                                b.putString("msg", msg.getString("msg"));
+                                dispatchMessage(CHAT, b);
+                            }
+                        } else if (type.equals("move")) {
+                            JSONObject json = (JSONObject) data[0];
+                            Bundle b = new Bundle();
+                            for (Iterator<String> i = json.keys(); i
+                                    .hasNext();) {
+                                String key = i.next();
+                                b.putString(key, json.getString(key));
+                                 Log.i("json",
+                                 "converting -  key:"+key +
+                                 "  /  Value: "+json.getString(key));
+                            }
+                            dispatchMessage(CUSTOM, b);
+                        } else if (type.equals("unhost")) {
+                            Bundle b = new Bundle();
+                            JSONObject json = (JSONObject) data[0];
+                            b.putString("host", json.getString("host"));
+                            b.putString("game", json.getString("game"));
+                            dispatchMessage(UNHOST, b);
+                        } else {
+                            dispatchMessage(CHAT,
+                                    "BAD protocol message: " + type);
+                            Log.d("GCP", ""
+                                    + data[0].getClass().getName());
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-                        @Override
-                        public void onMessage(JSONObject json, IOAcknowledge ack) {
-                        }
+                @Override
+                public void onMessage(JSONObject json, IOAcknowledge ack) {
+                }
 
-                        @Override
-                        public void onDisconnect() {
-                            log("lost game server.", false);
-                            connecting = false;
-                            loggedIn = false;
-                        }
+                @Override
+                public void onDisconnect() {
+                    log("lost game server.");
+                    connecting = false;
+                    loggedIn = false;
+                }
 
-                        @Override
-                        public void onError(SocketIOException error) {
-                            error.printStackTrace();
-                            connecting = false;
-                            loggedIn = false;
-                            log(error, false);
-                        }
-                    });
+                @Override
+                public void onError(SocketIOException error) {
+                    error.printStackTrace();
+                    connecting = false;
+                    loggedIn = false;
+                    log(error);
+                }
+            });
         } catch (Exception e) {
-            log(e, false);
+            log(e);
             loggedIn = false;
             connecting = false;
             dispatchMessage(CHAT, "GCP Service Error:   " + e.toString());
@@ -254,7 +241,7 @@ public class GCPService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        log("on startCommand id=" + startId + "  flags=" + flags, false);
+        log("on startCommand id=" + startId + "  flags=" + flags);
         mApp = (Messenger) intent.getParcelableExtra("messenger");
         packagename = intent.getExtras().getString("packageName");
         mName = intent.getExtras().getString("name");
@@ -268,7 +255,7 @@ public class GCPService extends Service {
     // bind game app(s)
     @Override
     public IBinder onBind(Intent intent) {
-        log("on bind", false);
+        log("on bind");
         return mMessenger.getBinder();
     }
 
@@ -277,7 +264,7 @@ public class GCPService extends Service {
         try {
             mApp.send(Message.obtain(mHandler, what, thing));
         } catch (RemoteException e) {
-            log("Error: " + e.toString(), false);
+            log("Error: " + e.toString());
         }
     }
 
@@ -308,7 +295,7 @@ public class GCPService extends Service {
                         Set<String> keys = b.keySet();
                         for (String key : keys) {
                             json.put(key, b.get(key));
-                            Log.i("json", key + " : " + b.getByte(key));
+                            Log.i("json",key + " : "+b.getByte(key));
                         }
                         mSocketIO.emit("move", json);
                         break;
@@ -323,22 +310,19 @@ public class GCPService extends Service {
 
     @Override
     public void onDestroy() {
-        log("on destroy", false);
+        log("on destroy");
         mSocketIO.disconnect();
         super.onDestroy();
     }
 
-    private void log(final Object ding, boolean toast) {
-        if (toast) {
-            mHandler.post(new Runnable() {
+    private void log(final Object ding) {
+        mHandler.post(new Runnable() {
 
-                @Override
-                public void run() {
-                    Toast.makeText(GCPService.this, ding.toString(), 1000)
-                            .show();
-                }
-            });
-        }
+            @Override
+            public void run() {
+                Toast.makeText(GCPService.this, ding.toString(), 1000).show();
+            }
+        });
         Log.d("GCP-Service", ding.toString());
     }
 }
