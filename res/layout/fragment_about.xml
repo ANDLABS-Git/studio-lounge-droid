@@ -9,14 +9,10 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-<<<<<<< HEAD
-  limitations under the License.
-=======
   limitations under the License.
->>>>>>> 3310687f45800ca4966286472d2cad541aba2fb1
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical" >
@@ -33,23 +29,19 @@
       android:orientation="vertical" >
     </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="#742f43"
-            android:orientation="vertical" >
-        </LinearLayout>
+    
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="10dp"
+            android:layout_gravity="top"
             android:layout_marginTop="45dp" >
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0.8"
-                android:background="#742f43"
+                android:background="#928B15"
                 android:orientation="vertical" >
             </LinearLayout>
 
@@ -57,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
-                android:background="#742f43"
+                android:background="#928B15"
                 android:orientation="vertical" >
             </LinearLayout>
         </LinearLayout>
@@ -87,7 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="0.2"
-        android:background="#742f43"
+        android:background="#928B15"
         android:orientation="vertical" >
       </LinearLayout>
 
@@ -99,19 +91,12 @@
     android:layout_gravity="bottom" >
   </LinearLayout>
 
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="10dp"
-    android:layout_gravity="bottom"
-    android:background="#742f43"
-    android:orientation="vertical" >
-  </LinearLayout>
-
   <ImageView
     android:id="@+id/imageView1"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
+    android:scaleType="fitXY"
     android:src="@drawable/about" />
 
-</FrameLayout>
+</LinearLayout>

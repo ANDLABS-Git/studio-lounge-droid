@@ -14,5 +14,7 @@
     -->
 
     <style name="AppTheme" parent="android:Theme.Light" />
-
+    <color name="whiteAlpha">#25ffffff</color>
+    <color name="btnBackground">#10ffffff</color>
+    
 </resources>
