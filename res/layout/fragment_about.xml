@@ -36,11 +36,21 @@
         android:layout_marginTop="125dp"
         android:background="@color/yellow" />
 
+<<<<<<< HEAD
     <View
         android:layout_height="10dp"
         android:background="@color/yellow"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
     />
+=======
+  <ImageView
+    android:id="@+id/placeholder_for_some_real_shit"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:scaleType="fitXY"
+    android:src="@drawable/about" />
+>>>>>>> aeff657... First version of the parser, cache not working yet
 
 </RelativeLayout>
