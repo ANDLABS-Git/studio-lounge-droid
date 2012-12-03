@@ -20,8 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_gravity="bottom"
-        android:alpha="0.3"
-        android:background="@android:color/white"
+        android:background="#4cffffff"
         android:orientation="vertical" >
     </LinearLayout>
 
@@ -32,10 +31,13 @@
 
         <TextView
             android:id="@+id/sender"
-            android:layout_width="wrap_content"
+            android:layout_width="55dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="Absender"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -43,18 +45,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="85dp"
             android:text="Message"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/textView1"
+        android:layout_gravity="top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="25dp"
-        android:alpha="0.5"
-        android:text="12:32" />
+        android:text="12:32"
+        android:textColor="#80ffffff" />
 
 </FrameLayout>

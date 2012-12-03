@@ -21,6 +21,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import eu.andlabs.studiolounge.gcp.GCPService;
@@ -38,9 +40,16 @@ public class LoungeActivity extends FragmentActivity implements
     private ImageView mAboutIcon;
     private String mName;
     private TextView sectionLabel;
+    
+    private static final int TAB_LOBBY = 0;
+    private static final int TAB_CHAT = TAB_LOBBY + 1;
+    private static final int TAB_STATISTICS = TAB_CHAT + 1;
+    private static final int TAB_ABOUT = TAB_STATISTICS + 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         super.onCreate(savedInstanceState);
         // mLounge = new Lounge(this);
 
@@ -130,5 +139,20 @@ public class LoungeActivity extends FragmentActivity implements
 
     public Lounge getLounge() {
         return mLounge;
+    }
+
+    public void onNavigationClicked(View v) {
+        if (v.getId() == R.id.ic_tab_lobby) {
+            mViewPager.setCurrentItem(TAB_LOBBY, true);
+        }
+        if (v.getId() == R.id.ic_tab_chat) {
+            mViewPager.setCurrentItem(TAB_CHAT, true);
+        }
+        if (v.getId() == R.id.ic_tab_stat) {
+            mViewPager.setCurrentItem(TAB_STATISTICS, true);
+        }
+        if (v.getId() == R.id.ic_tab_about) {
+            mViewPager.setCurrentItem(TAB_ABOUT, true);
+        }
     }
 }
