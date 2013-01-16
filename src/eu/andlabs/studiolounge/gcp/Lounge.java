@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import eu.andlabs.studiolounge.Constants;
 import eu.andlabs.studiolounge.Player;
-import eu.andlabs.studiolounge.lobby.Utils;
 
 import android.content.ComponentName;
 import android.content.Context;

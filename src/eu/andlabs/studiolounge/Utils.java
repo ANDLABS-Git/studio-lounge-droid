@@ -1,4 +1,4 @@
-package eu.andlabs.studiolounge.lobby;
+package eu.andlabs.studiolounge;
 
 import java.util.List;
 
