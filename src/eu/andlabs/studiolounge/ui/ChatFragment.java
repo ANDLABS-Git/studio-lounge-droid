@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.andlabs.studiolounge.chat;
+package eu.andlabs.studiolounge.ui;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import eu.andlabs.studiolounge.LoungeActivity;
 import eu.andlabs.studiolounge.Player;
 import eu.andlabs.studiolounge.R;
 import eu.andlabs.studiolounge.gcp.GCPService;
@@ -56,7 +55,6 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public void onStart() {
-        ((LoungeActivity) getActivity()).getLounge().register(this);
         super.onStart();
     }
 
@@ -120,7 +118,6 @@ public class ChatFragment extends Fragment implements ChatListener,
         ChatMessage msg = new ChatMessage();
         msg.text = mChatEditText.getText().toString();
         msg.player = GCPService.mName;
-        ((LoungeActivity) getActivity()).getLounge().sendChatMessage(msg);
         mChatEditText.requestFocusFromTouch();
         mChatEditText.setText("");
         onChatMessageRecieved(msg);
@@ -128,7 +125,6 @@ public class ChatFragment extends Fragment implements ChatListener,
 
     @Override
     public void onStop() {
-        ((LoungeActivity) getActivity()).getLounge().unregister(this);
         super.onStop();
     }
 

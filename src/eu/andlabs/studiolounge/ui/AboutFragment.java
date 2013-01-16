@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.andlabs.studiolounge.statistic;
+package eu.andlabs.studiolounge.ui;
 
 import java.util.ArrayList;
 
@@ -25,21 +25,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import eu.andlabs.studiolounge.LoungeActivity;
 import eu.andlabs.studiolounge.R;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
-public class StatisticFragment extends Fragment implements ChatListener,
+public class AboutFragment extends Fragment implements ChatListener,
         OnClickListener {
     ArrayList<ChatMessage> mConversation = new ArrayList<ChatMessage>();
     private EditText mChatEditText;
 
-    static StatisticFragment newInstance(int num) {
-        StatisticFragment f = new StatisticFragment();
+    static AboutFragment newInstance(int num) {
+        AboutFragment f = new AboutFragment();
         return f;
     }
 
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("THIS", "on create chat fragment");
@@ -50,28 +50,26 @@ public class StatisticFragment extends Fragment implements ChatListener,
     @Override
     public void onStart() {
         Log.i("Lounge", "ChatFragment on START");
-        ((LoungeActivity) getActivity()).getLounge().register(this);
         super.onStart();
     }
 
     @Override
     public View onCreateView(final LayoutInflater infl, ViewGroup p, Bundle b) {
         Log.d("THIS", "on create view");
-        final View stats = infl.inflate(R.layout.fragment_stats, p, false);
+        final View stats = infl.inflate(R.layout.fragment_about, p, false);
 
         return stats;
     }
 
     @Override
     public void onChatMessageRecieved(ChatMessage msg) {
-        mConversation.add(msg);
+
     }
 
     @Override
     public void onClick(View v) {
         ChatMessage msg = new ChatMessage();
         msg.text = mChatEditText.getText().toString();
-        ((LoungeActivity) getActivity()).getLounge().sendChatMessage(msg);
         mChatEditText.requestFocusFromTouch();
         mChatEditText.setText("");
         onChatMessageRecieved(msg);
@@ -79,7 +77,6 @@ public class StatisticFragment extends Fragment implements ChatListener,
 
     @Override
     public void onStop() {
-        ((LoungeActivity) getActivity()).getLounge().unregister(this);
         super.onStop();
     }
 
