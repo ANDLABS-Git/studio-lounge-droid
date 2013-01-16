@@ -1,9 +1,7 @@
-package eu.andlabs.studiolounge.lobby;
+package eu.andlabs.studiolounge;
 
 import java.util.Random;
 
-import eu.andlabs.studiolounge.Constants;
-import eu.andlabs.studiolounge.Player;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;

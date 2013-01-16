@@ -29,8 +29,8 @@ import org.json.JSONObject;
 
 import com.google.gson.JsonObject;
 
+import eu.andlabs.studiolounge.LoginManager;
 import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
-import eu.andlabs.studiolounge.lobby.LoginManager;
 
 import android.app.Service;
 import android.content.Context;
