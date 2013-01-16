@@ -15,10 +15,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Constants;
 import eu.andlabs.studiolounge.R;
 
-public class HostGameAdapter extends BaseAdapter implements LoungeConstants,
+public class HostGameAdapter extends BaseAdapter implements Constants,
         OnItemClickListener {
 
     private Context mContext;

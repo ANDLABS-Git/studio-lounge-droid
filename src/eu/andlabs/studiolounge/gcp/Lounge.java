@@ -18,7 +18,7 @@ package eu.andlabs.studiolounge.gcp;
 
 import java.util.ArrayList;
 
-import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Constants;
 import eu.andlabs.studiolounge.Player;
 import eu.andlabs.studiolounge.lobby.Utils;
 

@@ -9,9 +9,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Constants;
 
-public class Utils implements LoungeConstants {
+public class Utils implements Constants {
 
     static void launchGameApp(Context context, String packageName, int isHost,String hostName,String guestName) {
         final ResolveInfo info = getInstalledGameInfo(context, packageName);

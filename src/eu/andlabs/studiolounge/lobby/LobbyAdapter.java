@@ -15,7 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import eu.andlabs.studiolounge.LoungeActivity;
-import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Constants;
 import eu.andlabs.studiolounge.Player;
 import eu.andlabs.studiolounge.R;
 
@@ -91,7 +91,7 @@ public class LobbyAdapter extends BaseAdapter {
                         // is reached, not by default (postponed to GCP 0.4)
                         Utils.launchGameApp(LobbyAdapter.this.mContext,
                                 player.getHostedGamePkg(),
-                                LoungeConstants.GUEST_FLAG,player.getShortPlayername(),LoginManager.getInstance(mContext).getUserId().getShortPlayername());
+                                Constants.GUEST_FLAG,player.getShortPlayername(),LoginManager.getInstance(mContext).getUserId().getShortPlayername());
                     } else {
                         Utils.openPlay(LobbyAdapter.this.mContext,
                                 player.getHostedGamePkg());

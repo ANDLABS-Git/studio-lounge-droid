@@ -1,6 +1,6 @@
 package eu.andlabs.studiolounge;
 
-public interface LoungeConstants {
+public interface Constants {
 
     public static final String CATEGORY = "eu.andlabs.lounge";
     public static final String ACCOUNT_TYPE_GOOGLE = "com.google";

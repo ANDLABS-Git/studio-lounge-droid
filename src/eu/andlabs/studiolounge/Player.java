@@ -17,7 +17,7 @@ package eu.andlabs.studiolounge;
 
 
 
-public class Player implements LoungeConstants {
+public class Player implements Constants {
 
 	private String mPlayerName;
 	private String mHostedGame;

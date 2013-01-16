@@ -2,7 +2,7 @@ package eu.andlabs.studiolounge.lobby;
 
 import java.util.Random;
 
-import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Constants;
 import eu.andlabs.studiolounge.Player;
 
 import android.accounts.Account;
@@ -11,7 +11,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class LoginManager implements LoungeConstants {
+public class LoginManager implements Constants {
 
     private static LoginManager sInstance;
     private Context mContext;

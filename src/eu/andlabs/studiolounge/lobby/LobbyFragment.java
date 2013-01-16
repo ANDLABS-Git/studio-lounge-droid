@@ -32,7 +32,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 import eu.andlabs.studiolounge.LoungeActivity;
-import eu.andlabs.studiolounge.LoungeConstants;
+import eu.andlabs.studiolounge.Constants;
 import eu.andlabs.studiolounge.Player;
 import eu.andlabs.studiolounge.R;
 import eu.andlabs.studiolounge.gcp.GCPService;
@@ -40,7 +40,7 @@ import eu.andlabs.studiolounge.gcp.Lounge;
 import eu.andlabs.studiolounge.gcp.Lounge.LobbyListener;
 
 public class LobbyFragment extends Fragment implements LobbyListener, OnClickListener,
-        LoungeConstants {
+        Constants {
 
     private ListView lobbyList;
     private ImageView pulseBeacon;
@@ -135,7 +135,7 @@ public class LobbyFragment extends Fragment implements LobbyListener, OnClickLis
                 Log.d("Selbsterkenntnis", GCPService.mName);
                 if (p.getPlayername().equals(GCPService.mName)) { // Selbsterkenntnis!
                     Utils.launchGameApp(getContext(), p.getHostedGamePkg(),
-                            LoungeConstants.HOST_FLAG, LoginManager.getInstance(getActivity())
+                            Constants.HOST_FLAG, LoginManager.getInstance(getActivity())
                                     .getUserId().getShortPlayername(),
                             new Player(player).getShortPlayername());
                 }
