@@ -29,7 +29,7 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
     private MockContentResolver mRes;
 
     public CrashProviderTest() {
-        super(CacheProvider.class, "com.lounge");
+        super(CacheProvider.class, "foo.lounge");
         Log.d(TAG, "HI");
     }
 
@@ -61,32 +61,32 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
     
     private void insertTestDummies() {
         // crash test players
-        mRes.insert(Uri.parse("content://com.lounge/players"), anyName); // 1
-        mRes.insert(Uri.parse("content://com.lounge/players"), ananDa); // 2
-        mRes.insert(Uri.parse("content://com.lounge/players"), lukas); // 3
+        mRes.insert(Uri.parse("content://foo.lounge/players"), anyName); // 1
+        mRes.insert(Uri.parse("content://foo.lounge/players"), ananDa); // 2
+        mRes.insert(Uri.parse("content://foo.lounge/players"), lukas); // 3
         
         // crash test games
-        mRes.insert(Uri.parse("content://com.lounge/games"), worms); // 1
-        mRes.insert(Uri.parse("content://com.lounge/games"), molecool); // 2
-        mRes.insert(Uri.parse("content://com.lounge/games"), tumblPanda); // 3
-        mRes.insert(Uri.parse("content://com.lounge/games"), gravityWins); // 4
+        mRes.insert(Uri.parse("content://foo.lounge/games"), worms); // 1
+        mRes.insert(Uri.parse("content://foo.lounge/games"), molecool); // 2
+        mRes.insert(Uri.parse("content://foo.lounge/games"), tumblPanda); // 3
+        mRes.insert(Uri.parse("content://foo.lounge/games"), gravityWins); // 4
         
         // test scenario gaming
-        mRes.insert(Uri.parse("content://com.lounge/games/2/instances"), anyName); // host Mol3cool
-        mRes.insert(Uri.parse("content://com.lounge/games/2/instances/1/players"), ananDa); // join
+        mRes.insert(Uri.parse("content://foo.lounge/games/2/instances"), anyName); // host Mol3cool
+        mRes.insert(Uri.parse("content://foo.lounge/games/2/instances/1/players"), ananDa); // join
         
-        mRes.insert(Uri.parse("content://com.lounge/games/2/instances"), lukas); // host Mol3cool
-        mRes.insert(Uri.parse("content://com.lounge/games/2/instances/1/players"), anyName); // join
+        mRes.insert(Uri.parse("content://foo.lounge/games/2/instances"), lukas); // host Mol3cool
+        mRes.insert(Uri.parse("content://foo.lounge/games/2/instances/1/players"), anyName); // join
         
-        mRes.insert(Uri.parse("content://com.lounge/games/3/instances"), ananDa); // host Panda
-        mRes.insert(Uri.parse("content://com.lounge/games/3/instances/1/players"), anyName); // join
-        mRes.insert(Uri.parse("content://com.lounge/games/3/instances/1/players"), lukas); // join
+        mRes.insert(Uri.parse("content://foo.lounge/games/3/instances"), ananDa); // host Panda
+        mRes.insert(Uri.parse("content://foo.lounge/games/3/instances/1/players"), anyName); // join
+        mRes.insert(Uri.parse("content://foo.lounge/games/3/instances/1/players"), lukas); // join
         
-        mRes.insert(Uri.parse("content://com.lounge/games/3/instances"), lukas); // host Panda
-        mRes.insert(Uri.parse("content://com.lounge/games/3/instances/2/players"), ananDa); // join
+        mRes.insert(Uri.parse("content://foo.lounge/games/3/instances"), lukas); // host Panda
+        mRes.insert(Uri.parse("content://foo.lounge/games/3/instances/2/players"), ananDa); // join
         
-        mRes.insert(Uri.parse("content://com.lounge/games/4/instances"), lukas); // host Gravity
-        mRes.insert(Uri.parse("content://com.lounge/games/4/instances/2/players"), anyName); // join
+        mRes.insert(Uri.parse("content://foo.lounge/games/4/instances"), lukas); // host Gravity
+        mRes.insert(Uri.parse("content://foo.lounge/games/4/instances/2/players"), anyName); // join
     }
 
 
@@ -95,7 +95,7 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
         insertTestDummies();
         
         // GET A LIST OF GAMES FOR Ananda'S LOBBY
-        Cursor games = mRes.query(Uri.parse("content://com.lounge/games?player=Ananda"), null, null, null, null);
+        Cursor games = mRes.query(Uri.parse("content://foo.lounge/games?player=Ananda"), null, null, null, null);
         assertEquals("There should be 4 games <- Mol3cool x2 and no Worms", 4, games.getCount());
         
         // FIRST TWO GAMES WHERE Ananda IS INVOLVED
@@ -103,7 +103,7 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
         assertEquals("TumblePanda should be first <- Ananda hosted one and joined one", "TumblePanda", games.getString(1));
         assertEquals("TumblePanda should show two game instances to expand", 1, games.getInt(2));
         assertEquals("TumblePanda should have a content uri for its instances",  // EXPAND
-                "content://com.lounge/games/3/instances?player=Ananda", games.getString(3));
+                "content://foo.lounge/games/3/instances?player=Ananda", games.getString(3));
         // expand TumblePanda
         Cursor panda_games = mRes.query(Uri.parse(games.getString(3)), null, null, null, null);
         assertEquals("TumblePanda should have two instances for Ananda", 2, panda_games.getCount());
@@ -116,7 +116,7 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
         assertEquals("Mol3cool should be second <- Ananda joined one", "Mol3cool", games.getString(1));
         assertEquals("Mol3cool should show 1 game instance to expand", 1, games.getInt(2));
         assertEquals("Mol3cool should have a content uri for its instances",  // EXPAND
-                "content://com.lounge/games/2/instances?player=Ananda", games.getString(3));
+                "content://foo.lounge/games/2/instances?player=Ananda", games.getString(3));
         Cursor molecool_games = mRes.query(Uri.parse(games.getString(3)), null, null, null, null);
         assertEquals("Mol3cool should have 1 instance for Ananda", 1, molecool_games.getCount());
         molecool_games.moveToFirst();
@@ -127,7 +127,7 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
         assertEquals("Gravity should be third <- Someone else hosted one instance", "Gravity Wins", games.getString(1));
         assertEquals("Gravity should show one game instance to expand", 1, games.getInt(2));
         assertEquals("Gravity should have a content uri for its instances",  // EXPAND
-                "content://com.lounge/games/4/instances", games.getString(3));
+                "content://foo.lounge/games/4/instances", games.getString(3));
         Cursor gravity_games = mRes.query(Uri.parse(games.getString(3)), null, null, null, null);
         assertEquals("Gravity should have one instance", 1, gravity_games.getCount());
         gravity_games.moveToFirst();
@@ -137,7 +137,7 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
         assertEquals("Mol3cool should be again <- this time without Ananda", "Mol3cool", games.getString(1));
         assertEquals("Mol3cool should show one game instance to expand", 1, games.getInt(2));
         assertEquals("Mol3cool should have a content uri for its instances",  // EXPAND
-                "content://com.lounge/games/2/instances", games.getString(3));
+                "content://foo.lounge/games/2/instances", games.getString(3));
         molecool_games = mRes.query(Uri.parse(games.getString(3)), null, null, null, null);
         assertEquals("Mol3cool should have one instance", 1, molecool_games.getCount());
         molecool_games.moveToFirst();
