@@ -55,6 +55,8 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
         mRes = getMockContentResolver();
     }
     
+    
+    
     public void testChat() {
         ContentValues msg = new ContentValues();
         msg.put("player", "Ananda");
@@ -73,6 +75,30 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
         assertEquals("Hi, what's up?", msges.getString(2));
         assertEquals(now, msges.getString(3));
     }
+    
+    
+    
+    public void testStats() {
+        ContentValues stat;
+        stat = new ContentValues();
+        stat.put("total_msges", 3);
+        mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
+        stat.put("total_msges", 42);
+        mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
+
+        stat = new ContentValues();
+        stat.put("games_played", 5);
+        mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
+        stat.put("games_played", 7);
+        mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
+
+        Cursor stats = mRes.query(Uri.parse("content://foo.lounge/stats"), null, null, null, null);
+        assertEquals("There should always be only one set of stats", 1, stats.getCount());
+        stats.moveToFirst();
+        assertEquals("total messages should have been added", 45, stats.getInt(1));
+        assertEquals("games played should have been added", 12, stats.getInt(1));
+    }
+    
     
     
     // #####   S C E N A R I O   #####
