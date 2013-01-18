@@ -43,7 +43,6 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_lobby);
         
@@ -56,7 +55,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
         
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOnPageChangeListener(this);
-        mViewPager.setOffscreenPageLimit(0);
+        mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
 
             @Override
@@ -64,12 +63,18 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
 
             @Override
             public Fragment getItem(int position) {
+                Log.d(TAG, "ITEM " + position);
                 switch (position) {
+                case LOBBY:
+                    return new GamesFragment();
                 case CHAT:
                     return new ChatFragment();
-                default:
-                    return new GamesFragment();
+                case STATS:
+                    return new ChatFragment();
+                case ABOUT:
+                    return new AboutFragment();
                 }
+                return null;
             }
         });
         onPageSelected(LOBBY);
@@ -94,7 +99,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
     public void onPageSelected(int position) {
         Log.d(TAG, "page selected");
         switch (position) {
-        case 0:
+        case LOBBY:
             mSectionLabel.setText("Lobby");
             mLobbyIcon.setAlpha(255);
             mChatIcon.setAlpha(ALPHA_OFF);
@@ -103,7 +108,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mHeader.setBackgroundColor(getResources().getColor(R.color.orange));
             break;
 
-        case 1:
+        case CHAT:
             mSectionLabel.setText("Chat");
             mLobbyIcon.setAlpha(ALPHA_OFF);
             mChatIcon.setAlpha(255);
@@ -112,7 +117,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mHeader.setBackgroundColor(getResources().getColor(R.color.green));
             break;
 
-        case 2:
+        case STATS:
             mSectionLabel.setText("Statistics");
             mLobbyIcon.setAlpha(ALPHA_OFF);
             mChatIcon.setAlpha(ALPHA_OFF);
@@ -120,8 +125,9 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mAboutIcon.setAlpha(ALPHA_OFF);
             mHeader.setBackgroundColor(getResources().getColor(R.color.blue));
             break;
+            
 
-        case 3:
+        case ABOUT:
             mSectionLabel.setText("About");
             mLobbyIcon.setAlpha(ALPHA_OFF);
             mChatIcon.setAlpha(ALPHA_OFF);
@@ -129,7 +135,6 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mAboutIcon.setAlpha(255);
             mHeader.setBackgroundColor(getResources().getColor(R.color.foo));
             break;
-
         default:
             break;
         }

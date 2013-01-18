@@ -43,13 +43,6 @@ public class ChatFragment extends ListFragment
     private static final String TAG = "Lounge";
     private EditText mText;
 
-    
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        Log.d(TAG, "onActivityCreated");
-        super.onActivityCreated(savedInstanceState);
-    }
-
     @Override
     public View onCreateView(final LayoutInflater layout, ViewGroup p, Bundle b) {
         return layout.inflate(R.layout.fragment_chat, p, false);
@@ -77,29 +70,25 @@ public class ChatFragment extends ListFragment
                 msg.text.setText(msges.getString(0));
             }
         });
-        
-        Loader loader = getLoaderManager().getLoader(0);
-        if (loader != null && !loader.isReset()) {
-            getLoaderManager().restartLoader(0, null, this);
-        } else {
-            getLoaderManager().initLoader(0, null, this);
-        }
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle arg1) {
+        Log.d(TAG, "onCreateLoader for CHAT");
         Uri uri = Uri.parse("content://foo.lounge/chat/msges");
         return new CursorLoader(getActivity(), uri, null, null, null, null);
     }
     
     @Override
     public void onLoadFinished(Loader<Cursor> arg0, Cursor msges) {
+        Log.d(TAG, "onLoaderFinished for CHAT");
         ((CursorAdapter)getListAdapter()).swapCursor(msges);
     }
     
     @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
-        // TODO Auto-generated method stub
+        Log.d(TAG, "onLoaderReset for CHAT");
     }
 
     @Override
@@ -140,6 +129,4 @@ public class ChatFragment extends ListFragment
             time = (TextView) findViewById(R.id.timestamp);
         }
     }
-
-    
 }

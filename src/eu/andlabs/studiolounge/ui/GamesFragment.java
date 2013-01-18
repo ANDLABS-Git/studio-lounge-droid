@@ -28,6 +28,7 @@ import android.support.v4.content.Loader;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseIntArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorTreeAdapter;
@@ -39,72 +40,65 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
 
     private SparseIntArray listPositions = new SparseIntArray();
     private static final String TAG = "Lounge";
-    private static final int GAMES = -1;
-
+    private static final int GAMES = 0;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public View onCreateView(final LayoutInflater layout, ViewGroup p, Bundle b) {
+        return layout.inflate(R.layout.fragment_lobby, p, false);
+    }
+    
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         
         setListAdapter(new CursorTreeAdapter(null, getActivity()) {
 
             @Override
-            protected Cursor getChildrenCursor(Cursor games) {
-                int gameId = games.getInt(games.getColumnIndex(ContactsContract.Groups._ID));
-                listPositions.put(gameId, games.getPosition());
-                load(gameId);
-                return null;
-            }
-
-            @Override
             protected View newGroupView(Context ctx, Cursor c, boolean e, ViewGroup p) {
-                return getLayoutInflater(null).inflate(R.layout.game_view, p, false);
+                return getLayoutInflater(null).inflate(R.layout.view_game_list_entry, p, false);
             }
             
-            @Override
-            protected View newChildView(Context ctx, Cursor c, boolean l, ViewGroup p) {
-                return getLayoutInflater(null).inflate(R.layout.game_instance_view, p, false);
-            }
-
             @Override
             protected void bindGroupView(View v, Context ctx, Cursor game, boolean isExpanded) {
                 ((GameView) v).populate(game);
             }
-
+            
+            @Override
+            protected Cursor getChildrenCursor(Cursor games) {
+                int gameId = games.getInt(games.getColumnIndex(ContactsContract.Groups._ID));
+                listPositions.put(gameId, games.getPosition());
+                getLoaderManager().initLoader(gameId, null, GamesFragment.this);
+                return null;
+            }
+            
+            @Override
+            protected View newChildView(Context ctx, Cursor c, boolean l, ViewGroup p) {
+                return getLayoutInflater(null).inflate(R.layout.view_match_list_entry, p, false);
+            }
+            
             @Override
             protected void bindChildView(View v, Context ctx, Cursor gameInst, boolean isLastChild) {
                 ((GameView) v).populate(gameInst);
             }
             
         });
-        
-        load(GAMES);
-    }
-
-
-    private void load(int game) {
-        Loader loader = getLoaderManager().getLoader(game);
-        if (loader != null && !loader.isReset()) {
-            getLoaderManager().restartLoader(game, null, this);
-        } else {
-            getLoaderManager().initLoader(game, null, this);
-        }
+        getLoaderManager().initLoader(GAMES, null, this);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle b) {
-        Log.d(TAG, "onCreateLoader for loader_id " + id);
+        Log.d(TAG, "onCreateLoader for GAMES " + id);
         if (id == GAMES) {
-            Uri uri = Uri.parse("content://eu.andlabs.studiolounge.test/games");
+            Uri uri = Uri.parse("content://foo.lounge/games");
             return new CursorLoader(getActivity(), uri, null, null, null, null);
         } else { // game instances
-            Uri uri = Uri.parse("content://eu.andlabs.studiolounge.test/games/"+id+"/instances");
+            Uri uri = Uri.parse("content://foo.lounge/games/"+id+"/instances");
             return new CursorLoader(getActivity(), uri, null, null, null, null);
         }
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "onLoadFinished() for loader_id " + loader.getId());
-        if (loader.getId() == -1) {
+        Log.d(TAG, "onLoadFinished for GAMES " + loader.getId());
+        if (loader.getId() == 0) {
             ((CursorTreeAdapter) getExpandableListAdapter()).setGroupCursor(data);
         } else { // game instances
             if (!data.isClosed()) {
@@ -116,7 +110,7 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
 
     public void onLoaderReset(Loader<Cursor> loader) {
         // This is called when the last Cursor provided to onLoadFinished() is about to be closed.
-        Log.d(TAG, "onLoaderReset() for loader_id " + loader.getId());
+        Log.d(TAG, "onLoaderReset for GAMES " + loader.getId());
     }
 
 
