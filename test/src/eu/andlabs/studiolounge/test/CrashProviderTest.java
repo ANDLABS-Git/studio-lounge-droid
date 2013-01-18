@@ -55,6 +55,24 @@ public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
         mRes = getMockContentResolver();
     }
     
+    public void testChat() {
+        ContentValues msg = new ContentValues();
+        msg.put("player", "Ananda");
+        msg.put("text", "Hi, what's up?");
+        long now = System.currentTimeMillis();
+        msg.put("time", now);
+        
+        mRes.insert(Uri.parse("content://foo.lounge/chat"), msg); // 1
+        mRes.insert(Uri.parse("content://foo.lounge/chat"), msg); // 2
+        mRes.insert(Uri.parse("content://foo.lounge/chat"), msg); // 3
+        
+        Cursor msges = mRes.query(Uri.parse("content://foo.lounge/chat"), null, null, null, null);
+        assertEquals("There should be three chat messages", 3, msges.getCount());
+        msges.moveToFirst();
+        assertEquals("Ananda", msges.getString(1));
+        assertEquals("Hi, what's up?", msges.getString(2));
+        assertEquals(now, msges.getString(3));
+    }
     
     
     // #####   S C E N A R I O   #####
