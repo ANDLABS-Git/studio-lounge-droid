@@ -15,10 +15,17 @@
  */
 package eu.andlabs.studiolounge.ui;
 
-import java.util.ArrayList;
-
+import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,110 +33,114 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import eu.andlabs.studiolounge.Player;
 import eu.andlabs.studiolounge.R;
-import eu.andlabs.studiolounge.gcp.GCPService;
-import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
-import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
 
-public class ChatFragment extends Fragment implements ChatListener,
-        OnClickListener {
-    private ArrayList<ChatMessage> mConversation = new ArrayList<ChatMessage>();
-    private EditText mChatEditText;
+public class ChatFragment extends ListFragment 
+    implements OnClickListener, OnKeyListener, LoaderCallbacks<Cursor> {
+    
+    private static final String TAG = "Lounge";
+    private EditText mText;
 
-    static ChatFragment newInstance(int num) {
-        ChatFragment f = new ChatFragment();
-        return f;
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d(TAG, "onActivityCreated");
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+    public View onCreateView(final LayoutInflater layout, ViewGroup p, Bundle b) {
+        return layout.inflate(R.layout.chat, p, false);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public View onCreateView(final LayoutInflater infl, ViewGroup p, Bundle b) {
-        final View chat = infl.inflate(R.layout.chat, p, false);
-        mChatEditText = ((EditText) chat.findViewById(R.id.msg_field));
-        ((ImageButton) chat.findViewById(R.id.btn_msgSend))
-                .setOnClickListener(this);
-        ((ListView) chat.findViewById(R.id.list)).setAdapter(new BaseAdapter() {
+    public void onViewCreated(View layout, Bundle savedInstanceState) {
+        super.onViewCreated(layout, savedInstanceState);
+        layout.findViewById(R.id.btn_send).setOnClickListener(this);
+        mText = (EditText) layout.findViewById(R.id.msg_field);
+        mText.setOnKeyListener(this);
+        
+        setListAdapter(new CursorAdapter(getActivity(), null) {
+            
             @Override
-            public int getCount() {
-                return mConversation.size();
+            public View newView(Context ctx, Cursor msgs, ViewGroup parent) {
+                return getLayoutInflater(null).inflate(R.layout.chat_list_entry, null);
             }
-
+            
             @Override
-            public View getView(int position, View view, ViewGroup parent) {
-                if (view == null)
-                    view = infl.inflate(R.layout.chat_list_entry, null);
-                final ChatMessage msg = mConversation.get(position);
-                final Player player = new Player(msg.player);
-                ((TextView) view.findViewById(R.id.sender)).setText(player.getShortPlayername());
-                ((TextView) view.findViewById(R.id.msg_text)).setText(msg.text);
-                return view;
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return 0;
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return null;
+            public void bindView(View listItem, Context ctx, Cursor msges) {
+                final ChatMsgView msg = (ChatMsgView) listItem;
+                msg.player.setText(msges.getString(0));
+                msg.text.setText(msges.getString(1));
+                msg.text.setText(msges.getString(0));
             }
         });
-        // http://code.google.com/p/android/issues/detail?id=2516
-        mChatEditText.setOnKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER
-                        && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    onClick(null);
-                    return true;
-                }
-                return false;
-            }
-        });
-        return chat;
+        
+        Loader loader = getLoaderManager().getLoader(0);
+        if (loader != null && !loader.isReset()) {
+            getLoaderManager().restartLoader(0, null, this);
+        } else {
+            getLoaderManager().initLoader(0, null, this);
+        }
     }
 
     @Override
-    public void onChatMessageRecieved(ChatMessage msg) {
-        mConversation.add(msg);
-        ((BaseAdapter) ((ListView) getView().findViewById(R.id.list))
-                .getAdapter()).notifyDataSetChanged();
+    public Loader<Cursor> onCreateLoader(int id, Bundle arg1) {
+        Uri uri = Uri.parse("content://foo.lounge/chat/msges");
+        return new CursorLoader(getActivity(), uri, null, null, null, null);
+    }
+    
+    @Override
+    public void onLoadFinished(Loader<Cursor> arg0, Cursor msges) {
+        ((CursorAdapter)getListAdapter()).swapCursor(msges);
+    }
+    
+    @Override
+    public void onLoaderReset(Loader<Cursor> arg0) {
+        // TODO Auto-generated method stub
     }
 
     @Override
-    public void onClick(View v) {
-        ChatMessage msg = new ChatMessage();
-        msg.text = mChatEditText.getText().toString();
-        msg.player = GCPService.mName;
-        mChatEditText.requestFocusFromTouch();
-        mChatEditText.setText("");
-        onChatMessageRecieved(msg);
+    public void onClick(View button) {
+        // SEND mMsg.getText().toString();
+        mText.requestFocusFromTouch();
+        mText.setText("");
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+            onClick(null);
+            return true;
+        }
+        return false;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+
+
+
+
+    static class ChatMsgView extends RelativeLayout {
+
+        private TextView player;
+        private TextView text;
+        private TextView time;
+
+        public ChatMsgView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+        
+        @Override
+        protected void onFinishInflate() {
+            super.onFinishInflate();
+            player = (TextView) findViewById(R.id.player);
+            text = (TextView) findViewById(R.id.msg_text);
+            time = (TextView) findViewById(R.id.timestamp);
+        }
     }
+
+    
 }

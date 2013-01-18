@@ -56,7 +56,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
         
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOnPageChangeListener(this);
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(0);
         mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
 
             @Override
@@ -64,7 +64,12 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
 
             @Override
             public Fragment getItem(int position) {
-                return new GamesFragment();
+                switch (position) {
+                case CHAT:
+                    return new ChatFragment();
+                default:
+                    return new GamesFragment();
+                }
             }
         });
         onPageSelected(LOBBY);
