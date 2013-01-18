@@ -64,7 +64,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
 
             @Override
             public Fragment getItem(int position) {
-                return new GameListFragment();
+                return new GamesFragment();
             }
         });
         onPageSelected(LOBBY);

@@ -35,7 +35,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class GameListFragment extends ExpandableListFragment implements LoaderCallbacks<Cursor> {
+public class GamesFragment extends ExpandableListFragment implements LoaderCallbacks<Cursor> {
 
     private SparseIntArray listPositions = new SparseIntArray();
     private static final String TAG = "Lounge";
