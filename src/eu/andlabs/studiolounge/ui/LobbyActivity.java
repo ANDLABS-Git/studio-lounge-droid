@@ -45,7 +45,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
     
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.lobby_activity);
+        setContentView(R.layout.activity_lobby);
         
         mSectionLabel = (TextView) findViewById(R.id.sectionlabel);
         mAboutIcon = (ImageView) findViewById(R.id.ic_tab_about);

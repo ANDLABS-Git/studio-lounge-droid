@@ -15,7 +15,6 @@
  */
 package eu.andlabs.studiolounge.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -53,7 +52,7 @@ public class ChatFragment extends ListFragment
 
     @Override
     public View onCreateView(final LayoutInflater layout, ViewGroup p, Bundle b) {
-        return layout.inflate(R.layout.chat, p, false);
+        return layout.inflate(R.layout.fragment_chat, p, false);
     }
 
     @Override
@@ -67,7 +66,7 @@ public class ChatFragment extends ListFragment
             
             @Override
             public View newView(Context ctx, Cursor msgs, ViewGroup parent) {
-                return getLayoutInflater(null).inflate(R.layout.chat_list_entry, null);
+                return getLayoutInflater(null).inflate(R.layout.view_chat_list_entry, null);
             }
             
             @Override
