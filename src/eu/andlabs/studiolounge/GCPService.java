@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.andlabs.studiolounge.gcp;
+package eu.andlabs.studiolounge;
 
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
@@ -29,8 +29,8 @@ import org.json.JSONObject;
 
 import com.google.gson.JsonObject;
 
-import eu.andlabs.studiolounge.LoginManager;
-import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
+import eu.andlabs.studiolounge.Lounge.ChatMessage;
+import eu.andlabs.studiolounge.util.LoginManager;
 
 import android.app.Service;
 import android.content.Context;
@@ -46,7 +46,7 @@ import android.widget.Toast;
 
 /**
  * <p>
- * The {@link eu.andlabs.studiolounge.gcp.GCPService GCPService} background
+ * The {@link eu.andlabs.studiolounge.GCPService GCPService} background
  * system service acts like a router, forwarding and translating messages
  * between online nodes and Mobile Apps. It sends and receives <a href=
  * "https://github.com/ANDLABS-Git/studio-lounge-node/blob/master/spec/protocol.coffee"
@@ -59,19 +59,19 @@ import android.widget.Toast;
  * <p>
  * Mobile Apps can use the messaging API directly by directly starting and
  * binding to the service or usually use the convenience client implementation
- * {@link eu.andlabs.studiolounge.gcp.Lounge Lounge}.
+ * {@link eu.andlabs.studiolounge.Lounge Lounge}.
  * </p>
  */
 public class GCPService extends Service {
 
     public static Lounge bind(Context ctx) {
         Log.d("GCP-Service", "binding GCP Service");
-        String name = LoginManager.getInstance(ctx).getUserId().getPlayername();
+        String name = LoginManager.getInstance(ctx).getUserId();
         Lounge lounge = new Lounge(ctx);
         Intent intent = new Intent(ctx, GCPService.class);
         intent.putExtra("packageName", ctx.getPackageName());
         intent.putExtra("messenger", lounge.mMessenger);
-        intent.putExtra("name", name);
+//        intent.putExtra("name", name);
         ctx.startService(intent);
         ctx.bindService(intent, lounge, Context.BIND_AUTO_CREATE);
         return lounge;

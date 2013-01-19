@@ -1,7 +1,6 @@
-package eu.andlabs.studiolounge;
+package eu.andlabs.studiolounge.util;
 
 import java.util.Random;
-
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -27,14 +26,13 @@ public class LoginManager implements Constants {
         return sInstance;
     }
 
-    public Player getUserId() {
+    public String getUserId() {
         String login = mPrefs.getString(LOGIN, null);
         if (login == null) {
             login = retrieveUserId();
             mPrefs.edit().putString(LOGIN, login).commit();
         }
-
-        return new Player(login);
+        return login;
     }
 
     private String retrieveUserId() {

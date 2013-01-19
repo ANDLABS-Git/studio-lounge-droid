@@ -21,7 +21,7 @@ import android.net.Uri;
 import android.test.ProviderTestCase2;
 import android.test.mock.MockContentResolver;
 import android.util.Log;
-import eu.andlabs.studiolounge.gcp.CacheProvider;
+import eu.andlabs.studiolounge.CacheProvider;
 
 public class CrashProviderTest extends ProviderTestCase2<CacheProvider> {
 

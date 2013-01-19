@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package eu.andlabs.studiolounge.gcp;
+package eu.andlabs.studiolounge;
 
 import java.util.ArrayList;
 
-import eu.andlabs.studiolounge.Constants;
-import eu.andlabs.studiolounge.Player;
+import eu.andlabs.studiolounge.util.Constants;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,7 +33,7 @@ import android.os.RemoteException;
 import android.os.Vibrator;
 import android.util.Log;
 /**
- * <p>The Lounge class starts and binds the background {@link eu.andlabs.studiolounge.gcp.GCPService GCPService}
+ * <p>The Lounge class starts and binds the background {@link eu.andlabs.studiolounge.GCPService GCPService}
  * and provides an object oriented interface to integrate Lounge into Mobile Apps.
  * 
  * The ServiceConnection needs to bind and unbind during Activity flow.
@@ -127,7 +126,7 @@ public class Lounge implements ServiceConnection {
         Log.d("Lounge", "Lounge Constructor");
     }
     
-    ArrayList<Player> mPlayers = new ArrayList<Player>();
+//    ArrayList<Player> mPlayers = new ArrayList<Player>();
     
     // receive incoming android system IPC messages from backround GCP service
     public final Messenger mMessenger = new Messenger(new Handler() {
@@ -137,79 +136,9 @@ public class Lounge implements ServiceConnection {
             Log.i("GCP","Handler Code: "+msg.what);
             ChatMessage message;
             Bundle b;
-            switch (msg.what) {
-            case GCPService.LOGIN:
-                Player player = new Player(msg.obj.toString());
-                Log.d(TAG, mLobbyListener+" Lounge on LOGIN " + player.getPlayername());
-                if (!mPlayers.contains(player)) mPlayers.add(player);
-                if (mLobbyListener != null){
-                    mLobbyListener.onPlayerLoggedIn(player.getPlayername());
-                }
-                break;
-            case GCPService.CHAT:
-                b = (Bundle) msg.obj;
-                message = new ChatMessage();
-                message.player = b.getString("player");
-                message.text = b.getString("msg");
-                Log.d(TAG, "CHATLISTENER " + mChatListener);
-                for (ChatListener l : mChatListeners) { 
-                    l.onChatMessageRecieved(message);
-                }
-                break;
-            case GCPService.HOST:
-                Log.d(TAG, "Lounge on HOST " + msg.obj);
-                b = (Bundle) msg.obj;
-                if(!mPlayers.isEmpty()){
-                Player p = mPlayers.get(mPlayers.indexOf(new Player(b.getString("host"))));
-                p.setHostedGame(b.getString("game"));
-                p.joined = b.getInt("joined");
-                p.min = b.getInt("min");
-                p.max = b.getInt("max");
-
-                if (mLobbyListener != null) {
-                    mLobbyListener.onNewHostedGame(b.getString("game"));
-                    
-                }
-                }else{
-                    Log.i("GCP-Service","Player Array is empty in   case GCPService.HOST:");
-                }
-                
-                break;
-            case GCPService.UNHOST:
-                b = (Bundle) msg.obj;
-                Log.d(TAG, "Lounge on UNHOST " + msg.obj);
-                Player pp = mPlayers.get(mPlayers.indexOf(new Player(b.getString("host"))));
-                pp.setHostedGame(null);
-                if (mLobbyListener != null) {
-                    b = (Bundle) msg.obj;
-                    mLobbyListener.onNewHostedGame(b.getString("game"));
-                }
-                break;
-            case GCPService.JOIN:
-                b = (Bundle) msg.obj;
-                String game = b.getString("game");
-                Log.i("Lobby", "player joined "+game);
-                if (!game.equals(myGame) && mLobbyListener != null) {
-                    mLobbyListener.onPlayerJoined(b.getString("guest"), game);
-                }
-                break;
-            case GCPService.CUSTOM:
-                if (mMsgListener != null) {
-                    Log.d(TAG, "CUSTOM " + msg.obj);
-                    mMsgListener.onMessageReceived((Bundle) msg.obj);
-                }
-                break;
-            case GCPService.LEAVE:
-                mLobbyListener.onPlayerLeft(msg.obj.toString()); 
-                break;
-            }
         }
     });
 
-    public ArrayList<Player> getPlayers() {
-        return mPlayers;
-    }
-    
     private ChatListener mChatListener;
 
     private ArrayList<ChatListener> mChatListeners = new ArrayList<Lounge.ChatListener>(2);

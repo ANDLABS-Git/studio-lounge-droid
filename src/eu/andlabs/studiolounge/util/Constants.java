@@ -1,4 +1,4 @@
-package eu.andlabs.studiolounge;
+package eu.andlabs.studiolounge.util;
 
 public interface Constants {
 

@@ -26,8 +26,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import eu.andlabs.studiolounge.R;
-import eu.andlabs.studiolounge.gcp.Lounge.ChatListener;
-import eu.andlabs.studiolounge.gcp.Lounge.ChatMessage;
+import eu.andlabs.studiolounge.Lounge.ChatListener;
+import eu.andlabs.studiolounge.Lounge.ChatMessage;
 
 public class StatisticFragment extends Fragment implements ChatListener,
         OnClickListener {

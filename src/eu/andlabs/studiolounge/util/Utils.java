@@ -1,4 +1,4 @@
-package eu.andlabs.studiolounge;
+package eu.andlabs.studiolounge.util;
 
 import java.util.List;
 
@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import eu.andlabs.studiolounge.Constants;
 
 public class Utils implements Constants {
 
