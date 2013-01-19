@@ -43,8 +43,8 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
     private static final int GAMES = 0;
 
     @Override
-    public View onCreateView(final LayoutInflater layout, ViewGroup p, Bundle b) {
-        return layout.inflate(R.layout.fragment_games, p, false);
+    public View onCreateView(final LayoutInflater lI, ViewGroup p, Bundle b) {
+        return lI.inflate(R.layout.fragment_games, p, false);
     }
     
     @Override

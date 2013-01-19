@@ -44,8 +44,8 @@ public class ChatFragment extends ListFragment
     private EditText mText;
 
     @Override
-    public View onCreateView(final LayoutInflater layout, ViewGroup p, Bundle b) {
-        return layout.inflate(R.layout.fragment_chat, p, false);
+    public View onCreateView(final LayoutInflater lI, ViewGroup p, Bundle b) {
+        return lI.inflate(R.layout.fragment_chat, p, false);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ChatFragment extends ListFragment
                 final ChatMsgView msg = (ChatMsgView) listItem;
                 msg.player.setText(msges.getString(0));
                 msg.text.setText(msges.getString(1));
-                msg.text.setText(msges.getString(0));
+                msg.time.setText(msges.getString(0));
             }
         });
         getLoaderManager().initLoader(0, null, this);

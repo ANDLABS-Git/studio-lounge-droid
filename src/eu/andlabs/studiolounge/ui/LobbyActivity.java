@@ -26,7 +26,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 
 public class LobbyActivity extends FragmentActivity implements OnPageChangeListener {
@@ -37,7 +37,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
     private ImageView mStatsIcon;
     private ImageView mAboutIcon;
     private ImageView mChatIcon;
-    private View mHeader;
+    private ImageView mHeader;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,12 +51,13 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
         mLobbyIcon = (ImageView) findViewById(R.id.ic_tab_lobby);
         mStatsIcon = (ImageView) findViewById(R.id.ic_tab_stat);
         mChatIcon = (ImageView) findViewById(R.id.ic_tab_chat);
-        mHeader = findViewById(R.id.header);
+        mHeader = (ImageView) findViewById(R.id.header);
         
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOnPageChangeListener(this);
         mViewPager.setOffscreenPageLimit(3);
-        mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+        mViewPager.setAdapter(
+                new FragmentStatePagerAdapter(getSupportFragmentManager()) {
 
             @Override
             public int getCount() { return 4; }
@@ -94,7 +95,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mViewPager.setCurrentItem(ABOUT, true);
         }
     }
-    
+
     @Override
     public void onPageSelected(int position) {
         Log.d(TAG, "page selected");
@@ -105,7 +106,6 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mChatIcon.setAlpha(ALPHA_OFF);
             mStatsIcon.setAlpha(ALPHA_OFF);
             mAboutIcon.setAlpha(ALPHA_OFF);
-            mHeader.setBackgroundColor(getResources().getColor(R.color.orange));
             break;
 
         case CHAT:
@@ -114,7 +114,6 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mChatIcon.setAlpha(255);
             mStatsIcon.setAlpha(ALPHA_OFF);
             mAboutIcon.setAlpha(ALPHA_OFF);
-            mHeader.setBackgroundColor(getResources().getColor(R.color.green));
             break;
 
         case STATS:
@@ -123,7 +122,6 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mChatIcon.setAlpha(ALPHA_OFF);
             mStatsIcon.setAlpha(255);
             mAboutIcon.setAlpha(ALPHA_OFF);
-            mHeader.setBackgroundColor(getResources().getColor(R.color.blue));
             break;
             
 
@@ -133,7 +131,6 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mChatIcon.setAlpha(ALPHA_OFF);
             mStatsIcon.setAlpha(ALPHA_OFF);
             mAboutIcon.setAlpha(255);
-            mHeader.setBackgroundColor(getResources().getColor(R.color.foo));
             break;
         default:
             break;
@@ -141,10 +138,37 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
     }
 
     @Override
-    public void onPageScrollStateChanged(int arg0) {}
+    public void onPageScrollStateChanged(int state) {}
 
     @Override
-    public void onPageScrolled(int arg0, float arg1, int arg2) {}
+    public void onPageScrolled(int position, float foo, int arg2) {
+        switch (position) {
+        case LOBBY:
+            mHeader.setBackgroundColor(ipc(R.color.orange, R.color.green, foo));
+            break;
+        case CHAT:
+            mHeader.setBackgroundColor(ipc(R.color.green, R.color.blue, foo));
+            break;
+        case STATS:
+            mHeader.setBackgroundColor(ipc(R.color.blue, R.color.foo, foo));
+            break;
+        }
+    }
+    
+    private int ipc(int a, int b, float proportion) {
+        float[] hsva = new float[3];
+        float[] hsvb = new float[3];
+        Color.colorToHSV(getResources().getColor(a), hsva);
+        Color.colorToHSV(getResources().getColor(b), hsvb);
+        for (int i = 0; i < 3; i++) {
+          hsvb[i] = interpolate(hsva[i], hsvb[i], proportion);
+        }
+        return Color.HSVToColor(hsvb);
+      }
+      private float interpolate(float a, float b, float proportion) {
+          return (a + ((b - a) * proportion));
+      }
+
 
 
     private static final int ALPHA_OFF = (int) (255 * 0.3f);
