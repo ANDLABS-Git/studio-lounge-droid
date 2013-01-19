@@ -15,74 +15,18 @@
  */
 package eu.andlabs.studiolounge.ui;
 
-import java.util.ArrayList;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import eu.andlabs.studiolounge.R;
-import eu.andlabs.studiolounge.Lounge.ChatListener;
-import eu.andlabs.studiolounge.Lounge.ChatMessage;
 
-public class AboutFragment extends Fragment implements ChatListener,
-        OnClickListener {
-    ArrayList<ChatMessage> mConversation = new ArrayList<ChatMessage>();
-    private EditText mChatEditText;
-
-    static AboutFragment newInstance(int num) {
-        AboutFragment f = new AboutFragment();
-        return f;
-    }
-
-    
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        Log.d("THIS", "on create chat fragment");
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
+public class AboutFragment extends Fragment {
 
     @Override
-    public void onStart() {
-        Log.i("Lounge", "ChatFragment on START");
-        super.onStart();
+    public View onCreateView(final LayoutInflater lI, ViewGroup p, Bundle b) {
+        return lI.inflate(R.layout.fragment_about, p, false);
     }
 
-    @Override
-    public View onCreateView(final LayoutInflater infl, ViewGroup p, Bundle b) {
-        Log.d("THIS", "on create view");
-        final View stats = infl.inflate(R.layout.fragment_about, p, false);
-
-        return stats;
-    }
-
-    @Override
-    public void onChatMessageRecieved(ChatMessage msg) {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        ChatMessage msg = new ChatMessage();
-        msg.text = mChatEditText.getText().toString();
-        mChatEditText.requestFocusFromTouch();
-        mChatEditText.setText("");
-        onChatMessageRecieved(msg);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        Log.d("THIS", "on destroy view chat fragment");
-        super.onDestroyView();
-    }
 }
