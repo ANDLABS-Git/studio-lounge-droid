@@ -31,13 +31,6 @@
         android:background="@color/green"
     />
 
-    <View android:id="@+id/bottom"
-        android:layout_height="10dp"
-        android:background="@color/orange"
-        android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-    />
-
     <ExpandableListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
@@ -46,5 +39,29 @@
         android:dividerHeight="2dp"
         android:divider="#4cffffff"
     />
+    
+    <SlidingDrawer
+        android:id="@+id/slidingDrawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:content="@+id/content"
+        android:handle="@+id/handle">
+        
+        <FrameLayout
+            android:id="@+id/handle"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+            <include layout="@layout/view_pulsing_handle" />
+        </FrameLayout>
+        
+        <fragment
+            android:id="@+id/content"
+            android:name="eu.andlabs.studiolounge.ui.HostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        />
+    </SlidingDrawer>
 
 </RelativeLayout>

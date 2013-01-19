@@ -22,15 +22,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="80dp"
-      android:background="#928B15"
-      android:orientation="vertical" >
-    </LinearLayout>
-
-    
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="10dp"

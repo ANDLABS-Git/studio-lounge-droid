@@ -44,7 +44,7 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
 
     @Override
     public View onCreateView(final LayoutInflater layout, ViewGroup p, Bundle b) {
-        return layout.inflate(R.layout.fragment_lobby, p, false);
+        return layout.inflate(R.layout.fragment_games, p, false);
     }
     
     @Override
@@ -125,7 +125,7 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
 
     static class GameView extends RelativeLayout {
 
-        private TextView name;
+        TextView name;
 
         public GameView(Context ctx, AttributeSet attrs) {
             super(ctx, attrs);
@@ -148,7 +148,7 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
             super(ctx, attrs);
         }
 
-        private TextView players;
+        TextView players;
 
         @Override
         protected void onFinishInflate() {

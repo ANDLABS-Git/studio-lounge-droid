@@ -15,12 +15,12 @@
 <view class="eu.andlabs.studiolounge.ui.GamesFragment$GameView"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="?android:attr/listPreferredItemHeight"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:padding="0dip" >
 
         <TextView
             android:id="@+id/name"
-            android:textSize="11dip"
+            android:textSize="25dp"
             android:textColor="#77FFFFFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

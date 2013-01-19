@@ -55,7 +55,7 @@ public class ChatFragment extends ListFragment
         mText = (EditText) layout.findViewById(R.id.msg_field);
         mText.setOnKeyListener(this);
         
-        setListAdapter(new CursorAdapter(getActivity(), null) {
+        setListAdapter(new CursorAdapter(getActivity(), null, true) {
             
             @Override
             public View newView(Context ctx, Cursor msgs, ViewGroup parent) {
