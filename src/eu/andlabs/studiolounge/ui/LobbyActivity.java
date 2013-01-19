@@ -70,7 +70,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
                 case CHAT:
                     return new ChatFragment();
                 case STATS:
-                    return new ChatFragment();
+                    return new StatsFragment();
                 case ABOUT:
                     return new AboutFragment();
                 }
