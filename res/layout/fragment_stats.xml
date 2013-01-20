@@ -30,7 +30,7 @@
         android:layout_height="10dp"
         android:layout_marginTop="125dp"
         android:layout_alignParentRight="true"
-        android:background="@color/foo"
+        android:background="@color/yellow"
     />
 
 

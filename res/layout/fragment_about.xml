@@ -34,11 +34,11 @@
         android:layout_height="10dp"
         android:layout_width="match_parent"
         android:layout_marginTop="125dp"
-        android:background="@color/foo" />
+        android:background="@color/yellow" />
 
     <View
         android:layout_height="10dp"
-        android:background="@color/foo"
+        android:background="@color/yellow"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
     />

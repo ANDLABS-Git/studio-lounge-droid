@@ -150,7 +150,7 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
             mHeader.setBackgroundColor(ipc(R.color.green, R.color.blue, foo));
             break;
         case STATS:
-            mHeader.setBackgroundColor(ipc(R.color.blue, R.color.foo, foo));
+            mHeader.setBackgroundColor(ipc(R.color.blue, R.color.yellow, foo));
             break;
         }
     }
