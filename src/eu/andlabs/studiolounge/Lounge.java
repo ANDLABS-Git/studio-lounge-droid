@@ -49,167 +49,23 @@ public class Lounge implements ServiceConnection {
 
     protected static final String TAG = "Lounge";
     
-    /**
-     * This callback interface is used to subscribe game arrangement messages
-     */
-    public interface LobbyListener {
-
-        /**
-         * is called after every successful login
-         * 
-         * @param player name of the player who logged in.
-         */
-        public void onPlayerLoggedIn(String player);
-
-        /**
-         * is called after every logout operation
-         * 
-         * @param player name of the player who has left.
-         */
-        public void onPlayerLeft(String player);
-
-        /**
-         * is called when new games are hosted
-         * 
-         * @param player name of the host player
-         */
-        public void onNewHostedGame(String player);
-
-        /**
-         * is called when player join games.
-         * 
-         * @param player name of the player who has joined
-         * @param game package identifier of the hosted game
-         */
-        public void onPlayerJoined(String player, String game);
-
-    }
-
-    /**
-     * This callback interface is used to subscribe chat messages.
-     */
-    public interface ChatListener {
-
-        /**
-         * is called when a chat message arrives
-         * 
-         * @param text text content of the chat message
-         */
-        public void onChatMessageRecieved(ChatMessage msg);
-
-    }
-
-    /**
-     * This callback interface is used to subscribe custom game messages.
-     */
-    public interface GameMsgListener {
-
-        /**
-         * is called when custom game messages come in
-         * 
-         * @param the content of the custom game message
-         */
-        public void onMessageReceived(Bundle msg);
-
-    }
-
-    /**
-     * This class encapsulates chat messages.
-     */
-    public static class ChatMessage {
-        public String player;
-        public String text;
-    }
-
-
     public Lounge(Context context) {
         Log.d("Lounge", "Lounge Constructor");
     }
     
-//    ArrayList<Player> mPlayers = new ArrayList<Player>();
     
-    // receive incoming android system IPC messages from backround GCP service
-    public final Messenger mMessenger = new Messenger(new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            Log.i("GCP","Handler Code: "+msg.what);
-            ChatMessage message;
-            Bundle b;
-        }
-    });
-
-    private ChatListener mChatListener;
-
-    private ArrayList<ChatListener> mChatListeners = new ArrayList<Lounge.ChatListener>(2);
-    
-    /**
-     * subscribe to chat messages
-     * 
-     * @param listener callback interface
-     */
-    public void register(ChatListener listener) {
-        mChatListeners.add(listener);
-    }
-
-    /**
-     * unsubscribe chat messages
-     * 
-     * @param listener callback interface
-     */
-    public void unregister(ChatListener listener) {
-        mChatListener = null;
-    }
-
-    private LobbyListener mLobbyListener;
-
-    /**
-     * subscribe to game arrangement messages
-     * 
-     * @param listener callback interface
-     */
-    public void register(LobbyListener listener) {
-        mLobbyListener = listener;
-    }
-
-    /**
-     * unsubscribe game arrangement game messages
-     * 
-     * @param listener callback interface
-     */
-    public void unregister(LobbyListener listener) {
-        mLobbyListener = null;
-    }
-
-    private GameMsgListener mMsgListener;
-
-    /**
-     * subscribe to custom game messages
-     * 
-     * @param listener callback interface
-     */
-    public void register(GameMsgListener listener) {
-        mMsgListener = listener;
-    }
-
-    /**
-     * unsubscribe custom game messages
-     * 
-     * @param listener callback interface
-     */
-    public void unregister(GameMsgListener listener) {
-        mMsgListener = null;
-    }
-
     // send android system IPC message to backround GCP service
     private Messenger mService;
-
-    private String myGame;
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         Log.d("Lounge", "Service Connected " + service);
         mService = new Messenger(service);
+    }
+    
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        Log.d("Lounge", "Service DISconnected");
     }
 
     private void sendMessage(int what, Object thing) {
@@ -222,36 +78,49 @@ public class Lounge implements ServiceConnection {
         }
     }
 
-    public void sendChatMessage(ChatMessage msg) {
-        sendMessage(GCPService.CHAT, msg.text);
-    }
-    
-    public void hostGame(ComponentName componentName) {
-    	hostGame(componentName.flattenToShortString());
+    public void sendChatMessage(String text) {
+        sendMessage(GCPService.CHAT, text);
     }
 
-    public void hostGame(String pkgName) {
-        sendMessage(GCPService.HOST, pkgName);
-        myGame = pkgName;
+    public void hostGame(String game) {
+        sendMessage(GCPService.HOST, game);
     }
 
     public void joinGame(String game) {
-        Log.i("Players","Join game "+game); 
         sendMessage(GCPService.JOIN, game);
-        myGame = game;
     }
 
     /**
      * send custom game message
-     * 
      * @param msg the data to send
      */
     public void sendGameMessage(Bundle msg) {
         sendMessage(GCPService.CUSTOM, msg);
     }
 
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        Log.d("Lounge", "Service DISconnected");
+
+
+    /**
+     * This callback interface is used to subscribe custom game messages.
+     */
+    public interface GameMsgListener {
+        /**
+         * is called when custom game messages come in
+         * 
+         * @param the content of the custom game message
+         */
+        public void onMessageReceived(Bundle msg);
     }
+
+    // receive incoming android system IPC messages from backround GCP service
+    public final Messenger mMessenger = new Messenger(new Handler() {
+        
+        @Override
+        public void handleMessage(Message msg) {
+        }
+        
+    });
 }
+
+
+

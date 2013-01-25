@@ -29,7 +29,6 @@ import org.json.JSONObject;
 
 import com.google.gson.JsonObject;
 
-import eu.andlabs.studiolounge.Lounge.ChatMessage;
 import eu.andlabs.studiolounge.util.LoginManager;
 
 import android.app.Service;
@@ -40,7 +39,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -71,7 +69,6 @@ public class GCPService extends Service {
         Intent intent = new Intent(ctx, GCPService.class);
         intent.putExtra("packageName", ctx.getPackageName());
         intent.putExtra("messenger", lounge.mMessenger);
-//        intent.putExtra("name", name);
         ctx.startService(intent);
         ctx.bindService(intent, lounge, Context.BIND_AUTO_CREATE);
         return lounge;
@@ -113,7 +110,6 @@ public class GCPService extends Service {
         try {
             connecting = true;
             mSocketIO = new SocketIO("http://may.base45.de:7777", new IOCallback() {
-//            mSocketIO = new SocketIO("http://192.168.2.109:7777", new IOCallback() {
 
                 @Override
                 public void onConnect() { // auto login
@@ -132,79 +128,29 @@ public class GCPService extends Service {
                     b.putString("player", msplit[0]);
                     b.putString("msg", msplit[1]);
                     Log.d("CHAT", msplit[0]);
-                    dispatchMessage(CHAT, b);
                 }
 
                 @Override
                 public void on(String type, IOAcknowledge ack, Object... data) {
                      log("incoming message:" + type + " --- " + data);
                     try {
-                        if (type.equals("login")) {
+                        Bundle b = new Bundle();
+                        JSONObject json = (JSONObject) data[0];
+                        b.putString("game", json.getString("game"));
+                        b.putString("player", json.getString("player"));
+                        if (type.equals("welcome")) {
                             loggedIn = true;
-                            dispatchMessage(LOGIN, data[0].toString());
-                        } else if (type.equals("welcome")) {
-                            // dispatchMessage(LOGIN,
-                            // data[0].toString().split("in as ")[1]);
                         } else if (type.equals("host")) {
-                            JSONObject json = (JSONObject) data[0];
-                            Bundle b = new Bundle();
-                            b.putString("game", json.getString("game"));
-                            b.putString("host", json.getString("host"));
-                            dispatchMessage(HOST, b);
+                        } else if (type.equals("unhost")) {
                         } else if (type.equals("join")) {
-                            JSONObject json = (JSONObject) data[0];
-                            Bundle b = new Bundle();
-                            b.putString("game", json.getString("game"));
-                            b.putString("guest",json.getString("guest"));
-                            dispatchMessage(JOIN, b);
-                        } else if (type.equals("state")) {
-                            JSONObject json = (JSONObject) data[0];
-                            JSONArray players = json.getJSONArray("players");
-                            for (int i = 0; i < players.length(); i++) {
-                                JSONObject player = players.getJSONObject(i);
-                                dispatchMessage(LOGIN, player.getString("name"));
-                                if (player.has("game")) {
-                                    Bundle b = new Bundle();
-                                    JSONObject game = player.getJSONObject("game");
-                                    b.putString("game", game.getString("id"));
-                                    b.putString("host", player.getString("name"));
-                                    b.putInt("joined", game.getInt("joined"));
-                                    b.putInt("min", game.getInt("min"));
-                                    b.putInt("max", game.getInt("max"));
-                                    dispatchMessage(HOST, b);
-                                }
-                            }
-                            JSONArray chat = json.getJSONArray("chat");
-                            for (int i = 0; i < chat.length(); i++) {
-                                JSONObject msg = chat.getJSONObject(i);
-                                Bundle b = new Bundle();
-                                b.putString("player", msg.getString("player"));
-                                b.putString("msg", msg.getString("msg"));
-                                dispatchMessage(CHAT, b);
-                            }
+                        } else if (type.equals("leave")) {
                         } else if (type.equals("move")) {
-                            JSONObject json = (JSONObject) data[0];
-                            Bundle b = new Bundle();
-                            for (Iterator<String> i = json.keys(); i
-                                    .hasNext();) {
+                            for (Iterator<String> i = json.keys(); i.hasNext();) {
                                 String key = i.next();
                                 b.putString(key, json.getString(key));
-                                 Log.i("json",
-                                 "converting -  key:"+key +
-                                 "  /  Value: "+json.getString(key));
                             }
-                            dispatchMessage(CUSTOM, b);
-                        } else if (type.equals("unhost")) {
-                            Bundle b = new Bundle();
-                            JSONObject json = (JSONObject) data[0];
-                            b.putString("host", json.getString("host"));
-                            b.putString("game", json.getString("game"));
-                            dispatchMessage(UNHOST, b);
                         } else {
-                            dispatchMessage(CHAT,
-                                    "BAD protocol message: " + type);
-                            Log.d("GCP", ""
-                                    + data[0].getClass().getName());
+                            Log.d("GCP", "BAD protocol msg: ");
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -234,7 +180,6 @@ public class GCPService extends Service {
             log(e);
             loggedIn = false;
             connecting = false;
-            dispatchMessage(CHAT, "GCP Service Error:   " + e.toString());
             e.printStackTrace();
         }
     }
@@ -257,15 +202,6 @@ public class GCPService extends Service {
     public IBinder onBind(Intent intent) {
         log("on bind");
         return mMessenger.getBinder();
-    }
-
-    // send android system IPC message to game apps
-    private void dispatchMessage(int what, Object thing) {
-        try {
-            mApp.send(Message.obtain(mHandler, what, thing));
-        } catch (RemoteException e) {
-            log("Error: " + e.toString());
-        }
     }
 
     // receive android system IPC messages from game apps
