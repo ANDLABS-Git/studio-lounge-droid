@@ -15,14 +15,12 @@
  */
 package eu.andlabs.studiolounge.test;
 
-import junit.framework.Assert;
+import eu.andlabs.studiolounge.CacheProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.test.ProviderTestCase2;
 import android.test.mock.MockContentResolver;
-import android.util.Log;
-import eu.andlabs.studiolounge.gcp.CacheProvider;
 
 public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
 
@@ -31,235 +29,278 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
 
     public CrashProviderTest_LJ() {
         super(CacheProvider.class, "com.lounge");
-        Log.d(TAG, "HI");
     }
 
-    // CRASH TEST DUMMIES 
-    ContentValues anyName = new ContentValues();
-    ContentValues ananDa = new ContentValues();
-    ContentValues lukas = new ContentValues();
-    
-    ContentValues worms = new ContentValues();
-    ContentValues molecool = new ContentValues();
-    ContentValues tumblPanda = new ContentValues();
-    ContentValues gravityWins = new ContentValues();
+// CRASH TEST DUMMIES
+    private Game wrms;
+    private Game panda;
+    private Game gravty;
+    private Game molecul;
+    private Player lukas;
+    private Player ananDa;
+    private Player anyName;
     
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        anyName.put("name", "Anyname");
-        ananDa.put("name", "Ananda");
-        lukas.put("name", "Lukas");
-        
-        worms.put("name", "Worms");
-        worms.put("installed",false);
-        worms.put("pkg","de.worms");
-        
-        molecool.put("name", "Molecool");
-        molecool.put("installed",true);
-        molecool.put("pkg","de.mole");
-        
-        tumblPanda.put("name", "Panda");
-        tumblPanda.put("installed",true)
-        tumblPanda.put("pkg","de.panda");
-        
-        gravityWins.put("name", "Gravity Wins");
-        gravityWins.put("pkg", "de.gravity");
-        gravityWins.put("installed", true);
-        
         mRes = getMockContentResolver();
+        // first gather the troops
+        lukas = new Player("Lukas");
+        ananDa = new Player("Ananda");
+        anyName = new Player("Anyname");
+        
+        wrms = new Game("Worms", "de.worms", false);
+        panda = new Game("Pandararr", "de.panda", true);
+        molecul = new Game("Molecoooool", "de.mole", true);
+        gravty = new Game("Graffity Wins", "de.gravity", true);
+    }
+
+
+
+
+
+    // ########################
+    // ######   Level 1  ######
+    // ########################
+    
+    public void testChat() {
+        ContentValues msg = new ContentValues();
+        msg.put("player", "Ananda");
+        msg.put("text", "Hi, what's up?");
+        long now = System.currentTimeMillis();
+        msg.put("time", now);
+        
+        mRes.insert(Uri.parse("content://foo.lounge/chat"), msg); // 1
+        mRes.insert(Uri.parse("content://foo.lounge/chat"), msg); // 2
+        mRes.insert(Uri.parse("content://foo.lounge/chat"), msg); // 3
+        
+        Cursor msges = mRes.query(Uri.parse("content://foo.lounge/chat"), null, null, null, null);
+        assertEquals("There should be three chat messages", 3, msges.getCount());
+        msges.moveToFirst();
+        assertEquals("Ananda", msges.getString(1));
+        assertEquals("Hi, what's up?", msges.getString(2));
+        assertEquals(now, msges.getString(3));
+    }
+
+
+
+
+
+    // ########################
+    // ######   Level 2  ######
+    // ########################
+    
+    public void testStats() {
+        ContentValues stat;
+        stat = new ContentValues();
+        stat.put("total_msges", 3);
+        mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
+        stat.put("total_msges", 42);
+        mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
+
+        stat = new ContentValues();
+        stat.put("games_played", 5);
+        mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
+        stat.put("games_played", 7);
+        mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
+
+        Cursor stats = mRes.query(Uri.parse("content://foo.lounge/stats"), null, null, null, null);
+        assertEquals("There should always be only one set of stats", 1, stats.getCount());
+        stats.moveToFirst();
+        assertEquals("total messages should have been added", 45, stats.getInt(1));
+        assertEquals("games played should have been added", 12, stats.getInt(1));
+    }
+
+
+
+
+
+    // ########################
+    // ######   Level 3  ######
+    // ########################
+    
+    class Game {
+        String name;
+        String pkgId;
+        boolean installed;
+        
+        public Game(String n, String p, boolean i) {
+            name = n;
+            pkgId = p;
+            installed = i;
+        }
+        
+        public ContentValues toContenValues() {
+            ContentValues cv = new ContentValues();
+            cv.put("name", name);
+            cv.put("pkgId", pkgId);
+            cv.put("installed", installed);
+            return cv;
+        }
     }
     
-    
-    
-    // #####   S C E N A R I O   #####
-    
-    
-    private void testHostDrawer(){
-    	  mRes.insert(Uri.parse("content://com.lounge/games"), worms); // 1
-          mRes.insert(Uri.parse("content://com.lounge/games"), molecool); // 2
-          mRes.insert(Uri.parse("content://com.lounge/games"), tumblPanda); // 3
-          mRes.insert(Uri.parse("content://com.lounge/games"), gravityWins); // 4
+    public void testHostDRAWER() {
+          // crash test dummy games
+          mRes.insert(Uri.parse("content://com.lounge/games"), wrms.toContenValues());
+          mRes.insert(Uri.parse("content://com.lounge/games"), panda.toContenValues());
+          mRes.insert(Uri.parse("content://com.lounge/games"), molecul.toContenValues());
+          mRes.insert(Uri.parse("content://com.lounge/games"), gravty.toContenValues());
           
-          Cursor loungeGames=mRes.query("content://com.lounge/games", projection, selection, selectionArgs, sortOrder);
-          assertEquals("four games in list", 4,loungeGames.getCount());
-          loungeGames.moveToLast();
-          assertEquals("worms", loungeGames.getString(1));
-          assertEquals("de.worms", loungeGames.getString(2));
-          assertEquals(0, loungeGames.getShort(3)); //worms is not installed
-          loungeGames.moveToFirst();
-          assertEquals(1, loungeGames.getShort(3)); //molecule is installed
-        	  
+          Cursor games = mRes.query(Uri.parse("content://com.lounge/games"), null, null, null, null);
+          assertEquals("four games in list", 4,games.getCount());
+
+          games.moveToFirst();
+          assertEquals(gravty, games); // sorted by alphabet G?
+          assertEquals("Gravity is installed", 1, games.getShort(3));
+          
+          games.moveToLast();
+          assertEquals(wrms, games);
+          assertEquals("Worms is not installd", 0, games.getShort(3));
     }
     
-    private void testGameLobbyApi() {
-        // crash test players
-        mRes.insert(Uri.parse("content://com.lounge/players"), anyName); // 1
-        mRes.insert(Uri.parse("content://com.lounge/players"), ananDa); // 2
-        mRes.insert(Uri.parse("content://com.lounge/players"), lukas); // 3
-        
-        // crash test games
-        mRes.insert(Uri.parse("content://com.lounge/games"), worms); // 1
-        mRes.insert(Uri.parse("content://com.lounge/games"), molecool); // 2
-        mRes.insert(Uri.parse("content://com.lounge/games"), tumblPanda); // 3
-        mRes.insert(Uri.parse("content://com.lounge/games"), gravityWins); // 4
-        
-        int matchID_1=1;
-        int matchID_2=2;
-        int matchID_3=3;
-        int matchID_4=4;
-        int matchID_5=5;
-        
-        
-//        Upper List => 4 Use cases     
-//			
-//        
-//        
-//        
-//        
-        // test scenario running games of this user
-        mRes.insert(Uri.parse("content://com.lounge/games/de.panda/matches/"), anyName, matchID_5); //host Mol3cool
-        mRes.insert(Uri.parse("content://com.lounge/games/de.panda/matches/+"matchID_1+"/players"), ananDa); // join
-        mRes.update("content://com.lounge/games/de.panda/matches/+"matchID_1+"/","activePlayer=anyName", null, null);
-        
-        mRes.insert(Uri.parse("content://com.lounge/games/de.panda/matches/"), lukas, matchID_4); //host Mol3cool
-        mRes.insert(Uri.parse("content://com.lounge/games/de.panda/matches/+"matchID_4+"/players"), anyName); // join
-        //no update on activePlayer yet for this game which means its not running yet.
-        
-        
-        // Question:
-        // Should the running games be also under content://com.lounge/games/de.panda/matches/ 
-        // and have a running flag?
-        
-        
-        
-        
-        
-        
-        
-        
-        // test scenario hosted games by others 
-        // 2 x Molecule games with each 1 player joined
-        // 1 x worms game with 2 player joined
-        // 1 x gravity game with no joined players
-        
-        mRes.insert(Uri.parse("content://com.lounge/games/de.mole/matches"), anyName, matchID_1); // host Mol3cool
-        mRes.insert(Uri.parse("content://com.lounge/games/de.mole/matches/+"matchID_1+"/players"), ananDa); // join
-        
-        mRes.insert(Uri.parse("content://com.lounge/games/de.mole/matches"), ananDa, matchID_2); // host Mol3cool
-        mRes.insert(Uri.parse("content://com.lounge/games/de.mole/matches/"+matchID_2+"/players"), lukas); // join
-        Cursor games = mRes.query(Uri.parse("content://com.lounge/games?player=anyName"), null, "username=", lukas, null);
-        assertEquals("There should be 3 games, 2 games in the upper list and one game in the lower",3, games.getCount()); 
-        games.moveToFirst();
-        assertEquals("de.panda", games.getString(1));
-        assertEquals("Panda", games.getString(2));
-        assertEquals(1, games.getShort(3)); //selected player is involved
-        
-        
-        
-        Cursor in_pandaMatches=mRes.query("content://com.lounge/games/de.panda/matches?player=anyName", projection, selection, selectionArgs, sortOrder)
-        assertEquals("two children for panda in the upper list", 2,in_pandaMatches.getCount())
-        in_pandaMatches.moveToFirst();
-        assertEquals(matchID_5, in_pandaMatches.getString(1)); 
-        assertEquals("anyName",in_pandaMatches.getString(2)); //host
-        assertEquals("ananDa", in_pandaMatches.getString(3)); // Involved Players
-        assertEquals("anyName", in_pandaMatches.getString(4)); //active player
-        
-        in_pandaMatches.moveToNext();
-        assertEquals(matchID_4, in_pandaMatches.getString(1)); 
-        assertEquals("lukas",in_pandaMatches.getString(2)); //host
-        assertEquals("anyName", in_pandaMatches.getString(3)); // Involved Players
-        assertEquals("", in_pandaMatches.getString(4)); //active player => no active player = not running
-       
-        games.moveToNext(); //move to next game -> Molecule
-        assertEquals("de.mole", games.getString(1));
-        assertEquals("Molecool", games.getString(2));
-        assertEquals(1, games.getShort(3)); //selected player is involved
-        Cursor in_MoleMatches=mRes.query("content://com.lounge/games/de.mole/matches?player=anyName", projection, selection, selectionArgs, sortOrder)
-        assertEquals("one child for mole in the upper list", 1,in_MoleMatches.getCount())
-        
-        
-        games.moveToNext();
-        assertEquals(0, games.getShort(3)); //selected player is NOT involved
-        Cursor out_MoleMatches=mRes.query("content://com.lounge/games/de.mole/matches?notplayer=anyName", projection, selection, selectionArgs, sortOrder)
-        assertEquals("one child for mole in the lower list", 1,out_MoleMatches.getCount())
-        out_MoleMatches.moveToFirst();
-        assertEquals(matchID_4, out_MoleMatches.getString(1)); 
-        assertEquals("ananDa",out_MoleMatches.getString(2)); //host
-        assertEquals("lukas", out_MoleMatches.getString(3)); // Involved Players
-        mRes.update("content://com.lounge/games/de.panda/matches/+"matchID_1+"/","activePlayer=lukas", null, null);
-        Cursor out_MoleMatches=mRes.query("content://com.lounge/games/de.mole/matches?notplayer=anyName", projection, selection, selectionArgs, sortOrder)
-        assertEquals("No child for mole in the lower list", 0,out_MoleMatches.getCount())
-        
-        mRes.update("content://com.lounge/games/de.panda/matches/+"matchID_1+"/","activePlayer=ananDa", null, null);
-        //If the player(anyname) is none of the involved players and the active player is set which means 
-        //the game started, this match should not be displayed on the screen anymore.
-        
-        
-        mRes.insert(Uri.parse("content://com.lounge/games/de.worms/matches"), ananDa, matchID_3); // host worms
-        mRes.insert(Uri.parse("content://com.lounge/games/de.worms/matches/"+matchID_3+"/players"), lukas); // join
-        mRes.insert(Uri.parse("content://com.lounge/games/de.worms/matches/"+matchID_3+"/players"), anyName); // join
-        
-        
-        
-        mRes.insert(Uri.parse("content://com.lounge/games/de.gravity/matches"), lukas, matchID_4); // host gravity, no joins
-        
+    private void assertEquals(Game game, Cursor row) {
+        assertEquals(game.name, row.getString(1));
+        assertEquals(game.pkgId, row.getString(2));
+        // TODO expect icon and promotion graphics...
     }
 
 
-    public void testLobbyQuery() {
-//        
-        insertTestDummies();
-        
-        // GET A LIST OF GAMES FOR Ananda'S LOBBY
-        Cursor games = mRes.query(Uri.parse("content://com.lounge/games?player=lukas"), null, "username=", lukas, null);
-        //With break entry for list seperator
-        
-        assertEquals("There should be 4 games, 1xpanda(running) 2xmole(hosted) 1xworms(hosted) 1xgravity(hosted)", 4, games.getCount());
-        
-        // FIRST TWO GAMES WHERE Ananda IS INVOLVED
-        games.moveToFirst();
-        assertEquals("Panda should be first because its in the running section <- Ananda is opponent", "Panda", games.getString(1));
-        assertEquals("Panda should show one game instances to expand", 1, games.getInt(2));
-        assertEquals("TumblePanda should have a content uri for its instances",  // EXPAND
-                "content://com.lounge/games/3/instances?player=Ananda", games.getString(3));
-        // expand TumblePanda
-        Cursor panda_games = mRes.query(Uri.parse(games.getString(3)), null, null, null, null);
-        assertEquals("TumblePanda should have two instances for Ananda", 2, panda_games.getCount());
-        panda_games.moveToFirst();
-        assertEquals("Ananda's instance should have three players", "Ananda, Anyname, Lukas", panda_games.getString(1));
-        panda_games.moveToNext();
-        assertEquals("Lukas's instance should have two players", "Lukas, Ananda", panda_games.getString(1));
-        
-        games.moveToNext();
-        assertEquals("Mol3cool should be second <- Ananda joined one", "Mol3cool", games.getString(1));
-        assertEquals("Mol3cool should show 1 game instance to expand", 1, games.getInt(2));
-        assertEquals("Mol3cool should have a content uri for its instances",  // EXPAND
-                "content://com.lounge/games/2/instances?player=Ananda", games.getString(3));
-        Cursor molecool_games = mRes.query(Uri.parse(games.getString(3)), null, null, null, null);
-        assertEquals("Mol3cool should have 1 instance for Ananda", 1, molecool_games.getCount());
-        molecool_games.moveToFirst();
-        assertEquals("Anyname's instance should have two players", "Anyname, Ananda", molecool_games.getString(1)); 
 
-        // THEN TWO GAMES WITH INSTANCES BY OTHER PLAYERS
-        games.moveToNext();
-        assertEquals("Gravity should be third <- Someone else hosted one instance", "Gravity Wins", games.getString(1));
-        assertEquals("Gravity should show one game instance to expand", 1, games.getInt(2));
-        assertEquals("Gravity should have a content uri for its instances",  // EXPAND
-                "content://com.lounge/games/4/instances", games.getString(3));
-        Cursor gravity_games = mRes.query(Uri.parse(games.getString(3)), null, null, null, null);
-        assertEquals("Gravity should have one instance", 1, gravity_games.getCount());
-        gravity_games.moveToFirst();
-        assertEquals("Lukas's instance should have two players", "Lukas, Ananda", panda_games.getString(1));
 
-        games.moveToNext();
-        assertEquals("Mol3cool should be again <- this time without Ananda", "Mol3cool", games.getString(1));
-        assertEquals("Mol3cool should show one game instance to expand", 1, games.getInt(2));
-        assertEquals("Mol3cool should have a content uri for its instances",  // EXPAND
-                "content://com.lounge/games/2/instances", games.getString(3));
-        molecool_games = mRes.query(Uri.parse(games.getString(3)), null, null, null, null);
-        assertEquals("Mol3cool should have one instance", 1, molecool_games.getCount());
-        molecool_games.moveToFirst();
-        assertEquals("Lukas's instance should have two players", "Lukas, Anyname", panda_games.getString(1));
+
+    // ########################
+    // ######   Level 4  ######
+    // ########################
+    
+    class Player {
+        String name;
+        
+        public Player (String n) {
+            name = n;
+        }
+        public ContentValues toContenValues() {
+            ContentValues cv = new ContentValues();
+            cv.put("name", name);
+            return cv;
+        }
+        public Match hosts(Game game) {
+            Match match = new Match();
+            match.game = game.pkgId;
+            match.host = name;
+            match.id = mRes.insert(
+                    Uri.parse("content://com.lounge/games/" +game.pkgId+ "/matches"), match.toContenValues()
+                    ).getLastPathSegment(); 
+            return match;
+        }
+        public void joins(Match match) {
+            match.players = name;
+            mRes.insert(Uri.parse("content://com.lounge/games/" +match.game+ "/matches/" +match.id +"/players"), toContenValues());
+        }
     }
-//}
+    
+    class Match {
+        String id;
+        String game;
+        String host;
+        String players;
+        String activePlayer;
+        
+        public ContentValues toContenValues() {
+            ContentValues cv = new ContentValues();
+            cv.put("game", game);
+            cv.put("host", host);
+            cv.put("activePlayer", activePlayer);
+            return cv;
+        }
+        
+        public void setActivePlayer(Player player) {
+            activePlayer = player.name;
+            mRes.update(Uri.parse("content://com.lounge/games/" +game+ "/matches/"+id), toContenValues(), null, null);
+        }
+    }
+    
+    private void testGamesLobbyAPI() {
+        // crash test dummy games
+        mRes.insert(Uri.parse("content://com.lounge/games"), wrms.toContenValues());
+        mRes.insert(Uri.parse("content://com.lounge/games"), panda.toContenValues());
+        mRes.insert(Uri.parse("content://com.lounge/games"), molecul.toContenValues());
+        mRes.insert(Uri.parse("content://com.lounge/games"), gravty.toContenValues());
+        // crash test dummy players
+        mRes.insert(Uri.parse("content://com.lounge/players"), anyName.toContenValues());
+        mRes.insert(Uri.parse("content://com.lounge/players"), ananDa.toContenValues());
+        mRes.insert(Uri.parse("content://com.lounge/players"), lukas.toContenValues());
+        
+        
+        // here comes the STORY  (what happened before..)
+        Match anynamesPanda = anyName.hosts(panda);
+        ananDa.joins(anynamesPanda);
+        anynamesPanda.setActivePlayer(anyName);
+        
+        Match lukasPanda = lukas.hosts(panda);
+        anyName.joins(lukasPanda);
+        // no activePlayer yet for this game -> means not running yet
+        
+        Match anynamesMole = anyName.hosts(molecul);
+        ananDa.joins(anynamesMole);
+        
+        Match anandasMole = ananDa.hosts(molecul);
+        lukas.joins(anandasMole);
+        
+        
+        // get the fancy special sorted list of games to show in the lobby of Anyname
+        Cursor games = mRes.query(Uri.parse("content://com.lounge/games?player=anyName"), null, null, null, null);
+        assertEquals("Should be 3 games:  two games in the upper list and one game in the lower", 3, games.getCount()); 
+        
+        games.moveToFirst();
+        assertEquals(panda, games);
+        assertEquals("Anyname is involved", 1, games.getShort(3));
+        
+        Cursor pandaMatches_ForAnyname = mRes.query( // expandable list children 
+                Uri.parse("content://com.lounge/games/de.panda/matches?player=anyName"), null, null, null, null);
+        assertEquals("two matches for panda in the upper list", 2 ,pandaMatches_ForAnyname.getCount());
+        pandaMatches_ForAnyname.moveToFirst();
+        assertEquals(anynamesPanda, pandaMatches_ForAnyname);
+        pandaMatches_ForAnyname.moveToNext();
+        assertEquals(lukasPanda, pandaMatches_ForAnyname);
+        
+        games.moveToNext();
+        assertEquals(molecul, games);
+        assertEquals("Anyname is involved", 1, games.getShort(3));
+        
+        Cursor moleMatches_ForAnyname = mRes.query( // expandable list children
+                Uri.parse("content://com.lounge/games/de.mole/matches?player=anyName"), null, null, null, null);
+        assertEquals("one Molecule match in the upper list", 1 ,moleMatches_ForAnyname.getCount());
+        moleMatches_ForAnyname.moveToFirst();
+        assertEquals(anynamesMole, moleMatches_ForAnyname);
+        
+        games.moveToNext();
+        assertEquals(molecul, games);
+        assertEquals("Anyname is NOT involved", 0, games.getShort(3));
+        
+        Cursor moleMatches_WithoutAnyname = mRes.query( // expandable list children
+                Uri.parse("content://com.lounge/games/de.mole/matches?notplayer=anyName"), null, null, null, null);
+        assertEquals("one child for mole in the lower list", 1, moleMatches_WithoutAnyname.getCount());
+        moleMatches_WithoutAnyname.moveToFirst();
+        assertEquals(anandasMole, moleMatches_WithoutAnyname);
+        
+        
+        anandasMole.setActivePlayer(lukas);
+        // AGAIN get the matches where Anyname is NOT involved
+        moleMatches_WithoutAnyname = mRes.query( // expandable list children
+                Uri.parse("content://com.lounge/games/de.mole/matches?notplayer=anyName"), null, null, null, null);
+        assertEquals("NO more second Molecool in the lower list", 0, moleMatches_WithoutAnyname.getCount()); // because Anyname cannot join anymore
+        
+        // AGAIN get the fancy special sorted list of games to show in the lobby of Anyname
+        games = mRes.query(Uri.parse("content://com.lounge/games?player=anyName"), null, null, null, null);
+        assertEquals("Should be two games in the upper list", 2, games.getCount()); 
+    }
+
+    private void assertEquals(Match match, Cursor row) {
+        assertEquals(match.id, row.getInt(0)); 
+        // TODO store server generated global match ID 
+        assertEquals(match.host, row.getString(2));
+        assertEquals(match.players, row.getString(3)); // Involved Players
+        assertEquals(match.activePlayer, row.getString(4)); //active player
+    }
+ 
+}
