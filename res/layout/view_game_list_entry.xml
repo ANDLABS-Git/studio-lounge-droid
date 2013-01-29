@@ -1,6 +1,5 @@
-<resources>
-
-    <!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   Copyright (C) 2012 ANDLABS. All rights reserved.
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -11,15 +10,18 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-    -->
+-->
 
-    <style name="AppTheme" parent="android:Theme.Light" />
-    <color name="whiteAlpha">#25ffffff</color>
-    <color name="btnBackground">#10ffffff</color>
-    
-    <color name="orange">#90472C</color>
-    <color name="green">#155F40</color>
-    <color name="blue">#154452</color>
-    <color name="yellow">#928B15</color>
-    
-</resources>
+<view class="eu.andlabs.studiolounge.ui.GamesFragment$GameView"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_width="match_parent"
+        android:padding="0dip" >
+
+        <TextView
+            android:id="@+id/name"
+            android:textSize="25dp"
+            android:textColor="#77FFFFFF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+</view>

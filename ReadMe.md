@@ -18,7 +18,7 @@ Licensed under the Apache License, Version 2.0
   * register GCP background Service and LoungActivity in AndroidManifest.xml
   ```Xml
     <activity android:name="eu.andlabs.studiolounge.LoungeActivity" />
-    <service android:name="eu.andlabs.studiolounge.gcp.GCPService" />
+    <service android:name="eu.andlabs.studiolounge.GCPService" />
   ```
   Themes can be applied to the Lounge Activity
 

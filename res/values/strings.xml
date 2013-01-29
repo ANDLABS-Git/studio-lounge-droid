@@ -17,11 +17,14 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_lounge">Lounge</string>
     <string name="lounge">LOUNGE</string>
-    <string name="playersonline">PLAYER ONLINE</string>
-    <string name="opengames">OPEN GAMES</string>
     <string name="practise">Practise</string>
     <string name="points">Points</string>
     <string name="host_game">Host Game</string>
     <string name="waiting_in_lobby">Waiting in Lobby...</string>
+
+    <!-- STATS Fragment -->
+    <string name="player_online_label">PLAYER ONLINE</string>
+    <string name="msges_send_label">SEND MESSAGES</string>
+    <string name="open_games_label">OPEN GAMES</string>
 
 </resources>
