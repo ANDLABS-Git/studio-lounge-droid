@@ -103,12 +103,17 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
         stat.put("games_played", 7);
         mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
+        
+        stat = new ContentValues();
+        stat.put("player_online", 42);
+        mRes.update(Uri.parse("content://foo.lounge/stats"), stat, null, null);
 
         Cursor stats = mRes.query(Uri.parse("content://foo.lounge/stats"), null, null, null, null);
         assertEquals("There should always be only one set of stats", 1, stats.getCount());
         stats.moveToFirst();
         assertEquals("total messages should have been added", 45, stats.getInt(1));
-        assertEquals("games played should have been added", 12, stats.getInt(1));
+        assertEquals("games played should have been added", 12, stats.getInt(2));
+        assertEquals("player should be online", 42, stats.getInt(3));
     }
 
 
