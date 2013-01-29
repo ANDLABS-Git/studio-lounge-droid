@@ -28,6 +28,9 @@ public class SampleGameActivity extends Activity implements GameMsgListener{
 			onMessageReceived(lastMove);// use the same Method as the Lounge Libary would use
 										// when this game would be running already.
 			
+			//Alternative: After registring as a Listener, the last Message(s) will be 
+			// will be forwarded to this Listener
+			
 		}else{
 			// Just init a normal game like always
 			//...
@@ -97,6 +100,9 @@ public class SampleGameActivity extends Activity implements GameMsgListener{
 	public void voidOnAllPlayerCheckedIn(){
 		
 	}
+	
+	//These Callbacks are for Games that requires all players to be in the gameActivity(real time games)
+	//or to let other players know if this player is activly playing or not.
 }
 
 
