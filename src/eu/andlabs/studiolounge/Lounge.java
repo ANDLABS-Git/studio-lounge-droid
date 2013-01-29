@@ -78,10 +78,6 @@ public class Lounge implements ServiceConnection {
         }
     }
 
-    public void sendChatMessage(String text) {
-        sendMessage(GCPService.CHAT, text);
-    }
-
     public void hostGame(String game) {
         sendMessage(GCPService.HOST, game);
     }

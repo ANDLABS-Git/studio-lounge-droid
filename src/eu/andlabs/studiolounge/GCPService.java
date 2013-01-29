@@ -39,6 +39,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Process;
+import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -62,22 +64,6 @@ import android.widget.Toast;
  */
 public class GCPService extends Service {
 
-    public static Lounge bind(Context ctx) {
-        Log.d("GCP-Service", "binding GCP Service");
-        String name = LoginManager.getInstance(ctx).getUserId();
-        Lounge lounge = new Lounge(ctx);
-        Intent intent = new Intent(ctx, GCPService.class);
-        intent.putExtra("packageName", ctx.getPackageName());
-        intent.putExtra("messenger", lounge.mMessenger);
-        ctx.startService(intent);
-        ctx.bindService(intent, lounge, Context.BIND_AUTO_CREATE);
-        return lounge;
-    }
-
-    public static void unbind(Context ctx, Lounge lounge) {
-        ctx.unbindService(lounge);
-    }
-
     public static String mName;
     private Handler mHandler;
     private SocketIO mSocketIO;
@@ -97,10 +83,9 @@ public class GCPService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        // mName = "LUKAS";
         mHandler = new Handler();
-        log("starting GCP Service");
-        connect();
+        log("creating GCP Service   PId=" + Process.myPid());
+//        connect();
     }
 
     private void connect() {
@@ -187,21 +172,21 @@ public class GCPService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         log("on startCommand id=" + startId + "  flags=" + flags);
-        mApp = (Messenger) intent.getParcelableExtra("messenger");
-        packagename = intent.getExtras().getString("packageName");
-        mName = intent.getExtras().getString("name");
-        if (mSocketIO.isConnected() && loggedIn)
-            mSocketIO.emit("state");
-        else
-            connect();
         return START_NOT_STICKY;
     }
 
-    // bind game app(s)
+    IBinder mBinder = new IGCPService.Stub() {
+        
+        @Override
+        public void host(String game) throws RemoteException {
+            log(game);
+        }
+    };
+    
     @Override
     public IBinder onBind(Intent intent) {
         log("on bind");
-        return mMessenger.getBinder();
+        return mBinder;
     }
 
     // receive android system IPC messages from game apps
@@ -247,7 +232,7 @@ public class GCPService extends Service {
     @Override
     public void onDestroy() {
         log("on destroy");
-        mSocketIO.disconnect();
+//        mSocketIO.disconnect();
         super.onDestroy();
     }
 
