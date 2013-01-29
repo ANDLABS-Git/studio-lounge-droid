@@ -259,6 +259,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         games.moveToFirst();
         assertEquals(panda, games);
         assertEquals("Anyname is involved", 1, games.getShort(3));
+        assertEquals("There are two children to expand", 2, games.getInt(4));
         
         Cursor pandaMatches_ForAnyname = mRes.query( // expandable list children 
                 Uri.parse("content://com.lounge/games/de.panda/matches?player=anyName"), null, null, null, null);
@@ -271,6 +272,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         games.moveToNext();
         assertEquals(molecul, games);
         assertEquals("Anyname is involved", 1, games.getShort(3));
+        assertEquals("There is one child to expand", 1, games.getInt(4));
         
         Cursor moleMatches_ForAnyname = mRes.query( // expandable list children
                 Uri.parse("content://com.lounge/games/de.mole/matches?player=anyName"), null, null, null, null);
@@ -281,6 +283,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         games.moveToNext();
         assertEquals(molecul, games);
         assertEquals("Anyname is NOT involved", 0, games.getShort(3));
+        assertEquals("There is one child to expand", 1, games.getInt(4));
         
         Cursor moleMatches_WithoutAnyname = mRes.query( // expandable list children
                 Uri.parse("content://com.lounge/games/de.mole/matches?notplayer=anyName"), null, null, null, null);
@@ -297,7 +300,9 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         
         // AGAIN get the fancy special sorted list of games to show in the lobby of Anyname
         games = mRes.query(Uri.parse("content://com.lounge/games?player=anyName"), null, null, null, null);
-        assertEquals("Should be two games in the upper list", 2, games.getCount()); 
+        assertEquals("Should be two games in the upper list", 2, games.getCount());
+        games.moveToLast();
+        assertEquals("There are now two children to expand", 2, games.getInt(4));
     }
 
     private void assertEquals(Match match, Cursor row) {
