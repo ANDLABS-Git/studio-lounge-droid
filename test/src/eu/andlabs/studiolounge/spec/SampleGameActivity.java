@@ -9,6 +9,8 @@ public class SampleGameActivity extends Activity implements GameMsgListener{
 	SampleLounge mLounge;
 	private boolean gameEndedNormally;
 	private String matchID;
+	private int playersCheckedIn;
+	private int maxPlayer;
 
 	
 
@@ -66,4 +68,35 @@ public class SampleGameActivity extends Activity implements GameMsgListener{
 		// handle regular game messages
 		
 	}
+	
+	
+	/**
+	 * When a player starts/returns to the GameActivity
+	 * @param player
+	 */
+	@Override
+	public void onCheckIn(String player){
+		playersCheckedIn++;
+		
+	
+	}
+	
+	/**
+	 * When a player closes to the GameActivity
+	 * @param player
+	 */
+	@Override
+	public void onCheckOut(String player){
+		playersCheckedIn--;
+	}
+	
+	/**
+	 * When all players are in the Activity
+	 *
+	 */
+	public void voidOnAllPlayerCheckedIn(){
+		
+	}
 }
+
+
