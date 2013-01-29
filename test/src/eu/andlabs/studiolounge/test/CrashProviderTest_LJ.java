@@ -79,7 +79,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         msges.moveToFirst();
         assertEquals("Ananda", msges.getString(1));
         assertEquals("Hi, what's up?", msges.getString(2));
-        assertEquals(now, msges.getString(3));
+        assertEquals(now, msges.getLong(3));
     }
 
 
