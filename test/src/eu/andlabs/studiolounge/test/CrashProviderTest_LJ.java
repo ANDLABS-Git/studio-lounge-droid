@@ -49,7 +49,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         ananDa = new Player("Ananda");
         anyName = new Player("Anyname");
         
-        wrms = new Game("Worms", "de.worms", false);
+        wrms = new Game("Worms", "de.worms");
         panda = new Game("Pandararr", "de.panda", true);
         molecul = new Game("Molecoooool", "de.mole", true);
         gravty = new Game("Graffity Wins", "de.gravity", true);
@@ -191,7 +191,9 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         public Match hosts(Game game) {
             Match match = new Match();
             match.game = game.pkgId;
+            match.serverId="";
             match.host = name;
+            
             match.id = mRes.insert(
                     Uri.parse("content://com.lounge/games/" +game.pkgId+ "/matches"), match.toContenValues()
                     ).getLastPathSegment(); 
@@ -203,8 +205,17 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         }
     }
     
+    class GameMsg{
+    	String serverId;
+    	String activePlayer;
+    	String msg;
+    	
+    	
+    }
+    
     class Match {
         String id;
+        String serverId;
         String game;
         String host;
         String players;
@@ -218,9 +229,12 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
             return cv;
         }
         
-        public void setActivePlayer(Player player) {
+        public void nextMove(GameMsg msg) {
             activePlayer = player.name;
-            mRes.update(Uri.parse("content://com.lounge/games/" +game+ "/matches/"+id), toContenValues(), null, null);
+            ContentValues cv = new ContentValues();
+            cv.put("activePlayer", msg.activePlayer);
+            cv.put("msg", msg.msg);
+            mRes.update(Uri.parse("content://com.lounge/matches/"+id+"/msg"), cv, null, null);
         }
     }
     
