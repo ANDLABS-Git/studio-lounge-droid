@@ -73,7 +73,9 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
             
             @Override
             protected View newChildView(Context ctx, Cursor c, boolean l, ViewGroup p) {
-                return getLayoutInflater(null).inflate(R.layout.view_match_list_entry, p, false);
+                 View v= getLayoutInflater(null).inflate(R.layout.view_match_list_entry_2players, p, false);
+                
+                return v;
             }
             
             @Override
@@ -125,7 +127,11 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
 
     static class GameView extends RelativeLayout {
 
-        TextView name;
+        TextView playerLbl1;
+        TextView playerLbl2;
+        
+        View player1Beacon;
+        View player2Beacon;
 
         public GameView(Context ctx, AttributeSet attrs) {
             super(ctx, attrs);
@@ -133,12 +139,28 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
 
         @Override
         protected void onFinishInflate() {
-            name = (TextView) findViewById(R.id.name);
+        	playerLbl1 = (TextView) findViewById(R.id.playerLbl1);
+        	playerLbl2 = (TextView) findViewById(R.id.playerLbl2);
+        	player1Beacon=findViewById(R.id.playerBeacon1);
+        	player2Beacon=findViewById(R.id.playerBeacon2);
             super.onFinishInflate();
         }
         
         void populate(Cursor game) {
-            name.setText(game.getString(1));
+        	String[] players = game.getString(1).split("%%");
+        	
+        	switch (players.length) {
+//			case 4:
+//			case 3:
+			case 2: playerLbl2.setText(players[1]);
+			case 1: playerLbl1.setText(players[1]);
+				
+				break;
+
+			default:
+				break;
+			}
+        	playerLbl1.setText(game.getString(1));
         }
     }
 

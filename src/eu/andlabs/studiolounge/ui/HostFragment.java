@@ -68,7 +68,7 @@ public class HostFragment extends ListFragment
             @Override
             public void bindView(View listItem, Context ctx, Cursor msges) {
                 final GameView msg = (GameView) listItem;
-                msg.name.setText(msges.getString(1));
+//                msg.name.setText(msges.getString(1));
             }
         });
         getLoaderManager().initLoader(0, null, this);
