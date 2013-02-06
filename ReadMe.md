@@ -1,6 +1,5 @@
-##  * hAppy Log * 
 
-# Studio-Lounge Android-Library
+## Lounge Android-Library
 Multi Platform
 Multi-Player
 Multi-App
