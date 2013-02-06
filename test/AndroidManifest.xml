@@ -30,7 +30,7 @@
         
         <provider android:name="eu.andlabs.studiolounge.CacheProvider"
                   android:authorities="foo.lounge"
-                  android:enabled="false" />
+                  android:enabled="true" />
     </application>
 
 </manifest>

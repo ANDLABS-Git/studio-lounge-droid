@@ -29,7 +29,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
     private MockContentResolver mRes;
 
     public CrashProviderTest_LJ() {
-        super(CacheProvider.class, "com.lounge");
+        super(CacheProvider.class, "foo.lounge");
     }
 
 // CRASH TEST DUMMIES
@@ -68,7 +68,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
     public void testChat() {
         ContentValues msg = new ContentValues();
         msg.put("player", "Ananda");
-        msg.put("text", "Hi, what's up?");
+        msg.put("msg", "Hi, what's up?");
         long now = System.currentTimeMillis();
         msg.put("time", now);
         
@@ -80,8 +80,8 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         assertEquals("There should be three chat messages", 3, msges.getCount());
         msges.moveToFirst();
         assertEquals("Ananda", msges.getString(1));
-        assertEquals("Hi, what's up?", msges.getString(2));
-        assertEquals(now, msges.getLong(3));
+        assertEquals(now, msges.getLong(2));
+        assertEquals("Hi, what's up?", msges.getString(3));
     }
 
 

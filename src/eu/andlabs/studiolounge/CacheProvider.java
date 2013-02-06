@@ -40,6 +40,12 @@ public class CacheProvider extends ContentProvider {
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                         " name TEXT" +
                         ");");
+            db.execSQL("CREATE TABLE chat (" +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        " player TEXT," +
+                        " time BIGINT," +
+                        " msg TEXT" +
+                    ");");
             Log.d(TAG, "lounge DB CREATED");
             db.execSQL("INSERT INTO players VALUES (1, 'Anyname');");
         }
@@ -49,11 +55,11 @@ public class CacheProvider extends ContentProvider {
 
     }
 
-    private DatabaseHelper mOpenHelper;
+    private DatabaseHelper db;
 
     @Override
     public boolean onCreate() {
-        mOpenHelper = new DatabaseHelper(getContext());
+        db = new DatabaseHelper(getContext());
         return true;
     }
 
@@ -64,14 +70,14 @@ public class CacheProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        // TODO Auto-generated method stub
+        db.getWritableDatabase().insert("chat", null, values);
         return null;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Log.d(TAG, "QUERY");
-        Cursor players = mOpenHelper.getReadableDatabase().query("players", null, null, null, null, null, null);
+        Cursor players = db.getReadableDatabase().query("chat", null, null, null, null, null, null);
         return players;
     }
 
