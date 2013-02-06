@@ -15,7 +15,6 @@
  */
 package eu.andlabs.studiolounge;
 
-import eu.andlabs.studiolounge.CacheProvider.DatabaseHelper;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
