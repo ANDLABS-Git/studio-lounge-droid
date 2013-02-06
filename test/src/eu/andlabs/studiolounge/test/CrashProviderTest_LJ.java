@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 ANDLABS. All rights reserved.
+  * Copyright (C) 2012, 2013 by it's authors. Some rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package eu.andlabs.studiolounge.test;
 
 import eu.andlabs.studiolounge.CacheProvider;
@@ -39,6 +40,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
     private Player lukas;
     private Player ananDa;
     private Player anyName;
+    public int INC = 42;
     
     @Override
     protected void setUp() throws Exception {
@@ -49,7 +51,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         ananDa = new Player("Ananda");
         anyName = new Player("Anyname");
         
-        wrms = new Game("Worms", "de.worms");
+        wrms = new Game("Worms", "de.worms", true);
         panda = new Game("Pandararr", "de.panda", true);
         molecul = new Game("Molecoooool", "de.mole", true);
         gravty = new Game("Graffity Wins", "de.gravity", true);
@@ -152,7 +154,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
           mRes.insert(Uri.parse("content://com.lounge/games"), gravty.toContenValues());
           
           Cursor games = mRes.query(Uri.parse("content://com.lounge/games"), null, null, null, null);
-          assertEquals("four games in list", 4,games.getCount());
+          assertEquals("four games in list", 4, games.getCount());
 
           games.moveToFirst();
           assertEquals(gravty, games); // sorted by alphabet G?
@@ -191,31 +193,22 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         public Match hosts(Game game) {
             Match match = new Match();
             match.game = game.pkgId;
-            match.serverId="";
+            match.id = "matchId++"+ ++INC;
             match.host = name;
             
-            match.id = mRes.insert(
+            mRes.insert(
                     Uri.parse("content://com.lounge/games/" +game.pkgId+ "/matches"), match.toContenValues()
                     ).getLastPathSegment(); 
             return match;
         }
         public void joins(Match match) {
             match.players = name;
-            mRes.insert(Uri.parse("content://com.lounge/games/" +match.game+ "/matches/" +match.id +"/players"), toContenValues());
+            mRes.insert(Uri.parse("content://com.lounge/matches/" +match.id +"/players"), toContenValues());
         }
-    }
-    
-    class GameMsg{
-    	String serverId;
-    	String activePlayer;
-    	String msg;
-    	
-    	
     }
     
     class Match {
         String id;
-        String serverId;
         String game;
         String host;
         String players;
@@ -229,12 +222,13 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
             return cv;
         }
         
-        public void nextMove(GameMsg msg) {
-            activePlayer = player.name;
+        public void receiveGameMsg(Player sender, Player next, String msg) {
+            activePlayer = next.name;
             ContentValues cv = new ContentValues();
-            cv.put("activePlayer", msg.activePlayer);
-            cv.put("msg", msg.msg);
-            mRes.update(Uri.parse("content://com.lounge/matches/"+id+"/msg"), cv, null, null);
+            cv.put("sender", sender.name);
+            cv.put("next", next.name);
+            cv.put("msg", msg);
+            mRes.insert(Uri.parse("content://com.lounge/matches/"+id+"/msges"), cv);
         }
     }
     
@@ -253,7 +247,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         // here comes the STORY  (what happened before..)
         Match anynamesPanda = anyName.hosts(panda);
         ananDa.joins(anynamesPanda);
-        anynamesPanda.setActivePlayer(anyName);
+        anynamesPanda.receiveGameMsg(ananDa, anyName, "foo");
         
         Match lukasPanda = lukas.hosts(panda);
         anyName.joins(lukasPanda);
@@ -279,9 +273,9 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
                 Uri.parse("content://com.lounge/games/de.panda/matches?player=anyName"), null, null, null, null);
         assertEquals("two matches for panda in the upper list", 2 ,pandaMatches_ForAnyname.getCount());
         pandaMatches_ForAnyname.moveToFirst();
-        assertEquals(anynamesPanda, pandaMatches_ForAnyname);
+        assertEquals(anynamesPanda.id, pandaMatches_ForAnyname.getString(1));
         pandaMatches_ForAnyname.moveToNext();
-        assertEquals(lukasPanda, pandaMatches_ForAnyname);
+        assertEquals(lukasPanda.id, pandaMatches_ForAnyname.getString(1));
         
         games.moveToNext();
         assertEquals(molecul, games);
@@ -292,7 +286,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
                 Uri.parse("content://com.lounge/games/de.mole/matches?player=anyName"), null, null, null, null);
         assertEquals("one Molecule match in the upper list", 1 ,moleMatches_ForAnyname.getCount());
         moleMatches_ForAnyname.moveToFirst();
-        assertEquals(anynamesMole, moleMatches_ForAnyname);
+        assertEquals(anynamesMole.id, moleMatches_ForAnyname.getString(1));
         
         games.moveToNext();
         assertEquals(molecul, games);
@@ -303,10 +297,9 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
                 Uri.parse("content://com.lounge/games/de.mole/matches?notplayer=anyName"), null, null, null, null);
         assertEquals("one child for mole in the lower list", 1, moleMatches_WithoutAnyname.getCount());
         moleMatches_WithoutAnyname.moveToFirst();
-        assertEquals(anandasMole, moleMatches_WithoutAnyname);
+        assertEquals(anandasMole.id, moleMatches_WithoutAnyname.getString(1));
         
-        
-        anandasMole.setActivePlayer(lukas);
+        anandasMole.receiveGameMsg(ananDa, lukas, "bar");
         // AGAIN get the matches where Anyname is NOT involved
         moleMatches_WithoutAnyname = mRes.query( // expandable list children
                 Uri.parse("content://com.lounge/games/de.mole/matches?notplayer=anyName"), null, null, null, null);
@@ -319,12 +312,4 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         assertEquals("There are now two children to expand", 2, games.getInt(4));
     }
 
-    private void assertEquals(Match match, Cursor row) {
-        assertEquals(match.id, row.getInt(0)); 
-        // TODO store server generated global match ID 
-        assertEquals(match.host, row.getString(2));
-        assertEquals(match.players, row.getString(3)); // Involved Players
-        assertEquals(match.activePlayer, row.getString(4)); //active player
-    }
- 
 }
