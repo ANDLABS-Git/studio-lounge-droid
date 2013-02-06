@@ -16,14 +16,21 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <uses-library android:name="android.test.runner" />
-        <activity android:name="eu.andlabs.studiolounge.ui.LobbyActivity">
+        
+        <activity android:name="eu.andlabs.studiolounge.sample.HelloLounge">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity android:name="eu.andlabs.studiolounge.ui.LobbyActivity" />
+        
+        <service android:name="eu.andlabs.studiolounge.GCPService" />
+        
         <provider android:name="eu.andlabs.studiolounge.CacheProvider"
-                     android:authorities="foo.lounge"/>
+                  android:authorities="foo.lounge"
+                  android:enabled="false" />
     </application>
 
 </manifest>
