@@ -51,7 +51,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
         ananDa = new Player("Ananda");
         anyName = new Player("Anyname");
         
-        wrms = new Game("Worms", "de.worms", true);
+        wrms = new Game("Worms", "de.worms", false);
         panda = new Game("Pandararr", "de.panda", true);
         molecul = new Game("Molecoooool", "de.mole", true);
         gravty = new Game("Graffity Wins", "de.gravity", true);
@@ -141,23 +141,23 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
             ContentValues cv = new ContentValues();
             cv.put("name", name);
             cv.put("pkgId", pkgId);
-            cv.put("installed", installed);
+            cv.put("installed", installed? 1 : 0);
             return cv;
         }
     }
     
     public void testHostDRAWER() {
           // crash test dummy games
-          mRes.insert(Uri.parse("content://com.lounge/games"), wrms.toContenValues());
-          mRes.insert(Uri.parse("content://com.lounge/games"), panda.toContenValues());
-          mRes.insert(Uri.parse("content://com.lounge/games"), molecul.toContenValues());
-          mRes.insert(Uri.parse("content://com.lounge/games"), gravty.toContenValues());
+          mRes.insert(Uri.parse("content://foo.lounge/games"), wrms.toContenValues());
+          mRes.insert(Uri.parse("content://foo.lounge/games"), panda.toContenValues());
+          mRes.insert(Uri.parse("content://foo.lounge/games"), molecul.toContenValues());
+          mRes.insert(Uri.parse("content://foo.lounge/games"), gravty.toContenValues());
           
-          Cursor games = mRes.query(Uri.parse("content://com.lounge/games"), null, null, null, null);
+          Cursor games = mRes.query(Uri.parse("content://foo.lounge/games"), null, null, null, null);
           assertEquals("four games in list", 4, games.getCount());
 
           games.moveToFirst();
-          assertEquals(gravty, games); // sorted by alphabet G?
+          assertEquals(gravty, games); // sorted by alphabet ?
           assertEquals("Gravity is installed", 1, games.getShort(3));
           
           games.moveToLast();

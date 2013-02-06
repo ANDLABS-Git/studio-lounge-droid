@@ -16,8 +16,10 @@
 package eu.andlabs.studiolounge;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -42,9 +44,15 @@ public class CacheProvider extends ContentProvider {
                         ");");
             db.execSQL("CREATE TABLE chat (" +
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        " player TEXT," +
+                        " player VARCHAR," +
                         " time BIGINT," +
                         " msg TEXT" +
+                    ");");
+            db.execSQL("CREATE TABLE games (" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " name VARCHAR," +
+                    " pkgId VARCHAR," +
+                    " installed INTEGER" +
                     ");");
             Log.d(TAG, "lounge DB CREATED");
             db.execSQL("INSERT INTO players VALUES (1, 'Anyname');");
@@ -55,11 +63,20 @@ public class CacheProvider extends ContentProvider {
 
     }
 
+    private UriMatcher uriMatcher;
+    private static final int CHAT = 1;
+    private static final int GAMES = 2;
+
     private DatabaseHelper db;
+
+
 
     @Override
     public boolean onCreate() {
         db = new DatabaseHelper(getContext());
+        uriMatcher = new UriMatcher(0);
+        uriMatcher.addURI("foo.lounge", "chat", CHAT);
+        uriMatcher.addURI("foo.lounge", "games", GAMES);
         return true;
     }
 
@@ -70,15 +87,26 @@ public class CacheProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        db.getWritableDatabase().insert("chat", null, values);
+        switch (uriMatcher.match(uri)) {
+        case CHAT:
+            db.getWritableDatabase().insert("chat", null, values);
+            break;
+        case GAMES:
+            db.getWritableDatabase().insert("games", null, values);
+            break;
+        }
         return null;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d(TAG, "QUERY");
-        Cursor players = db.getReadableDatabase().query("chat", null, null, null, null, null, null);
-        return players;
+        switch (uriMatcher.match(uri)) {
+        case CHAT:
+            return db.getReadableDatabase().query("chat", null, null, null, null, null, null);
+        case GAMES:
+            return db.getReadableDatabase().query("games", null, null, null, null, null, "name");
+        }
+        return null;
     }
 
     @Override
