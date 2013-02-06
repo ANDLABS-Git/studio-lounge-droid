@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 ANDLABS. All rights reserved.
+ * Copyright (C) 2012, 2013 by it's authors. Some rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package eu.andlabs.studiolounge.ui;
 
+import eu.andlabs.studiolounge.Lounge;
 import eu.andlabs.studiolounge.R;
+import eu.andlabs.studiolounge.Lounge.Multiplayable;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,7 +31,8 @@ import android.widget.TextView;
 import android.graphics.Color;
 import android.os.Bundle;
 
-public class LobbyActivity extends FragmentActivity implements OnPageChangeListener {
+public class LobbyActivity extends FragmentActivity 
+                            implements OnPageChangeListener, Multiplayable {
 
     private TextView mSectionLabel;
     private ViewPager mViewPager;
@@ -177,4 +180,36 @@ public class LobbyActivity extends FragmentActivity implements OnPageChangeListe
     private static final int CHAT = 1;
     private static final int STATS = 2;
     private static final int ABOUT = 3;
+
+
+
+    @Override
+    protected void onStart() {
+        Lounge.checkIn(this, "Lobby");
+        super.onStart();
+    }
+    
+    @Override
+    protected void onStop() {
+        Lounge.checkOut(this);
+        super.onStop();
+    }
+
+
+    @Override
+    public void onCheckIn(String player) {
+        Log.d(TAG, player + " appeared in the lobby");
+    }
+    
+    @Override
+    public void onCheckOut(String player) {
+        Log.d(TAG, player + " left the lobby");
+    }
+
+    @Override
+    public void onGameMessage(Bundle msg) { }
+    
+    @Override
+    public void onAllPlayerCheckedIn() { } // What happens when ALL players hang out here..?
+
 }
