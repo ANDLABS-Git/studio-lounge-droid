@@ -67,7 +67,7 @@ public class CrashProviderTest_LJ extends ProviderTestCase2<CacheProvider> {
     
     public void testChat() {
         ContentValues msg = new ContentValues();
-        msg.put("player", "Ananda");
+        msg.put("sender", "Ananda");
         msg.put("msg", "Hi, what's up?");
         long now = System.currentTimeMillis();
         msg.put("time", now);

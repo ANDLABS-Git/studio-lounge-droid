@@ -47,7 +47,7 @@ public class StatsFragment extends Fragment implements LoaderCallbacks<Cursor> {
         mOpenGames = (TextView) layout.findViewById(R.id.games);
         mMsgesSend = (TextView) layout.findViewById(R.id.msges);
         
-        getLoaderManager().initLoader(0, null, this);
+//        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override

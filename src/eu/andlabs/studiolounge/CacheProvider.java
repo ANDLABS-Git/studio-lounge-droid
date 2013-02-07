@@ -1,7 +1,9 @@
 /*
  * Copyright (C) 2012, 2013 by it's authors. Some rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Versio
+import eu.andlabs.studiolounge.util.Utils;
+n 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,6 +17,7 @@
  */
 package eu.andlabs.studiolounge;
 
+import eu.andlabs.studiolounge.util.Utils;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -44,7 +47,7 @@ public class CacheProvider extends ContentProvider {
                         ");");
             db.execSQL("CREATE TABLE chat (" +
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        " player VARCHAR," +
+                        " sender VARCHAR," +
                         " time BIGINT," +
                         " msg TEXT" +
                     ");");
@@ -73,10 +76,10 @@ public class CacheProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        db = new DatabaseHelper(getContext());
         uriMatcher = new UriMatcher(0);
         uriMatcher.addURI("foo.lounge", "chat", CHAT);
         uriMatcher.addURI("foo.lounge", "games", GAMES);
+        db = new DatabaseHelper(getContext());
         return true;
     }
 
@@ -95,18 +98,23 @@ public class CacheProvider extends ContentProvider {
             db.getWritableDatabase().insert("games", null, values);
             break;
         }
+        getContext().getContentResolver().notifyChange(uri, null);
         return null;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Cursor result = null;
         switch (uriMatcher.match(uri)) {
         case CHAT:
-            return db.getReadableDatabase().query("chat", null, null, null, null, null, null);
+            result = db.getReadableDatabase().query("chat", null, null, null, null, null, null);
+            break;
         case GAMES:
-            return db.getReadableDatabase().query("games", null, null, null, null, null, "name");
+            result = db.getReadableDatabase().query("games", null, null, null, null, null, "name");
+            break;
         }
-        return null;
+        result.setNotificationUri(getContext().getContentResolver(), uri);
+        return result;
     }
 
     @Override
