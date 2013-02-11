@@ -41,10 +41,6 @@ public class CacheProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE players (" +
-                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        " name TEXT" +
-                        ");");
             db.execSQL("CREATE TABLE chat (" +
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                         " sender VARCHAR," +
@@ -57,8 +53,30 @@ public class CacheProvider extends ContentProvider {
                     " pkgId VARCHAR," +
                     " installed INTEGER" +
                     ");");
+            db.execSQL("CREATE TABLE matches (" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " guid VARCHAR," +
+                    " game VARCHAR," +
+                    " activePlayer VARCHAR" +
+                    ");");
+            db.execSQL("CREATE TABLE participation (" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " match VARCHAR," +
+                    " player VARCHAR," +
+                    " role VARCHAR" +
+                    ");");
+            db.execSQL("CREATE TABLE players (" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " name VARCHAR," +
+                    " status VARCHAR" +
+                    ");");
+            db.execSQL("CREATE TABLE msges (" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " match VARCHAR," +
+                    " sender VARCHAR," +
+                    " msg TEXT" +
+                    ");");
             Log.d(TAG, "lounge DB CREATED");
-            db.execSQL("INSERT INTO players VALUES (1, 'Anyname');");
         }
 
         @Override
@@ -67,8 +85,12 @@ public class CacheProvider extends ContentProvider {
     }
 
     private UriMatcher uriMatcher;
+    private static final int HOST = 0;
     private static final int CHAT = 1;
     private static final int GAMES = 2;
+    private static final int MATCHES = 3;
+    private static final int PLAYERS = 4;
+    private static final int MSGES = 5;
 
     private DatabaseHelper db;
 
@@ -79,6 +101,10 @@ public class CacheProvider extends ContentProvider {
         uriMatcher = new UriMatcher(0);
         uriMatcher.addURI("foo.lounge", "chat", CHAT);
         uriMatcher.addURI("foo.lounge", "games", GAMES);
+        uriMatcher.addURI("foo.lounge", "host/games", HOST);
+        uriMatcher.addURI("foo.lounge", "games/*/matches", MATCHES);
+        uriMatcher.addURI("foo.lounge", "matches/*/players", PLAYERS);
+        uriMatcher.addURI("foo.lounge", "matches/*/msges", MSGES);
         db = new DatabaseHelper(getContext());
         return true;
     }
@@ -97,6 +123,35 @@ public class CacheProvider extends ContentProvider {
         case GAMES:
             db.getWritableDatabase().insert("games", null, values);
             break;
+        case MATCHES:
+            ContentValues match = new ContentValues();
+            match.put("guid", values.getAsString("guid"));
+            match.put("game", uri.getPathSegments().get(1));
+            db.getWritableDatabase().insert("matches", null, match);
+            ContentValues participation = new ContentValues();
+            participation.put("match", values.getAsString("guid"));
+            participation.put("player", values.getAsString("host"));
+            participation.put("role", "host");
+            db.getWritableDatabase().insert("participation", null, participation);
+            ContentValues host = new ContentValues();
+            host.put("name", values.getAsString("player"));
+            db.getWritableDatabase().insert("players", null, host);
+            break;
+        case PLAYERS:
+            values.put("match", uri.getPathSegments().get(1));
+            values.put("role", "join");
+            db.getWritableDatabase().insert("participation", null, values);
+            ContentValues joinee = new ContentValues();
+            joinee.put("name", values.getAsString("player"));
+            db.getWritableDatabase().insert("players", null, joinee);
+            break;
+        case MSGES:
+            ContentValues next = new ContentValues();
+            next.put("activePlayer", values.getAsString("next"));
+            db.getWritableDatabase().update("matches", next, "guid="+values.getAsString("match"), null);
+            values.remove("next");
+            db.getWritableDatabase().insert("msges", null, values);
+            break;
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return null;
@@ -109,8 +164,31 @@ public class CacheProvider extends ContentProvider {
         case CHAT:
             result = db.getReadableDatabase().query("chat", null, null, null, null, null, null);
             break;
+        case HOST:
+            result = db.getReadableDatabase().query("games", null, null, null, null, null, "name ASC");
+            break;
         case GAMES:
-            result = db.getReadableDatabase().query("games", null, null, null, null, null, "name");
+            result = db.getReadableDatabase().rawQuery(
+                    "SELECT _id, name, pkgId, SUM(involved), COUNT(guid) FROM ( " +
+                        "SELECT games._id, games.name, games.pkgId, matches.guid, " +
+                            " SUM(players.name='Anyname') AS involved FROM participation" + 
+                            " JOIN games ON matches.game=games.pkgId" +
+                            " JOIN players ON participation.player=players.name" +
+                            " JOIN matches ON participation.match=matches.guid" +
+                        " GROUP BY matches.guid" +
+                    ") GROUP BY name, involved" +
+                    " ORDER BY involved DESC, name DESC", null);
+            break;
+        case MATCHES:
+            result = db.getReadableDatabase().rawQuery(
+                        "SELECT matches._id, matches.guid, " +
+                        "SUM(players.name='Anyname') AS involved FROM participation" + 
+                            " JOIN players ON participation.player=players.name" +
+                            " JOIN matches ON participation.match=matches.guid" +
+                        " WHERE matches.game='" + uri.getPathSegments().get(1) + "'" +
+                        " GROUP BY matches.guid" +
+                        " HAVING " + (uri.getQueryParameter("player") != null ?
+                        " involved=1" : "involved=0"), null);
             break;
         }
         result.setNotificationUri(getContext().getContentResolver(), uri);
