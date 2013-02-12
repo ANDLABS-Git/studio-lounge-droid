@@ -41,41 +41,18 @@ public class CacheProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE chat (" +
-                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        " sender VARCHAR," +
-                        " time BIGINT," +
-                        " msg TEXT" +
-                    ");");
-            db.execSQL("CREATE TABLE games (" +
-                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    " name VARCHAR," +
-                    " pkgId VARCHAR," +
-                    " installed INTEGER" +
-                    ");");
-            db.execSQL("CREATE TABLE matches (" +
-                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    " guid VARCHAR," +
-                    " game VARCHAR," +
-                    " activePlayer VARCHAR" +
-                    ");");
-            db.execSQL("CREATE TABLE participation (" +
-                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    " match VARCHAR," +
-                    " player VARCHAR," +
-                    " role VARCHAR" +
-                    ");");
-            db.execSQL("CREATE TABLE players (" +
-                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    " name VARCHAR," +
-                    " status VARCHAR" +
-                    ");");
-            db.execSQL("CREATE TABLE msges (" +
-                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    " match VARCHAR," +
-                    " sender VARCHAR," +
-                    " msg TEXT" +
-                    ");");
+            db.execSQL("CREATE TABLE chat (_id INT PRIMARY KEY, sender TEXT, time INT, msg TEXT);");
+            
+            db.execSQL("CREATE TABLE games (_id INT PRIMARY KEY, name TEXT, pkgId TEXT, installed INT);");
+            
+            db.execSQL("CREATE TABLE matches (_id INT PRIMARY KEY, guid TEXT, game TEXT, activePlayer TEXT);");
+
+            db.execSQL("CREATE TABLE participation (_id INT PRIMARY KEY, matchId TEXT, playerId TEXT, role TEXT, activeTurn INT);");
+            
+            db.execSQL("CREATE TABLE players (_id INT PRIMARY KEY, name TEXT, status TEXT);");
+            
+            db.execSQL("CREATE TABLE msges (_id INT PRIMARY KEY, matchId TEXT, sender TEXT, msg TEXT);");
+    
             Log.d(TAG, "lounge DB CREATED");
         }
 
