@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eu.andlabs.studiolounge.test"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15" />
+
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="eu.andlabs.studiolounge" />
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <uses-library android:name="android.test.runner" />
+        
+        <activity android:name="eu.andlabs.studiolounge.sample.HelloLounge">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="eu.andlabs.studiolounge.ui.LobbyActivity" />
+        
+        <service android:name="eu.andlabs.studiolounge.GCPService" />
+        
+        <provider android:name="eu.andlabs.studiolounge.CacheProvider"
+                  android:authorities="foo.lounge"
+                  android:enabled="false" />
+    </application>
+
+</manifest>
