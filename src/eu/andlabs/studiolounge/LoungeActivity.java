@@ -16,6 +16,7 @@
 package eu.andlabs.studiolounge;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -27,9 +28,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import eu.andlabs.studiolounge.gcp.GCPService;
 import eu.andlabs.studiolounge.gcp.Lounge;
+import eu.andlabs.studiolounge.lobby.parser.PlayParser;
+import eu.andlabs.studiolounge.lobby.parser.PlayResult;
+import eu.andlabs.studiolounge.lobby.parser.PlayParser.PlayListener;
 
 public class LoungeActivity extends FragmentActivity implements
-        OnPageChangeListener {
+        OnPageChangeListener, PlayListener{
     private static final int ALPHA_OFF = (int) (255 * 0.3f);
     private ViewPager mViewPager;
     private Lounge mLounge;
@@ -45,6 +49,8 @@ public class LoungeActivity extends FragmentActivity implements
     private static final int TAB_CHAT = TAB_LOBBY + 1;
     private static final int TAB_STATISTICS = TAB_CHAT + 1;
     private static final int TAB_ABOUT = TAB_STATISTICS + 1;
+    
+    Drawable mDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,9 @@ public class LoungeActivity extends FragmentActivity implements
         sectionLabel = (TextView) findViewById(R.id.sectionlabel);
 
         onPageSelected(0);
+        PlayParser parser = PlayParser.getInstance(this);
+        parser.addListener(this);
+        parser.queryPlay("com.gameloft.android.ANMP.GloftA7HM", 700);
     }
 
     @Override
@@ -154,5 +163,10 @@ public class LoungeActivity extends FragmentActivity implements
         if (v.getId() == R.id.ic_tab_about) {
             mViewPager.setCurrentItem(TAB_ABOUT, true);
         }
+    }
+
+    @Override
+    public void onPlayResult(PlayResult pResult) {
+        mAboutIcon.setImageDrawable(pResult.getPromo());
     }
 }

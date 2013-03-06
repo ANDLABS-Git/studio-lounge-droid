@@ -1,4 +1,4 @@
-<resources>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright (C) 2012, 2013 by it's authors. Some rights reserved.
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,17 @@
   limitations under the License.
 -->
 
-    <dimen name="padding_small">8dp</dimen>
-    <dimen name="padding_medium">16dp</dimen>
-    <dimen name="padding_large">16dp</dimen>
+<view class="eu.andlabs.studiolounge.ui.GamesFragment$GameInstanceView"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_width="fill_parent"
+        android:padding="0dip" >
 
-</resources>
+        <TextView
+            android:id="@+id/players"
+            android:textSize="11dip"
+            android:textColor="#77FFFFFF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="foo" />
+</view>
