@@ -17,9 +17,7 @@ n 2.0 (the "License");
  */
 package eu.andlabs.studiolounge;
 
-import eu.andlabs.studiolounge.util.Utils;
 import android.content.ContentProvider;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
@@ -69,6 +67,7 @@ public class CacheProvider extends ContentProvider {
     private static final int MATCHES = 3;
     private static final int PLAYERS = 4;
     private static final int MSGES = 5;
+    private static final int JOIN = 6;
 
     private DatabaseHelper db;
 
@@ -81,7 +80,8 @@ public class CacheProvider extends ContentProvider {
         uriMatcher.addURI("foo.lounge", "games", GAMES);
         uriMatcher.addURI("foo.lounge", "host/games", HOST);
         uriMatcher.addURI("foo.lounge", "games/*/matches", MATCHES);
-        uriMatcher.addURI("foo.lounge", "matches/*/players", PLAYERS);
+        uriMatcher.addURI("foo.lounge", "/players", PLAYERS);
+        uriMatcher.addURI("foo.lounge", "matches/*/players", JOIN);
         uriMatcher.addURI("foo.lounge", "matches/*/msges", MSGES);
         db = new DatabaseHelper(getContext());
         return true;
@@ -116,9 +116,6 @@ public class CacheProvider extends ContentProvider {
             db.getWritableDatabase().insert("players", null, host);
             break;
         case PLAYERS:
-            values.put("match", uri.getPathSegments().get(1));
-            values.put("role", "join");
-            db.getWritableDatabase().insert("participation", null, values);
             ContentValues joinee = new ContentValues();
             joinee.put("name", values.getAsString("player"));
             db.getWritableDatabase().insert("players", null, joinee);
@@ -129,6 +126,11 @@ public class CacheProvider extends ContentProvider {
             db.getWritableDatabase().update("matches", next, "guid="+values.getAsString("match"), null);
             values.remove("next");
             db.getWritableDatabase().insert("msges", null, values);
+            break;
+        case JOIN:
+            values.put("matchId", uri.getPathSegments().get(1));
+            values.put("role", "join");
+            long ert = db.getWritableDatabase().insert("participation", null, values);
             break;
         }
         getContext().getContentResolver().notifyChange(uri, null);

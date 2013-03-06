@@ -39,9 +39,9 @@ import eu.andlabs.studiolounge.Lounge;
 import eu.andlabs.studiolounge.R;
 import eu.andlabs.studiolounge.util.Utils;
 
-public class ChatFragment extends ListFragment 
-    implements OnClickListener, OnKeyListener, LoaderCallbacks<Cursor> {
-    
+public class ChatFragment extends ListFragment implements OnClickListener,
+        OnKeyListener, LoaderCallbacks<Cursor> {
+
     private static final String TAG = "Lounge";
     private EditText mText;
 
@@ -56,14 +56,15 @@ public class ChatFragment extends ListFragment
         layout.findViewById(R.id.btn_send).setOnClickListener(this);
         mText = (EditText) layout.findViewById(R.id.msg_field);
         mText.setOnKeyListener(this);
-        
+
         setListAdapter(new CursorAdapter(getActivity(), null, true) {
-            
+
             @Override
             public View newView(Context ctx, Cursor msgs, ViewGroup parent) {
-                return getLayoutInflater(null).inflate(R.layout.view_chat_list_entry, null);
+                return getLayoutInflater(null).inflate(
+                        R.layout.view_chat_list_entry, null);
             }
-            
+
             @Override
             public void bindView(View listItem, Context ctx, Cursor msges) {
                 final ChatMsgView msg = (ChatMsgView) listItem;
@@ -81,13 +82,15 @@ public class ChatFragment extends ListFragment
         Uri uri = Uri.parse("content://foo.lounge/chat");
         return new CursorLoader(getActivity(), uri, null, null, null, null);
     }
-    
+
     @Override
     public void onLoadFinished(Loader<Cursor> arg0, Cursor msges) {
-        Log.d(TAG, "onLoaderFinished for CHAT "+msges.getCount());
-        ((CursorAdapter)getListAdapter()).swapCursor(msges);
+        if (msges != null) {
+            Log.d(TAG, "onLoaderFinished for CHAT " + msges.getCount());
+            ((CursorAdapter) getListAdapter()).swapCursor(msges);
+        }
     }
-    
+
     @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
         Log.d(TAG, "onLoaderReset for CHAT");
@@ -102,16 +105,13 @@ public class ChatFragment extends ListFragment
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
             onClick(null);
             return true;
         }
         return false;
     }
-
-
-
-
 
     static class ChatMsgView extends RelativeLayout {
 
@@ -122,7 +122,7 @@ public class ChatFragment extends ListFragment
         public ChatMsgView(Context context, AttributeSet attrs) {
             super(context, attrs);
         }
-        
+
         @Override
         protected void onFinishInflate() {
             super.onFinishInflate();
