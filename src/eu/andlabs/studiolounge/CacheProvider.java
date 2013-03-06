@@ -47,7 +47,7 @@ public class CacheProvider extends ContentProvider {
 
             db.execSQL("CREATE TABLE participation (_id INT PRIMARY KEY, matchId TEXT, playerId TEXT, role TEXT, activeTurn INT);");
             
-            db.execSQL("CREATE TABLE players (_id INT PRIMARY KEY, name TEXT, status TEXT);");
+            db.execSQL("CREATE TABLE players (_id INT PRIMARY KEY, playerId TEXT, status TEXT);");
             
             db.execSQL("CREATE TABLE msges (_id INT PRIMARY KEY, matchId TEXT, sender TEXT, msg TEXT);");
     
@@ -80,7 +80,7 @@ public class CacheProvider extends ContentProvider {
         uriMatcher.addURI("foo.lounge", "games", GAMES);
         uriMatcher.addURI("foo.lounge", "host/games", HOST);
         uriMatcher.addURI("foo.lounge", "games/*/matches", MATCHES);
-        uriMatcher.addURI("foo.lounge", "/players", PLAYERS);
+        uriMatcher.addURI("foo.lounge", "players", PLAYERS);
         uriMatcher.addURI("foo.lounge", "matches/*/players", JOIN);
         uriMatcher.addURI("foo.lounge", "matches/*/msges", MSGES);
         db = new DatabaseHelper(getContext());
@@ -94,7 +94,8 @@ public class CacheProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        switch (uriMatcher.match(uri)) {
+        int uriResult = uriMatcher.match(uri);
+        switch (uriResult) {
         case CHAT:
             db.getWritableDatabase().insert("chat", null, values);
             break;
@@ -112,13 +113,11 @@ public class CacheProvider extends ContentProvider {
             participation.put("role", "host");
             db.getWritableDatabase().insert("participation", null, participation);
             ContentValues host = new ContentValues();
-            host.put("name", values.getAsString("player"));
+            host.put("playerId", values.getAsString("playerId"));
             db.getWritableDatabase().insert("players", null, host);
             break;
         case PLAYERS:
-            ContentValues joinee = new ContentValues();
-            joinee.put("name", values.getAsString("player"));
-            db.getWritableDatabase().insert("players", null, joinee);
+            db.getWritableDatabase().insert("players", null, values);
             break;
         case MSGES:
             ContentValues next = new ContentValues();
@@ -128,9 +127,10 @@ public class CacheProvider extends ContentProvider {
             db.getWritableDatabase().insert("msges", null, values);
             break;
         case JOIN:
+            
             values.put("matchId", uri.getPathSegments().get(1));
             values.put("role", "join");
-            long ert = db.getWritableDatabase().insert("participation", null, values);
+            long ret = db.getWritableDatabase().insert("participation", null, values);
             break;
         }
         getContext().getContentResolver().notifyChange(uri, null);
@@ -151,9 +151,9 @@ public class CacheProvider extends ContentProvider {
             result = db.getReadableDatabase().rawQuery(
                     "SELECT _id, name, pkgId, SUM(involved), COUNT(guid) FROM ( " +
                         "SELECT games._id, games.name, games.pkgId, matches.guid, " +
-                            " SUM(players.name='Anyname') AS involved FROM participation" + 
+                            " SUM(players.playerId='Anyname') AS involved FROM participation" + 
                             " JOIN games ON matches.game=games.pkgId" +
-                            " JOIN players ON participation.playerId=players.name" +
+                            " JOIN players ON participation.playerId=players.playerId" +
                             " JOIN matches ON participation.matchId=matches.guid" +
                         " GROUP BY matches.guid" +
                     ") GROUP BY name, involved" +
@@ -162,8 +162,8 @@ public class CacheProvider extends ContentProvider {
         case MATCHES:
             result = db.getReadableDatabase().rawQuery(
                         "SELECT matches._id, matches.guid, " +
-                        "SUM(players.name='Anyname') AS involved FROM participation" + 
-                            " JOIN players ON participation.playerId=players.name" +
+                        "SUM(players.playerId='Anyname') AS involved FROM participation" + 
+                            " JOIN players ON participation.playerId=players.playerId" +
                             " JOIN matches ON participation.matchId=matches.guid" +
                         " WHERE matches.game='" + uri.getPathSegments().get(1) + "'" +
                         " GROUP BY matches.guid" +
