@@ -109,9 +109,11 @@ public class Utils {
             
             private long lastTimestamp = -1;
 
+            private long startTime = -1; 
+
             private View[] views;
 
-            private long ITERATION_STEPS = 50;
+            private long iterationSteps = 50;
 
             @Override
             protected Void doInBackground(View... views) {
@@ -120,6 +122,7 @@ public class Utils {
                 while (this.run) {
                     if (this.lastTimestamp == -1) {
                         this.lastTimestamp = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                     }
 
                     final float proportionDelta = endProportion
@@ -131,9 +134,10 @@ public class Utils {
 
                     float deltaTime = System.currentTimeMillis()
                             - this.lastTimestamp;
+                    float totalTime = System.currentTimeMillis() - this.startTime;
                     float deltaTimeCurrentPeriod = deltaTime % duration;
                     float progress = deltaTimeCurrentPeriod / duration;
-                    float period = deltaTime / duration + 1;
+                    int period = (int) (totalTime / duration + 1);
 
                     if (period % 2 == 0) { // count down
                         publishProgress(1 - progress);
@@ -142,7 +146,7 @@ public class Utils {
                     }
 
                     try {
-                        Thread.sleep(ITERATION_STEPS);
+                        Thread.sleep(iterationSteps);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

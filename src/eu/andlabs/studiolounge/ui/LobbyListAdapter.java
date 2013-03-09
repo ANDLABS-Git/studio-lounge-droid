@@ -156,7 +156,7 @@ public class LobbyListAdapter extends BaseExpandableListAdapter {
 
 		if (match.isLocalPlayerOnTurn()) {
 		    
-		    Utils.getColorAnimatorTask(context,  R.color.blue, R.color.yellow, 0, 1, 1000).execute(player1Beacon, convertView);
+		    Utils.getColorAnimatorTask(context,  R.color.blue, R.color.yellow, 0, 1, 1000).execute(convertView);
 		    
 		    
 //			final Thread thread = new Thread(new Runnable() {
