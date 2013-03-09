@@ -9,6 +9,21 @@ import android.os.AsyncTask;
 import android.view.View;
 import eu.andlabs.studiolounge.util.ColorAnimatorTask.ViewColorAnimationHolder;
 
+/**
+ * {@link AsyncTask} that changes the background color of views in a pulsing
+ * manor. Uses a {@link HashSet} to iterate over views.
+ * 
+ * Here's how to use it: 1. Initiallize using one of the constructors. 2. Start
+ * it using {@link #execute(ViewColorAnimationHolder...)}. You may want to check
+ * whether the task is running using @{link {@link #isRunning()}. 3. Add
+ * additional {@link ViewColorAnimationHolder}s using the
+ * {@link #add(ViewColorAnimationHolder)} or {@link #add(View, int, int))}. 4.
+ * Stop the Task using {@link #cancelTask()}, not (!) using
+ * {@link #cancel(boolean)}.
+ * 
+ * @author johannesborchardt
+ * 
+ */
 public class ColorAnimatorTask extends
         AsyncTask<ViewColorAnimationHolder, Float, Void> {
 
@@ -17,19 +32,41 @@ public class ColorAnimatorTask extends
     private boolean running = false;
 
     private long lastTimestamp = -1;
-
     private long startTime = -1;
-
-    private long iterationSteps = 50;
+    private long intervallDuration;
 
     private float startProportion;
-
     private float endProportion;
 
-    private long intervallDuration;
+    private long ITERATION_STEPS = 50;
+
+    private static float START_PROPORTION_DEFAULT = 0;
+    private static float END_PROPORTION_DEFAULT = 0;
+    private static long INTERVALL_DURATION_DEFAULT = 1000;
 
     private Set<ViewColorAnimationHolder> views = new HashSet<ColorAnimatorTask.ViewColorAnimationHolder>();
 
+    /**
+     * Constructor that initializes this task with default values.
+     * 
+     * @param context
+     */
+    public ColorAnimatorTask(final Context context) {
+        this(context, START_PROPORTION_DEFAULT, END_PROPORTION_DEFAULT,
+                INTERVALL_DURATION_DEFAULT);
+    }
+
+    /**
+     * 
+     * @param context
+     * @param startProportion
+     *            the color proportion to start with
+     * @param endProportion
+     *            the color proportion to end with
+     * @param intervallDuration
+     *            the length of the interval between startProportion and
+     *            endProportion
+     */
     public ColorAnimatorTask(final Context context,
             final float startProportion, final float endProportion,
             final long intervallDuration) {
@@ -45,7 +82,7 @@ public class ColorAnimatorTask extends
 
         this.views = new HashSet<ColorAnimatorTask.ViewColorAnimationHolder>(
                 Arrays.asList(views));
-        
+
         this.running = true;
 
         while (this.running) {
@@ -74,7 +111,7 @@ public class ColorAnimatorTask extends
             }
 
             try {
-                Thread.sleep(iterationSteps);
+                Thread.sleep(ITERATION_STEPS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -96,35 +133,70 @@ public class ColorAnimatorTask extends
         }
     }
 
+    /**
+     * Add a new {@link ViewColorAnimationHolder} to this animation task.
+     * 
+     * @param holder
+     */
     public void add(ViewColorAnimationHolder holder) {
         synchronized (this.views) {
             this.views.add(holder);
         }
     }
 
+    /**
+     * Add a new {@link View} to this animation task. You might want to keep a
+     * reference to the {@link ViewColorAnimationHolder} returned by this
+     * method.
+     * 
+     * @param view
+     * @param colorA
+     * @param colorB
+     * @return the created {@link ViewColorAnimationHolder}
+     */
     public ViewColorAnimationHolder add(View view, int colorA, int colorB) {
         ViewColorAnimationHolder holder = new ViewColorAnimationHolder(view,
                 colorA, colorB);
         synchronized (this.views) {
             this.views.add(holder);
         }
-        
+
         return holder;
     }
 
+    /**
+     * Remove a {@link ViewColorAnimationHolder} from the animation set
+     * 
+     * @param holder
+     */
     public void remove(ViewColorAnimationHolder holder) {
         this.views.remove(holder);
     }
-    
+
+    /**
+     * Returns whether this Task is running or not. Works only when
+     * {@link #cancelTask()} is used instead of {@link #cancel(boolean)}
+     * 
+     * @return
+     */
     public boolean isRunning() {
         return this.running;
     }
-    
+
+    /**
+     * Cancels this task forcefully
+     */
     public void cancelTask() {
         cancel(true);
         this.running = false;
     }
 
+    /**
+     * A holder class for a view and its start and end color
+     * 
+     * @author johannesborchardt
+     * 
+     */
     public static class ViewColorAnimationHolder {
         private View view;
         private int colorA;
