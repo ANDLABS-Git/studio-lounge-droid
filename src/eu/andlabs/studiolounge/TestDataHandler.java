@@ -98,7 +98,7 @@ public class TestDataHandler {
 
         public ContentValues toContenValues() {
             ContentValues cv = new ContentValues();
-            cv.put("player", name);
+            cv.put("playerId", name);
             return cv;
         }
 
