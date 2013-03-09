@@ -17,16 +17,16 @@
     android:layout_height="match_parent"
     android:background="#2b2b2b" >
 
+    <ImageView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/orange" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <ImageView
-        android:id="@+id/header"
-        android:background="@color/orange"
-        android:layout_width="match_parent"
-        android:layout_height="80dp" />
 
     <View
         android:layout_width="70dp"

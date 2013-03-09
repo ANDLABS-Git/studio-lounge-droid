@@ -8,6 +8,8 @@ public class GameMatch {
 	private String matchId;
 	private List<Player> players;
 	private int maxPlayers;
+	private boolean localPlayerOnTurn;
+
 	
 	
 	public String getMatchId() {
@@ -27,6 +29,12 @@ public class GameMatch {
 	}
 	public void setMaxPlayers(int maxPlayers) {
 		this.maxPlayers = maxPlayers;
+	}
+	public boolean isLocalPlayerOnTurn() {
+		return localPlayerOnTurn;
+	}
+	public void setLocalPlayerOnTurn(boolean localPlayerOnTurn) {
+		this.localPlayerOnTurn = localPlayerOnTurn;
 	}
 	
 	

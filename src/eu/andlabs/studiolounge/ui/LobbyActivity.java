@@ -166,6 +166,8 @@ public class LobbyActivity extends FragmentActivity
         for (int i = 0; i < 3; i++) {
           hsvb[i] = interpolate(hsva[i], hsvb[i], proportion);
         }
+        int value =Color.HSVToColor(hsvb);
+        value++;
         return Color.HSVToColor(hsvb);
       }
       private float interpolate(float a, float b, float proportion) {

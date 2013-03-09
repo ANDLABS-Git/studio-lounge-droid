@@ -37,6 +37,7 @@ public class TestData {
 		ma.setPlayers(pl1);
 		
 		GameMatch ma2= new GameMatch();
+		ma2.setLocalPlayerOnTurn(true);
 		List<Player> pl2=new ArrayList<Player>();
 		pl2.add(pb);
 		pl2.add(pa);

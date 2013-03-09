@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2012, 2013 by it's authors. Some rights reserved.
+ *  Copyright (C) 2012,2013 ANDLABS. All rights reserved. 
+ *  Lounge@andlabs.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +25,12 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import eu.andlabs.studiolounge.R;
+import eu.andlabs.studiolounge.dao.GameMatch;
+import eu.andlabs.studiolounge.dao.LobbyListElement;
 
-public class LobbyFragment extends Fragment {
+public class LobbyFragment extends Fragment implements OnChildClickListener {
 
 	private SparseIntArray listPositions = new SparseIntArray();
 	private ExpandableListView lobbyList;
@@ -50,6 +54,7 @@ public class LobbyFragment extends Fragment {
 		mAdapter = new LobbyListAdapter(getActivity());
 		mAdapter.setContent(TestData.getMockData());
 		lobbyList.setAdapter(mAdapter);
+		lobbyList.setOnChildClickListener(this);
 		
 		return v;
 	}
@@ -58,6 +63,21 @@ public class LobbyFragment extends Fragment {
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
+	}
+
+	@Override
+	public boolean onChildClick(ExpandableListView parent, View v,
+			int groupPosition, int childPosition, long id) {
+		LobbyListElement game=(LobbyListElement) mAdapter.getGroup(groupPosition);
+		GameMatch item=(GameMatch)mAdapter.getChild(groupPosition, childPosition);
+		
+		if(game.isInvolved()){
+			item.getMatchId(); //join Game
+		}else{
+			//open joined game
+			
+		}
+		return false;
 	}
 
 }

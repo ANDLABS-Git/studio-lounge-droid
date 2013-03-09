@@ -35,7 +35,7 @@
                     android:layout_marginRight="5dp"
                     android:gravity="right"
                     android:text="TextView"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:textSize="16dp" />
 
                 <View
@@ -72,7 +72,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
                     android:text="TextView"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:textSize="16dp" />
 
             </TableRow>

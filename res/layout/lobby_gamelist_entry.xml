@@ -16,6 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+         android:textColor="@android:color/white"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -25,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
         android:gravity="right"
+         android:textColor="@android:color/white"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 

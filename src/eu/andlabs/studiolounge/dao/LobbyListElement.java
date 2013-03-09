@@ -60,6 +60,18 @@ public class LobbyListElement {
 
 
 
+	public boolean isInvolved() {
+		return involved;
+	}
+
+
+
+	public void setInvolved(boolean involved) {
+		this.involved = involved;
+	}
+
+
+
 	public enum ElementType{
 		 JOINED_GAME(0),OPEN_GAME(1), SEPERATOR(2);
 		
