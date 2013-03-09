@@ -26,9 +26,12 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.Toast;
+import eu.andlabs.studiolounge.Lounge;
 import eu.andlabs.studiolounge.R;
 import eu.andlabs.studiolounge.dao.GameMatch;
 import eu.andlabs.studiolounge.dao.LobbyListElement;
+import eu.andlabs.studiolounge.util.Utils;
 
 public class LobbyFragment extends Fragment implements OnChildClickListener {
 
@@ -40,22 +43,23 @@ public class LobbyFragment extends Fragment implements OnChildClickListener {
 
 	@Override
 	public View onCreateView(final LayoutInflater lI, ViewGroup p, Bundle b) {
-		View v=lI.inflate(R.layout.fragment_lobby, p, false);
-		lobbyList=(ExpandableListView) v.findViewById(R.id.list);
-		
+		View v = lI.inflate(R.layout.fragment_lobby, p, false);
+		lobbyList = (ExpandableListView) v.findViewById(R.id.list);
+
 		ViewTreeObserver vto = lobbyList.getViewTreeObserver();
 
-    vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-        @Override
-        public void onGlobalLayout() {
-                 lobbyList.setIndicatorBounds(lobbyList.getRight()- 40, lobbyList.getWidth());
-        }
-    });
+		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				lobbyList.setIndicatorBounds(lobbyList.getRight() - 40,
+						lobbyList.getWidth());
+			}
+		});
 		mAdapter = new LobbyListAdapter(getActivity());
 		mAdapter.setContent(TestData.getMockData());
 		lobbyList.setAdapter(mAdapter);
 		lobbyList.setOnChildClickListener(this);
-		
+
 		return v;
 	}
 
@@ -68,14 +72,21 @@ public class LobbyFragment extends Fragment implements OnChildClickListener {
 	@Override
 	public boolean onChildClick(ExpandableListView parent, View v,
 			int groupPosition, int childPosition, long id) {
-		LobbyListElement game=(LobbyListElement) mAdapter.getGroup(groupPosition);
-		GameMatch item=(GameMatch)mAdapter.getChild(groupPosition, childPosition);
-		
-		if(game.isInvolved()){
-			item.getMatchId(); //join Game
-		}else{
-			//open joined game
-			
+		LobbyListElement game = (LobbyListElement) mAdapter
+				.getGroup(groupPosition);
+		GameMatch match = (GameMatch) mAdapter.getChild(groupPosition,
+				childPosition);
+
+		if (game.isInvolved()) {
+			Lounge.join(match.getMatchId()); // join Game
+		} else {
+			// open joined game
+			if (match.isRunning()) {
+				Utils.launchGameApp(getActivity(), game.getPgkName(), match);
+			} else {
+				Toast.makeText(getActivity(), "Game not started yet",
+						Toast.LENGTH_LONG).show();
+			}
 		}
 		return false;
 	}

@@ -19,6 +19,7 @@ package eu.andlabs.studiolounge.util;
 import java.util.List;
 
 import eu.andlabs.studiolounge.CacheProvider;
+import eu.andlabs.studiolounge.dao.GameMatch;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -62,17 +63,17 @@ public class Utils {
         return ctx.getPackageManager().queryIntentActivities(intent, 0);
     }
 
-    static void launchGameApp(Context context, String packageName, int isHost,String hostName,String guestName) {
-        final ResolveInfo info = null;//getInstalledGameInfo(context, packageName);
-        if (info != null) {
-            final Intent intent = new Intent();
-            intent.setComponent(new ComponentName(info.activityInfo.packageName,
-                    info.activityInfo.name));
-            intent.putExtra("HOST", isHost);
-            intent.putExtra("HOSTNAME",hostName);
-            intent.putExtra("GUESTNAME", guestName);
-            context.startActivity(intent);
-        }
+   public static void launchGameApp(Context context, String packageName, GameMatch match) {
+//        final ResolveInfo info = null;//getInstalledGameInfo(context, packageName);
+//        if (info != null) {
+//            final Intent intent = new Intent();
+//            intent.setComponent(new ComponentName(info.activityInfo.packageName,
+//                    info.activityInfo.name));
+//            intent.putExtra("HOST", isHost);
+//            intent.putExtra("HOSTNAME",hostName);
+//            intent.putExtra("GUESTNAME", guestName);
+//            context.startActivity(intent);
+//        }
     }
 
 

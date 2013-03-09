@@ -9,6 +9,7 @@ public class GameMatch {
 	private List<Player> players;
 	private int maxPlayers;
 	private boolean localPlayerOnTurn;
+	private boolean running;
 
 	
 	
@@ -35,6 +36,12 @@ public class GameMatch {
 	}
 	public void setLocalPlayerOnTurn(boolean localPlayerOnTurn) {
 		this.localPlayerOnTurn = localPlayerOnTurn;
+	}
+	public boolean isRunning() {
+		return running;
+	}
+	public void setRunning(boolean running) {
+		this.running = running;
 	}
 	
 	
