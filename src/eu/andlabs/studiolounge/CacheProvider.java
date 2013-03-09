@@ -130,7 +130,7 @@ public class CacheProvider extends ContentProvider {
             
             values.put("matchId", uri.getPathSegments().get(1));
             values.put("role", "join");
-            long ret = db.getWritableDatabase().insert("participation", null, values);
+            db.getWritableDatabase().insert("participation", null, values);
             break;
         }
         getContext().getContentResolver().notifyChange(uri, null);

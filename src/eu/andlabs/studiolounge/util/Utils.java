@@ -26,12 +26,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import eu.andlabs.studiolounge.CacheProvider;
 
 public class Utils {
-    
+
     private static final String TAG = "Lounge";
 
     public static String discoverCacheAuthority(Context ctx) {
@@ -41,7 +45,8 @@ public class Utils {
             int on = pm.getComponentEnabledSetting(new ComponentName(
                     info.resolvePackageName, CacheProvider.class.getName()));
             if (on == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
-                Log.d(TAG, "GCP cache already exists - authority=" + info.resolvePackageName);
+                Log.d(TAG, "GCP cache already exists - authority="
+                        + info.resolvePackageName);
                 authority = info.resolvePackageName;
             } else {
                 Log.d(TAG, "no GCP cache " + info.resolvePackageName);
@@ -49,14 +54,14 @@ public class Utils {
         }
         if (authority != null)
             return authority;
-        
+
         Log.d(TAG, "NO gcp Cache ContentProvider found. Setting up a new one.");
-        pm.setComponentEnabledSetting(new ComponentName(
-                ctx.getPackageName(), CacheProvider.class.getName()), 
+        pm.setComponentEnabledSetting(new ComponentName(ctx.getPackageName(),
+                CacheProvider.class.getName()),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);
         return ctx.getPackageName();
     }
-    
+
     private static List<ResolveInfo> getInstalledLoungeGames(Context ctx) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory("eu.andlabs.lounge");
@@ -76,8 +81,6 @@ public class Utils {
 //        }
     }
 
-
-
     static Drawable getGameIcon(Context context, String packageName) {
         ResolveInfo info = null; // getInstalledGameInfo(context, packageName);
         if (info == null) {
@@ -89,8 +92,98 @@ public class Utils {
 
     static void openPlay(Context context, String packageName) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("http://play.google.com/store/apps/details?id=" + packageName));
+        intent.setData(Uri
+                .parse("http://play.google.com/store/apps/details?id="
+                        + packageName));
 
         context.startActivity(intent);
+    }
+
+    public static AsyncTask<View, Float, Void> getColorAnimatorTask(
+            final Context context, final int colorA,
+            final int colorB, final float startProportion,
+            final float endProportion, final long duration) {
+
+        final AsyncTask<View, Float, Void> animator = new AsyncTask<View, Float, Void>() {
+
+            private boolean run = true;
+            
+            private long lastTimestamp = -1;
+
+            private long startTime = -1; 
+
+            private View[] views;
+
+            private long iterationSteps = 50;
+
+            @Override
+            protected Void doInBackground(View... views) {
+
+                this.views = views;
+                while (this.run) {
+                    if (this.lastTimestamp == -1) {
+                        this.lastTimestamp = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
+                    }
+
+                    final float proportionDelta = endProportion
+                            - startProportion;
+                    if (proportionDelta < 0) {
+                        throw new IllegalArgumentException(
+                                "endProportion needs to be smaller than startProportion");
+                    }
+
+                    float deltaTime = System.currentTimeMillis()
+                            - this.lastTimestamp;
+                    float totalTime = System.currentTimeMillis() - this.startTime;
+                    float deltaTimeCurrentPeriod = deltaTime % duration;
+                    float progress = deltaTimeCurrentPeriod / duration;
+                    int period = (int) (totalTime / duration + 1);
+
+                    if (period % 2 == 0) { // count down
+                        publishProgress(1 - progress);
+                    } else { // count up
+                        publishProgress(progress);
+                    }
+
+                    try {
+                        Thread.sleep(iterationSteps);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Float... progress) {
+                super.onProgressUpdate(progress);
+
+                for (View view : this.views) {
+                    view.setBackgroundColor(ipc(context, colorA, colorB,
+                            progress[0]));
+                }
+
+            }
+        };
+
+        return animator;
+    }
+
+    public static int ipc(Context context, int colorA, int colorB,
+            float proportion) {
+        float[] hsva = new float[3];
+        float[] hsvb = new float[3];
+        Color.colorToHSV(context.getResources().getColor(colorA), hsva);
+        Color.colorToHSV(context.getResources().getColor(colorB), hsvb);
+        for (int i = 0; i < 3; i++) {
+            hsvb[i] = Utils.interpolate(hsva[i], hsvb[i], proportion);
+        }
+        return Color.HSVToColor(hsvb);
+    }
+
+    public static float interpolate(float a, float b, float proportion) {
+        return (a + ((b - a) * proportion));
     }
 }
