@@ -231,7 +231,12 @@ public class LobbyListAdapter extends BaseExpandableListAdapter {
 	@Override
 	public int getChildrenCount(int groupPosition) {
 		// TODO Auto-generated method stub
-		return content.get(groupPosition).getGameMatches().size();
+		if(content.get(groupPosition).getGameMatches()!=null){
+			return content.get(groupPosition).getGameMatches().size();
+		}else{
+			return 0;
+		}
+		
 	}
 
 	@Override
