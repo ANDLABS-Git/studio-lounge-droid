@@ -87,8 +87,8 @@ public class Lounge {
         };
         Log.d(TAG, "GCP background service has well been intended "+GCPService.class.getName());
         intent.setClassName("eu.andlabs.studiolounge.test", GCPService.class.getName());
-        app.bindService(intent, connection, Context.BIND_AUTO_CREATE);
-        app.startService(intent); // keep running during unbinds
+//        app.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+//        app.startService(intent); // keep running during unbinds
         Log.d(TAG, "GCP background service has well been intended.");
         gameId = game.hashCode();
         Lounge.matchId = matchId;

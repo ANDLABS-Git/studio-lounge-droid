@@ -70,7 +70,7 @@ public class LobbyActivity extends FragmentActivity
                 Log.d(TAG, "ITEM " + position);
                 switch (position) {
                 case LOBBY:
-                    return new GamesFragment();
+                    return new LobbyFragment();
                 case CHAT:
                     return new ChatFragment();
                 case STATS:
@@ -185,13 +185,13 @@ public class LobbyActivity extends FragmentActivity
 
     @Override
     protected void onStart() {
-        Lounge.checkIn(this, "Lobby");
+//        Lounge.checkIn(this, "Lobby");
         super.onStart();
     }
     
     @Override
     protected void onStop() {
-        Lounge.checkOut(this);
+//        Lounge.checkOut(this);
         super.onStop();
     }
 
