@@ -28,11 +28,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import android.widget.ViewAnimator;
 import eu.andlabs.studiolounge.R;
 import eu.andlabs.studiolounge.dao.GameMatch;
 import eu.andlabs.studiolounge.dao.LobbyListElement;
 import eu.andlabs.studiolounge.dao.Player;
+import eu.andlabs.studiolounge.util.Utils;
 
 public class LobbyListAdapter extends BaseExpandableListAdapter {
 
@@ -155,77 +155,66 @@ public class LobbyListAdapter extends BaseExpandableListAdapter {
 		}
 
 		if (match.isLocalPlayerOnTurn()) {
-			final Thread thread = new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-
-					boolean b = handler.post(new Runnable() {
-
-						@Override
-						public void run() {
-							boolean countUp = true;
-							float value = 0.1f;
-							float adding = 0.1f;
-							while (match.isLocalPlayerOnTurn()) {
-
-								if (countUp) {
-									int color = ipc(R.color.blue,
-											R.color.yellow, value);
-									player1Beacon
-											.setBackgroundColor(ipc(
-													R.color.blue,
-													R.color.yellow, value));
-									convertView
-											.setBackgroundColor(ipc(
-													R.color.blue,
-													R.color.yellow, value));
-									player1Label.setText(value + ":" + color);
-									value += adding;
-									if (value == 1) {
-										countUp = false;
-									}
-								} else {
-									convertView
-											.setBackgroundColor(ipc(
-													R.color.blue,
-													R.color.yellow, value));
-									value -= adding;
-									if (value == 1) {
-										countUp = true;
-									}
-								}
-								try {
-									Thread.sleep(100);
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-
-						}
-					});
-					Log.i("handler", b + "");
-				}
-			});
+		    
+		    Utils.getColorAnimatorTask(context,  R.color.blue, R.color.yellow, 0, 1, 1000).execute(player1Beacon, convertView);
+		    
+		    
+//			final Thread thread = new Thread(new Runnable() {
+//
+//				@Override
+//				public void run() {
+//
+//					boolean b = handler.post(new Runnable() {
+//
+//						@Override
+//						public void run() {
+//							boolean countUp = true;
+//							float value = 0.1f;
+//							float adding = 0.1f;
+//							while (match.isLocalPlayerOnTurn()) {
+//
+//								if (countUp) {
+//									int color = Utils.ipc(context, R.color.blue,
+//											R.color.yellow, value);
+//									player1Beacon
+//											.setBackgroundColor(Utils.ipc(LobbyListAdapter.this.context,
+//													R.color.blue,
+//													R.color.yellow, value));
+//									convertView
+//											.setBackgroundColor(Utils.ipc(LobbyListAdapter.this.context,
+//													R.color.blue,
+//													R.color.yellow, value));
+//									player1Label.setText(value + ":" + color);
+//									value += adding;
+//									if (value == 1) {
+//										countUp = false;
+//									}
+//								} else {
+//									convertView
+//											.setBackgroundColor(Utils.ipc(LobbyListAdapter.this.context,
+//													R.color.blue,
+//													R.color.yellow, value));
+//									value -= adding;
+//									if (value == 1) {
+//										countUp = true;
+//									}
+//								}
+//								try {
+//									Thread.sleep(100);
+//								} catch (InterruptedException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//							}
+//
+//						}
+//					});
+//					Log.i("handler", b + "");
+//				}
+//			});
 //			thread.start();
 		}
 
-	}
-
-	private int ipc(int colorA, int colorB, float proportion) {
-		float[] hsva = new float[3];
-		float[] hsvb = new float[3];
-		Color.colorToHSV(context.getResources().getColor(colorA), hsva);
-		Color.colorToHSV(context.getResources().getColor(colorB), hsvb);
-		for (int i = 0; i < 3; i++) {
-			hsvb[i] = interpolate(hsva[i], hsvb[i], proportion);
-		}
-		return Color.HSVToColor(hsvb);
-	}
-
-	private float interpolate(float a, float b, float proportion) {
-		return (a + ((b - a) * proportion));
 	}
 
 	@Override
