@@ -38,316 +38,276 @@ import eu.andlabs.studiolounge.util.Utils;
 
 public class LobbyListAdapter extends BaseExpandableListAdapter {
 
-    private static final int TYPE_JOINEDGAME = 0;
-    private static final int TYPE_OPENGAME = 1;
-    private static final int TYPE_SEPARATOR = 2;
+	private static final int TYPE_JOINEDGAME = 0;
+	private static final int TYPE_OPENGAME = 1;
+	private static final int TYPE_SEPARATOR = 2;
 
-    private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
+	private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
 
-    private List<LobbyListElement> content;
-    private Context context;
-    private LayoutInflater mInflater;
-    private Handler handler = new Handler();
+	private List<LobbyListElement> content;
+	private Context context;
+	private LayoutInflater mInflater;
+	private Handler handler = new Handler();
 
-    private ColorAnimatorTask anmimatorTask;
+	private ColorAnimatorTask anmimatorTask;
 
-    public LobbyListAdapter(Context context) {
-        this.context = context;
-        mInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.anmimatorTask = new ColorAnimatorTask(context, 0, 1, 1000);
-    }
+	public LobbyListAdapter(Context context) {
+		this.context = context;
+		mInflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.anmimatorTask = new ColorAnimatorTask(context, 0, 1, 1000);
+	}
 
-    public void setContent(List<LobbyListElement> content) {
-        this.content = content;
-    }
+	public void setContent(List<LobbyListElement> content) {
+		this.content = content;
+	}
 
-    @Override
-    public Object getChild(int groupPosition, int childPosition) {
-        // TODO Auto-generated method stub
-        return content.get(groupPosition).getGameMatches().get(childPosition);
-    }
+	@Override
+	public Object getChild(int groupPosition, int childPosition) {
+		// TODO Auto-generated method stub
+		return content.get(groupPosition).getGameMatches().get(childPosition);
+	}
 
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	@Override
+	public long getChildId(int groupPosition, int childPosition) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    @Override
-    public View getChildView(int groupPosition, int childPosition,
-            boolean isLastChild, View convertView, ViewGroup parent) {
+	@Override
+	public View getChildView(int groupPosition, int childPosition,
+			boolean isLastChild, View convertView, ViewGroup parent) {
 
-        int type = getChildType(groupPosition, childPosition);
-        System.out.println("getChildView " + groupPosition + " " + convertView
-                + " type = " + type);
-        if (convertView == null || convertView.getId() != type) {
-            // When it is a new view or not recycleable because its a different
-            // view type
+		int type = getChildType(groupPosition, childPosition);
+		System.out.println("getChildView " + groupPosition + " " + convertView
+				+ " type = " + type);
+		if (convertView == null || convertView.getId() != type) {
+			// When it is a new view or not recycleable because its a different
+			// view type
 
-            switch (type) {
-            case TYPE_JOINEDGAME:
-                convertView = mInflater
-                        .inflate(R.layout.lobby_match_list_entry_2players,
-                                parent, false);
-                fillJoinedGameView(groupPosition, childPosition, convertView);
+			switch (type) {
+			case TYPE_JOINEDGAME:
+				convertView = mInflater
+						.inflate(R.layout.lobby_match_list_entry_2players,
+								parent, false);
+				fillJoinedGameView(groupPosition, childPosition, convertView);
 
-                break;
-            case TYPE_SEPARATOR:
-                convertView = mInflater.inflate(R.layout.lobby_seperator, null);
-                break;
+				break;
+			case TYPE_SEPARATOR:
+				convertView = mInflater.inflate(R.layout.lobby_seperator, null);
+				break;
 
-            case TYPE_OPENGAME:
-                convertView = mInflater.inflate(R.layout.lobby_open_game_entry,
-                        null);
-                break;
-            }
+			case TYPE_OPENGAME:
+				convertView = mInflater.inflate(R.layout.lobby_open_game_entry,
+						null);
+				break;
+			}
 
-        } else {
+		} else {
 
-            switch (type) {
-            case TYPE_JOINEDGAME:
-                fillJoinedGameView(groupPosition, childPosition, convertView);
-                break;
+			switch (type) {
+			case TYPE_JOINEDGAME:
+				fillJoinedGameView(groupPosition, childPosition, convertView);
+				break;
 
-            case TYPE_SEPARATOR:
-                break;
+			case TYPE_SEPARATOR:
+				break;
 
-            case TYPE_OPENGAME:
-                fillOpenGameView(groupPosition, childPosition, convertView);
-                break;
-            }
-        }
-        convertView.setId(type);
-        return convertView;
+			case TYPE_OPENGAME:
+				fillOpenGameView(groupPosition, childPosition, convertView);
+				break;
+			}
+		}
+		convertView.setId(type);
+		return convertView;
 
-    }
+	}
 
-    private void fillOpenGameView(int groupPosition, int childPosition,
-            View convertView) {
-        TextView hostname = (TextView) convertView.findViewById(R.id.hostname);
-        TextView playercount = (TextView) convertView
-                .findViewById(R.id.playercount);
-        GameMatch match = content.get(groupPosition).getGameMatches()
-                .get(childPosition);
-        hostname.setText(match.getPlayers().get(0).getDisplayName());
-        playercount.setText(match.getPlayers().size() + "/"
-                + match.getMaxPlayers());
-    }
+	private void fillOpenGameView(int groupPosition, int childPosition,
+			View convertView) {
+		TextView hostname = (TextView) convertView.findViewById(R.id.hostname);
+		TextView playercount = (TextView) convertView
+				.findViewById(R.id.playercount);
+		GameMatch match = content.get(groupPosition).getGameMatches()
+				.get(childPosition);
+		hostname.setText(match.getPlayers().get(0).getDisplayName());
+		playercount.setText(match.getPlayers().size() + "/"
+				+ match.getMaxPlayers());
+	}
 
-    private void fillJoinedGameView(int groupPosition, int childPosition,
-            final View convertView) {
-        final TextView player1Label = (TextView) convertView
-                .findViewById(R.id.playerLbl1);
-        TextView player2Label = (TextView) convertView
-                .findViewById(R.id.playerLbl2);
+	private void fillJoinedGameView(int groupPosition, int childPosition,
+			final View convertView) {
+		final TextView player1Label = (TextView) convertView
+				.findViewById(R.id.playerLbl1);
+		TextView player2Label = (TextView) convertView
+				.findViewById(R.id.playerLbl2);
 
-        final View player1Beacon = convertView.findViewById(R.id.playerBeacon1);
-        View player2Beacon = convertView.findViewById(R.id.playerBeacon2);
+		final View player1Beacon = convertView.findViewById(R.id.playerBeacon1);
+		View player2Beacon = convertView.findViewById(R.id.playerBeacon2);
 
-        final GameMatch match = content.get(groupPosition).getGameMatches()
-                .get(childPosition);
+		final GameMatch match = content.get(groupPosition).getGameMatches()
+				.get(childPosition);
 
-        player1Label.setText(match.getPlayers().get(0).getDisplayName());
-        player1Beacon.setBackgroundColor(Color.GREEN);
-        if (match.getPlayers().size() == 2) {
-            Player player2 = match.getPlayers().get(1);
+		player1Label.setText(match.getPlayers().get(0).getDisplayName());
+		player1Beacon.setBackgroundColor(Color.GREEN);
+		if (match.getPlayers().size() == 2) {
+			Player player2 = match.getPlayers().get(1);
 
-            player2Label.setText(player2.getDisplayName());
-            player2Beacon.setBackgroundColor(Color.GREEN);
-        } else {
-            player2Beacon.setBackgroundColor(Color.WHITE);
-            player2Label.setText("Open");
-        }
+			player2Label.setText(player2.getDisplayName());
+			player2Beacon.setBackgroundColor(Color.GREEN);
+		} else {
+			player2Beacon.setBackgroundColor(Color.WHITE);
+			player2Label.setText("Open");
+		}
 
-        if (match.isLocalPlayerOnTurn()) {
+		if (match.isRunning()) {
+			if (match.isLocalPlayerOnTurn()) {
 
-            if(!this.anmimatorTask.isRunning()) {
-            this.anmimatorTask.execute(new ViewColorAnimationHolder(convertView,
-                    R.color.blue, R.color.yellow));
-            }
-            this.anmimatorTask.add(player1Beacon, R.color.whiteAlpha, R.color.green);
+				if (!this.anmimatorTask.isRunning()) {
+					this.anmimatorTask.execute(new ViewColorAnimationHolder(
+							convertView, R.color.green, R.color.gray));
+				}else{
+					for(int i=0;i<match.getPlayers().size();i++){
+						if(match.getPlayers().get(i).isOnTurn()){
+							switch(i){
+//							case 0: player1Beacon //animate
+//							case 1: player2Beacon //animate 
+							}
+						}
+					}
+				}
+				
 
-            // final Thread thread = new Thread(new Runnable() {
-            //
-            // @Override
-            // public void run() {
-            //
-            // boolean b = handler.post(new Runnable() {
-            //
-            // @Override
-            // public void run() {
-            // boolean countUp = true;
-            // float value = 0.1f;
-            // float adding = 0.1f;
-            // while (match.isLocalPlayerOnTurn()) {
-            //
-            // if (countUp) {
-            // int color = Utils.ipc(context, R.color.blue,
-            // R.color.yellow, value);
-            // player1Beacon
-            // .setBackgroundColor(Utils.ipc(LobbyListAdapter.this.context,
-            // R.color.blue,
-            // R.color.yellow, value));
-            // convertView
-            // .setBackgroundColor(Utils.ipc(LobbyListAdapter.this.context,
-            // R.color.blue,
-            // R.color.yellow, value));
-            // player1Label.setText(value + ":" + color);
-            // value += adding;
-            // if (value == 1) {
-            // countUp = false;
-            // }
-            // } else {
-            // convertView
-            // .setBackgroundColor(Utils.ipc(LobbyListAdapter.this.context,
-            // R.color.blue,
-            // R.color.yellow, value));
-            // value -= adding;
-            // if (value == 1) {
-            // countUp = true;
-            // }
-            // }
-            // try {
-            // Thread.sleep(100);
-            // } catch (InterruptedException e) {
-            // // TODO Auto-generated catch block
-            // e.printStackTrace();
-            // }
-            // }
-            //
-            // }
-            // });
-            // Log.i("handler", b + "");
-            // }
-            // });
-            // thread.start();
-        }
+			} else {
 
-    }
+			}
 
-    @Override
-    public int getChildrenCount(int groupPosition) {
-        // TODO Auto-generated method stub
-        if (content.get(groupPosition).getGameMatches() != null) {
-            return content.get(groupPosition).getGameMatches().size();
-        } else {
-            return 0;
-        }
+		}
 
-    }
+	}
 
-    @Override
-    public Object getGroup(int groupPosition) {
-        // TODO Auto-generated method stub
-        return content.get(groupPosition);
-    }
+	@Override
+	public int getChildrenCount(int groupPosition) {
+		// TODO Auto-generated method stub
+		if (content.get(groupPosition).getGameMatches() != null) {
+			return content.get(groupPosition).getGameMatches().size();
+		} else {
+			return 0;
+		}
 
-    @Override
-    public int getGroupCount() {
-        // TODO Auto-generated method stub
-        return content.size();
-    }
+	}
 
-    @Override
-    public long getGroupId(int groupPosition) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	@Override
+	public Object getGroup(int groupPosition) {
+		// TODO Auto-generated method stub
+		return content.get(groupPosition);
+	}
 
-    @Override
-    public View getGroupView(int groupPosition, boolean isExpanded,
-            View convertView, ViewGroup parent) {
+	@Override
+	public int getGroupCount() {
+		// TODO Auto-generated method stub
+		return content.size();
+	}
 
-        int type = getGroupType(groupPosition);
-        System.out.println("getChildView " + groupPosition + " " + convertView
-                + " type = " + type);
-        if (convertView == null || convertView.getId() != type) { // When it is
-                                                                  // a new
-                                                                  // view or
-                                                                  // not
-                                                                  // recycleable
-                                                                  // because
-                                                                  // its a
-                                                                  // different
-                                                                  // view type
+	@Override
+	public long getGroupId(int groupPosition) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-            switch (type) {
-            case TYPE_JOINEDGAME:
-                convertView = mInflater.inflate(R.layout.lobby_gamelist_entry,
-                        parent, false);
-                createGameView(groupPosition, convertView);
+	@Override
+	public View getGroupView(int groupPosition, boolean isExpanded,
+			View convertView, ViewGroup parent) {
 
-                break;
-            case TYPE_SEPARATOR:
-                convertView = mInflater.inflate(R.layout.lobby_seperator, null);
-                break;
+		int type = getGroupType(groupPosition);
+		System.out.println("getChildView " + groupPosition + " " + convertView
+				+ " type = " + type);
+		if (convertView == null || convertView.getId() != type) { // When it is
+																	// a new
+																	// view or
+																	// not
+																	// recycleable
+																	// because
+																	// its a
+																	// different
+																	// view type
 
-            case TYPE_OPENGAME:
-                convertView = mInflater.inflate(R.layout.lobby_gamelist_entry,
-                        null);
-                createGameView(groupPosition, convertView);
-                break;
-            }
+			switch (type) {
+			case TYPE_JOINEDGAME:
+				convertView = mInflater.inflate(R.layout.lobby_gamelist_entry,
+						parent, false);
+				createGameView(groupPosition, convertView);
 
-        } else {
+				break;
+			case TYPE_SEPARATOR:
+				convertView = mInflater.inflate(R.layout.lobby_seperator, null);
+				break;
 
-            switch (type) {
-            case TYPE_JOINEDGAME:
-                createGameView(groupPosition, convertView);
-                break;
+			case TYPE_OPENGAME:
+				convertView = mInflater.inflate(R.layout.lobby_gamelist_entry,
+						null);
+				createGameView(groupPosition, convertView);
+				break;
+			}
 
-            case TYPE_SEPARATOR:
-                break;
+		} else {
 
-            case TYPE_OPENGAME:
-                createGameView(groupPosition, convertView);
-                break;
-            }
-        }
-        convertView.setId(type);
-        return convertView;
+			switch (type) {
+			case TYPE_JOINEDGAME:
+				createGameView(groupPosition, convertView);
+				break;
 
-    }
+			case TYPE_SEPARATOR:
+				break;
 
-    private void createGameView(int groupPosition, View convertView) {
-        ((TextView) convertView.findViewById(R.id.gamename)).setText(content
-                .get(groupPosition).getTitle());
-        ((TextView) convertView.findViewById(R.id.count)).setText(content
-                .get(groupPosition).getGameMatches().size()
-                + "");
-    }
+			case TYPE_OPENGAME:
+				createGameView(groupPosition, convertView);
+				break;
+			}
+		}
+		convertView.setId(type);
+		return convertView;
 
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
+	}
 
-    @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return true;
-    }
+	private void createGameView(int groupPosition, View convertView) {
+		((TextView) convertView.findViewById(R.id.gamename)).setText(content
+				.get(groupPosition).getTitle());
+		((TextView) convertView.findViewById(R.id.count)).setText(content
+				.get(groupPosition).getGameMatches().size()
+				+ "");
+	}
 
-    @Override
-    public int getChildType(int groupPosition, int childPosition) {
-        return content.get(groupPosition).getType().value();
-    }
+	@Override
+	public boolean hasStableIds() {
+		return false;
+	}
 
-    @Override
-    public int getGroupType(int groupPosition) {
+	@Override
+	public boolean isChildSelectable(int groupPosition, int childPosition) {
+		return true;
+	}
 
-        return content.get(groupPosition).getType().value();
-    }
+	@Override
+	public int getChildType(int groupPosition, int childPosition) {
+		return content.get(groupPosition).getType().value();
+	}
 
-    @Override
-    public int getChildTypeCount() {
-        // TODO Auto-generated method stub
-        return 3;
-    }
+	@Override
+	public int getGroupType(int groupPosition) {
 
-    @Override
-    public int getGroupTypeCount() {
-        // TODO Auto-generated method stub
-        return 3;
-    }
+		return content.get(groupPosition).getType().value();
+	}
+
+	@Override
+	public int getChildTypeCount() {
+		// TODO Auto-generated method stub
+		return 3;
+	}
+
+	@Override
+	public int getGroupTypeCount() {
+		// TODO Auto-generated method stub
+		return 3;
+	}
 }
