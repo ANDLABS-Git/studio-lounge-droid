@@ -27,6 +27,7 @@ public class TestData {
 		LobbyListElement game1=new LobbyListElement();
 		game1.setTitle("Mol3cool");
 		game1.setType(ElementType.JOINED_GAME);
+		game1.setPgkName("de.andlabs.gravitywins");
 		List<GameMatch> matchesGame1= new ArrayList<GameMatch>();
 		
 		
@@ -52,6 +53,7 @@ public class TestData {
 		LobbyListElement game2=new LobbyListElement();
 		game2.setTitle("Gravity Losses");
 		game2.setType(ElementType.JOINED_GAME);
+		game2.setPgkName("com.andlabs.gi");
 		List<GameMatch> matchesGame2= new ArrayList<GameMatch>();
 		
 		

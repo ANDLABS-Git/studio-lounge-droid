@@ -1,4 +1,4 @@
-package eu.andlabs.studiolounge.lobby.parser;
+package eu.andlabs.studiolounge.util.parser;
 
 import android.graphics.drawable.Drawable;
 

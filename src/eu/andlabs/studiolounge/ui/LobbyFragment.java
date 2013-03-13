@@ -16,6 +16,8 @@
  */
 package eu.andlabs.studiolounge.ui;
 
+import java.util.List;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.SparseIntArray;
@@ -32,6 +34,9 @@ import eu.andlabs.studiolounge.R;
 import eu.andlabs.studiolounge.dao.GameMatch;
 import eu.andlabs.studiolounge.dao.LobbyListElement;
 import eu.andlabs.studiolounge.util.Utils;
+import eu.andlabs.studiolounge.util.parser.PlayParser;
+import eu.andlabs.studiolounge.util.parser.PlayParser.PlayListener;
+import eu.andlabs.studiolounge.util.parser.PlayResult;
 
 public class LobbyFragment extends Fragment implements OnChildClickListener {
 
@@ -56,7 +61,23 @@ public class LobbyFragment extends Fragment implements OnChildClickListener {
 			}
 		});
 		mAdapter = new LobbyListAdapter(getActivity());
-		mAdapter.setContent(TestData.getMockData());
+		
+		final List<LobbyListElement> data = TestData.getMockData();
+		final PlayParser parser = PlayParser.getInstance(getActivity());
+		
+		for(LobbyListElement element : data) {
+		    parser.queryPlay(element.getPgkName());
+		}
+		
+		parser.addListener(new PlayListener() {
+            
+            @Override
+            public void onPlayResult(PlayResult pResult) {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+		
+		mAdapter.setContent(data);
 		lobbyList.setAdapter(mAdapter);
 		lobbyList.setOnChildClickListener(this);
 

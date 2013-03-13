@@ -36,6 +36,7 @@ limitations under the License.
             android:layout_marginTop="55dp"
             android:divider="#4cffffff"
             android:dividerHeight="2dp"
+            android:groupIndicator="@null"
             android:scrollingCache="false" >
         </ExpandableListView>
     </LinearLayout>

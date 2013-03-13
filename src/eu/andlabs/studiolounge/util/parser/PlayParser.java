@@ -1,15 +1,15 @@
-package eu.andlabs.studiolounge.lobby.parser;
+package eu.andlabs.studiolounge.util.parser;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -21,8 +21,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -38,9 +38,15 @@ public class PlayParser {
 
     private static final String PLAY_PATTERN_END = "\" alt=\"";
 
+    private static final int MAX_WIDTH = 1024;
+
+    private static final int DEFAULT_HEIGHT_DP = 70;
+
     private Queue<QueryData> mQueries = new PriorityQueue<PlayParser.QueryData>();
 
-    public List<PlayListener> mListener = new ArrayList<PlayParser.PlayListener>();
+    private List<PlayListener> mListener = new ArrayList<PlayParser.PlayListener>();
+
+    private Map<String, Drawable> mResults = new HashMap<String, Drawable>();
 
     private boolean mIsQuerying = false;
 
@@ -67,6 +73,10 @@ public class PlayParser {
         mListener.remove(listener);
     }
 
+    public Drawable getResult(String packageName) {
+        return mResults.get(packageName);
+    }
+
     private void notifyListener(PlayResult result) {
         for (PlayListener listener : mListener) {
             listener.onPlayResult(result);
@@ -79,8 +89,16 @@ public class PlayParser {
         }
     }
 
-    public void queryPlay(final String packageName, final int imageWidth) {
-        mQueries.add(new QueryData(packageName, imageWidth));
+    public void queryPlay(final String packageName) {
+        queryPlay(packageName, Math.min(MAX_WIDTH, mContext.getResources()
+                .getDisplayMetrics().widthPixels),
+                (int) (DEFAULT_HEIGHT_DP * mContext.getResources()
+                        .getDisplayMetrics().density));
+    }
+
+    public void queryPlay(final String packageName, final int imageWidth,
+            final int imageHeight) {
+        mQueries.add(new QueryData(packageName, imageWidth, imageHeight));
 
         if (!mIsQuerying) {
             queryNext();
@@ -94,15 +112,16 @@ public class PlayParser {
             final QueryData data = mQueries.poll();
             final String packageName = data.getPackageName();
             final int imageWidth = data.getWidth();
+            final int imageHeight = data.getHeight();
 
-            Drawable cached = readFileFromInternalStorage(packageName);
+            Drawable cached = readFileFromInternalStorage(packageName, imageHeight);
+
             if (cached != null) {
+                mResults.put(packageName, cached);
                 notifyListener(new PlayResult(cached, packageName));
             } else {
-                DrawableDownloadTask drawableTask = new DrawableDownloadTask(
-                        packageName);
-                UrlDownloadTask urlTask = new UrlDownloadTask(drawableTask,
-                        imageWidth);
+                UrlDownloadTask urlTask = new UrlDownloadTask(packageName,
+                        imageWidth, imageHeight);
                 urlTask.execute(PLAY_BASE_URL + packageName);
             }
         } else {
@@ -186,11 +205,15 @@ public class PlayParser {
         }
     }
 
-    private Drawable readFileFromInternalStorage(String packageName) {
+    private Drawable readFileFromInternalStorage(String packageName, int height) {
         InputStream is = null;
         try {
             is = mContext.openFileInput(packageName);
-            return new BitmapDrawable(is);
+            final Bitmap bitmap = new BitmapDrawable(is).getBitmap();
+            int y = (bitmap.getHeight() - height) / 2;
+
+            return new BitmapDrawable(Bitmap.createBitmap(bitmap, 0, y,
+                    bitmap.getWidth(), height));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -265,14 +288,24 @@ public class PlayParser {
         public void onPlayResult(PlayResult result);
     }
 
-    private class QueryData {
+    private class QueryData implements Comparable<QueryData> {
         String mPackageName;
         int mWidth;
+        int mHeight;
 
-        public QueryData(String pPackageName, int pImageWidth) {
+        public QueryData(String pPackageName, int pImageWidth, int pImageHeight) {
             super();
             mPackageName = pPackageName;
             mWidth = pImageWidth;
+            mHeight = pImageHeight;
+        }
+
+        public int getHeight() {
+            return mHeight;
+        }
+
+        public void setHeight(int pHeight) {
+            mHeight = pHeight;
         }
 
         public String getPackageName() {
@@ -290,25 +323,42 @@ public class PlayParser {
         public void setWidth(int pWidth) {
             mWidth = pWidth;
         }
+
+        @Override
+        public int compareTo(QueryData pAnother) {
+            return 0;
+        }
     }
 
-    private class DrawableDownloadTask extends
-            AsyncTask<String, Void, Drawable> {
+    private class UrlDownloadTask extends AsyncTask<String, Void, Drawable> {
 
+        private int mImageWidth;
+        private int mImageHeight;
         private String mPackageName;
 
-        public DrawableDownloadTask(String packageName) {
+        public UrlDownloadTask(String packageName, int imageWidth, int imageHeight) {
             mPackageName = packageName;
+            mImageWidth = imageWidth;
+            mImageHeight = imageHeight;
         }
 
         @Override
         protected Drawable doInBackground(String... pParams) {
+            String html = null;
+            try {
+                html = downloadUrl(pParams[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String url = parseImageUrl(html) + mImageWidth;
+
             InputStream is = null;
             try {
-                is = downloadStream(pParams[0]);
+                is = downloadStream(url);
                 if (is != null) {
                     writeFileToInternalStorage(is, mPackageName);
-                    return readFileFromInternalStorage(mPackageName);
+                    return readFileFromInternalStorage(mPackageName, mImageHeight);
                 }
                 return null;
             } finally {
@@ -326,33 +376,6 @@ public class PlayParser {
             if (result != null) {
                 notifyListener(new PlayResult(result, mPackageName));
             }
-        }
-    }
-
-    private class UrlDownloadTask extends AsyncTask<String, Void, String> {
-
-        private DrawableDownloadTask mDrawableTask;
-        private int mImageWidth;
-
-        public UrlDownloadTask(DrawableDownloadTask drawableTask, int imageWidth) {
-            mDrawableTask = drawableTask;
-            mImageWidth = imageWidth;
-        }
-
-        @Override
-        protected String doInBackground(String... pParams) {
-            String html = null;
-            try {
-                html = downloadUrl(pParams[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return parseImageUrl(html);
-        }
-
-        protected void onPostExecute(String result) {
-            mDrawableTask.execute(result + mImageWidth);
         };
     }
 }
