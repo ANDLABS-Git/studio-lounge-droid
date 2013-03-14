@@ -13,13 +13,18 @@
         android:src="@drawable/atomdroid" />
 
     <TextView
+        android:layout_marginTop="5dp"
         android:id="@+id/gamename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:background="#c000"
          android:textColor="@android:color/white"
         android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/count"

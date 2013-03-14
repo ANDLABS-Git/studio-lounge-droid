@@ -85,7 +85,7 @@ public class PlayParser {
         if (mQueries.size() > 0) {
             queryNext();
         } else {
-            mIsQuerying = true;
+            mIsQuerying = false;
         }
     }
 
@@ -98,10 +98,13 @@ public class PlayParser {
 
     public void queryPlay(final String packageName, final int imageWidth,
             final int imageHeight) {
-        mQueries.add(new QueryData(packageName, imageWidth, imageHeight));
 
-        if (!mIsQuerying) {
-            queryNext();
+        if (packageName != null) {
+            mQueries.add(new QueryData(packageName, imageWidth, imageHeight));
+
+            if (!mIsQuerying) {
+                queryNext();
+            }
         }
     }
 
@@ -114,7 +117,9 @@ public class PlayParser {
             final int imageWidth = data.getWidth();
             final int imageHeight = data.getHeight();
 
-            Drawable cached = readFileFromInternalStorage(packageName, imageHeight);
+
+            Drawable cached = readFileFromInternalStorage(packageName,
+                    imageHeight);
 
             if (cached != null) {
                 mResults.put(packageName, cached);
@@ -130,7 +135,6 @@ public class PlayParser {
     }
 
     private String parseImageUrl(String html) {
-        Log.i("HTML", html);
         if (html.contains(PLAY_PATTERN_START)) {
             int start = html.indexOf(PLAY_PATTERN_START);
             start += PLAY_PATTERN_START.length() + 1;
@@ -336,7 +340,8 @@ public class PlayParser {
         private int mImageHeight;
         private String mPackageName;
 
-        public UrlDownloadTask(String packageName, int imageWidth, int imageHeight) {
+        public UrlDownloadTask(String packageName, int imageWidth,
+                int imageHeight) {
             mPackageName = packageName;
             mImageWidth = imageWidth;
             mImageHeight = imageHeight;
@@ -358,7 +363,8 @@ public class PlayParser {
                 is = downloadStream(url);
                 if (is != null) {
                     writeFileToInternalStorage(is, mPackageName);
-                    return readFileFromInternalStorage(mPackageName, mImageHeight);
+                    return readFileFromInternalStorage(mPackageName,
+                            mImageHeight);
                 }
                 return null;
             } finally {
