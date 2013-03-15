@@ -40,7 +40,7 @@ public class PlayParser {
 
     private static final int MAX_WIDTH = 1024;
 
-    private static final int DEFAULT_HEIGHT_DP = 70;
+    private static final int DEFAULT_HEIGHT_DP = 80;
 
     private Queue<QueryData> mQueries = new PriorityQueue<PlayParser.QueryData>();
 
