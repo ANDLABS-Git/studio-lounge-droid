@@ -40,7 +40,7 @@ public class PlayParser {
 
     private static final int MAX_WIDTH = 1024;
 
-    private static final int DEFAULT_HEIGHT_DP = 80;
+    private static final int DEFAULT_HEIGHT_DP = 70;
 
     private Queue<QueryData> mQueries = new PriorityQueue<PlayParser.QueryData>();
 
@@ -117,7 +117,6 @@ public class PlayParser {
             final int imageWidth = data.getWidth();
             final int imageHeight = data.getHeight();
 
-
             Drawable cached = readFileFromInternalStorage(packageName,
                     imageHeight);
 
@@ -135,7 +134,7 @@ public class PlayParser {
     }
 
     private String parseImageUrl(String html) {
-        if (html.contains(PLAY_PATTERN_START)) {
+        if (html != null && html.contains(PLAY_PATTERN_START)) {
             int start = html.indexOf(PLAY_PATTERN_START);
             start += PLAY_PATTERN_START.length() + 1;
             final String secondHalf = html.subSequence(start, start + 300)
@@ -162,9 +161,13 @@ public class PlayParser {
         try {
             is = downloadStream(url);
 
-            // Convert the InputStream into a string
-            String contentAsString = convertStreamToString(is);
-            return contentAsString;
+            if (is != null) {
+
+                // Convert the InputStream into a string
+                String contentAsString = convertStreamToString(is);
+                return contentAsString;
+            }
+            return null;
             // Makes sure that the InputStream is closed after the app is
             // finished using it.
         } finally {
@@ -356,26 +359,31 @@ public class PlayParser {
                 e.printStackTrace();
             }
 
-            String url = parseImageUrl(html) + mImageWidth;
+            String url = parseImageUrl(html);
 
-            InputStream is = null;
-            try {
-                is = downloadStream(url);
-                if (is != null) {
-                    writeFileToInternalStorage(is, mPackageName);
-                    return readFileFromInternalStorage(mPackageName,
-                            mImageHeight);
-                }
-                return null;
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            if (url != null) {
+                url += mImageWidth;
+                InputStream is = null;
+                try {
+                    is = downloadStream(url);
+                    if (is != null) {
+                        writeFileToInternalStorage(is, mPackageName);
+                        return readFileFromInternalStorage(mPackageName,
+                                mImageHeight);
+                    }
+                    return null;
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
+
+            return null;
         }
 
         protected void onPostExecute(Drawable result) {
