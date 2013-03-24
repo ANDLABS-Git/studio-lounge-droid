@@ -67,7 +67,7 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
             protected Cursor getChildrenCursor(Cursor games) {
                 int gameId = games.getInt(games.getColumnIndex(ContactsContract.Groups._ID));
                 listPositions.put(gameId, games.getPosition());
-                getLoaderManager().initLoader(gameId, null, GamesFragment.this);
+//                getLoaderManager().initLoader(gameId, null, GamesFragment.this);
                 return null;
             }
             
@@ -84,7 +84,7 @@ public class GamesFragment extends ExpandableListFragment implements LoaderCallb
             }
             
         });
-        getLoaderManager().initLoader(GAMES, null, this);
+//        getLoaderManager().initLoader(GAMES, null, this);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle b) {

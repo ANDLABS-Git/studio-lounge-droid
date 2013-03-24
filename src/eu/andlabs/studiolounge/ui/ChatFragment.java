@@ -35,11 +35,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import eu.andlabs.studiolounge.Lounge;
 import eu.andlabs.studiolounge.R;
+import eu.andlabs.studiolounge.util.Utils;
 
-public class ChatFragment extends ListFragment 
-    implements OnClickListener, OnKeyListener, LoaderCallbacks<Cursor> {
-    
+public class ChatFragment extends ListFragment implements OnClickListener,
+        OnKeyListener, LoaderCallbacks<Cursor> {
+
     private static final String TAG = "Lounge";
     private EditText mText;
 
@@ -54,20 +56,21 @@ public class ChatFragment extends ListFragment
         layout.findViewById(R.id.btn_send).setOnClickListener(this);
         mText = (EditText) layout.findViewById(R.id.msg_field);
         mText.setOnKeyListener(this);
-        
+
         setListAdapter(new CursorAdapter(getActivity(), null, true) {
-            
+
             @Override
             public View newView(Context ctx, Cursor msgs, ViewGroup parent) {
-                return getLayoutInflater(null).inflate(R.layout.view_chat_list_entry, null);
+                return getLayoutInflater(null).inflate(
+                        R.layout.view_chat_list_entry, null);
             }
-            
+
             @Override
             public void bindView(View listItem, Context ctx, Cursor msges) {
                 final ChatMsgView msg = (ChatMsgView) listItem;
-                msg.player.setText(msges.getString(0));
-                msg.text.setText(msges.getString(1));
-                msg.time.setText(msges.getString(0));
+                msg.player.setText(msges.getString(1));
+                msg.time.setText(msges.getString(2));
+                msg.text.setText(msges.getString(3));
             }
         });
         getLoaderManager().initLoader(0, null, this);
@@ -76,16 +79,18 @@ public class ChatFragment extends ListFragment
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle arg1) {
         Log.d(TAG, "onCreateLoader for CHAT");
-        Uri uri = Uri.parse("content://foo.lounge/chat/msges");
+        Uri uri = Uri.parse("content://foo.lounge/chat");
         return new CursorLoader(getActivity(), uri, null, null, null, null);
     }
-    
+
     @Override
     public void onLoadFinished(Loader<Cursor> arg0, Cursor msges) {
-        Log.d(TAG, "onLoaderFinished for CHAT");
-        ((CursorAdapter)getListAdapter()).swapCursor(msges);
+        if (msges != null) {
+            Log.d(TAG, "onLoaderFinished for CHAT " + msges.getCount());
+            ((CursorAdapter) getListAdapter()).swapCursor(msges);
+        }
     }
-    
+
     @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
         Log.d(TAG, "onLoaderReset for CHAT");
@@ -93,23 +98,20 @@ public class ChatFragment extends ListFragment
 
     @Override
     public void onClick(View button) {
-        // SEND mMsg.getText().toString();
+        Lounge.chat(mText.getText().toString());
         mText.requestFocusFromTouch();
         mText.setText("");
     }
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
             onClick(null);
             return true;
         }
         return false;
     }
-
-
-
-
 
     static class ChatMsgView extends RelativeLayout {
 
@@ -120,7 +122,7 @@ public class ChatFragment extends ListFragment
         public ChatMsgView(Context context, AttributeSet attrs) {
             super(context, attrs);
         }
-        
+
         @Override
         protected void onFinishInflate() {
             super.onFinishInflate();

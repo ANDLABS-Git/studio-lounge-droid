@@ -71,15 +71,6 @@ public class Lounge {
             }
         };
         intent.putExtra("messenger", new Messenger(handler));
-        app.getContentResolver().registerContentObserver(Uri.parse("content://" + 
-                Utils.discoverCacheAuthority(app) + "/matches/" + matchId + "/msges"),
-                false, new ContentObserver(handler) {
-            
-            @Override
-            public void onChange(boolean selfChange) {
-                // TODO (re)query the content provider for game msges
-            }
-        });
         connection = new ServiceConnection() {
             
             @Override
@@ -96,8 +87,8 @@ public class Lounge {
         };
         Log.d(TAG, "GCP background service has well been intended "+GCPService.class.getName());
         intent.setClassName("eu.andlabs.studiolounge.test", GCPService.class.getName());
-        app.bindService(intent, connection, Context.BIND_AUTO_CREATE);
-        app.startService(intent); // keep running during unbind
+//        app.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+//        app.startService(intent); // keep running during unbinds
         Log.d(TAG, "GCP background service has well been intended.");
         gameId = game.hashCode();
         Lounge.matchId = matchId;
@@ -143,7 +134,7 @@ public class Lounge {
      * CHAT in the public Lounge Lobby
      * @param msg  something to say
      */
-    protected static void chat(String msg) {
+    public static void chat(String msg) {
         try {
             service.chat(msg);
         } catch (RemoteException e) {

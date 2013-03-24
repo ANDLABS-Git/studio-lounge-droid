@@ -71,6 +71,7 @@ public class GCPService extends Service implements IOCallback {
     private String packagename;
     private Uri providerAuthority;
     private ContentResolver cache;
+    private Handler handler;
 
     public static final int LOGIN = 1;
     public static final int CHAT = 2;
@@ -83,10 +84,12 @@ public class GCPService extends Service implements IOCallback {
     @Override
     public void onCreate() {
         super.onCreate();
+        handler = new Handler();
         log("creating GCP Service   PId=" + Process.myPid());
-        providerAuthority = Uri.parse("content://" + Utils.discoverCacheAuthority(this));
+        providerAuthority = Uri.parse("content://foo.lounge");
+//        providerAuthority = Uri.parse("content://" + Utils.discoverCacheAuthority(this));
         cache = getContentResolver();
-//        connect();
+        connect();
     }
 
     private void connect() {
@@ -113,13 +116,16 @@ public class GCPService extends Service implements IOCallback {
     public void on(String type, IOAcknowledge ack, Object... data) {
         log("incoming message:" + type + " --- " + data);
         try {
+            if (type.equals("welcome")) {
+                mSocketIO.emit("history");
+                loggedIn = true;
+                return;
+            } 
             JSONObject json = (JSONObject) data[0];
             ContentValues cv = new ContentValues();
-            if (type.equals("welcome")) {
-                loggedIn = true;
-            } else if (type.equals("chat")) {
-                cv.put("player", json.getString("player"));
-                cv.put("text", json.getString("text"));
+            if (type.equals("chat")) {
+                cv.put("sender", json.getString("sender"));
+                cv.put("msg", json.getString("text"));
                 cache.insert(Uri.withAppendedPath(providerAuthority, "chat"), cv);
             } else if (type.equals("host")) {
                 cv.put("id", json.getString("id"));
@@ -153,7 +159,7 @@ public class GCPService extends Service implements IOCallback {
             } else {
                 Log.d("GCP", "BAD protocol msg: ");
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -201,7 +207,7 @@ public class GCPService extends Service implements IOCallback {
         
         @Override
         public void chat(String msg) throws RemoteException {
-            mSocketIO.send(msg);
+            mSocketIO.emit("chat", msg);
         }
         
         @Override
@@ -251,11 +257,11 @@ public class GCPService extends Service implements IOCallback {
     }
 
     private void log(final Object ding) {
-        new Handler().post(new Runnable() {
+        handler.post(new Runnable() {
 
             @Override
             public void run() {
-                Toast.makeText(GCPService.this, ding.toString(), 1000).show();
+//                Toast.makeText(GCPService.this, ding.toString(), 1000).show();
             }
         });
         Log.d("GCP-Service", ding.toString());

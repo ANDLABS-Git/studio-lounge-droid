@@ -15,12 +15,10 @@
  */
 package eu.andlabs.studiolounge.ui;
 
-import eu.andlabs.studiolounge.Lounge;
-import eu.andlabs.studiolounge.R;
-import eu.andlabs.studiolounge.Lounge.Multiplayable;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -28,8 +26,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.graphics.Color;
-import android.os.Bundle;
+import eu.andlabs.studiolounge.Lounge.Multiplayable;
+import eu.andlabs.studiolounge.R;
+import eu.andlabs.studiolounge.util.Utils;
 
 public class LobbyActivity extends FragmentActivity 
                             implements OnPageChangeListener, Multiplayable {
@@ -70,7 +69,7 @@ public class LobbyActivity extends FragmentActivity
                 Log.d(TAG, "ITEM " + position);
                 switch (position) {
                 case LOBBY:
-                    return new GamesFragment();
+                    return new LobbyFragment();
                 case CHAT:
                     return new ChatFragment();
                 case STATS:
@@ -147,33 +146,17 @@ public class LobbyActivity extends FragmentActivity
     public void onPageScrolled(int position, float foo, int arg2) {
         switch (position) {
         case LOBBY:
-            mHeader.setBackgroundColor(ipc(R.color.orange, R.color.green, foo));
+            mHeader.setBackgroundColor(Utils.ipc(this, R.color.orange, R.color.green, foo));
             break;
         case CHAT:
-            mHeader.setBackgroundColor(ipc(R.color.green, R.color.blue, foo));
+            mHeader.setBackgroundColor(Utils.ipc(this, R.color.green, R.color.blue, foo));
             break;
         case STATS:
-            mHeader.setBackgroundColor(ipc(R.color.blue, R.color.yellow, foo));
+            mHeader.setBackgroundColor(Utils.ipc(this, R.color.blue, R.color.yellow, foo));
             break;
         }
     }
     
-    private int ipc(int a, int b, float proportion) {
-        float[] hsva = new float[3];
-        float[] hsvb = new float[3];
-        Color.colorToHSV(getResources().getColor(a), hsva);
-        Color.colorToHSV(getResources().getColor(b), hsvb);
-        for (int i = 0; i < 3; i++) {
-          hsvb[i] = interpolate(hsva[i], hsvb[i], proportion);
-        }
-        return Color.HSVToColor(hsvb);
-      }
-      private float interpolate(float a, float b, float proportion) {
-          return (a + ((b - a) * proportion));
-      }
-
-
-
     private static final int ALPHA_OFF = (int) (255 * 0.3f);
     private static final String TAG = "Lounge";
     private static final int LOBBY = 0;
@@ -185,13 +168,13 @@ public class LobbyActivity extends FragmentActivity
 
     @Override
     protected void onStart() {
-        Lounge.checkIn(this, "Lobby");
+//        Lounge.checkIn(this, "Lobby");
         super.onStart();
     }
     
     @Override
     protected void onStop() {
-        Lounge.checkOut(this);
+//        Lounge.checkOut(this);
         super.onStop();
     }
 
