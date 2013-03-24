@@ -1,5 +1,6 @@
 package eu.andlabs.studiolounge.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LobbyListElement {
@@ -11,6 +12,10 @@ public class LobbyListElement {
 	private boolean involved;
 	private boolean localPlayerOnTurn;
 	
+	
+	public LobbyListElement() {
+		gameMatches=new ArrayList<GameMatch>();
+	}
 	
 	public ElementType getType() {
 		return type;
@@ -73,7 +78,7 @@ public class LobbyListElement {
 
 
 	public enum ElementType{
-		 JOINED_GAME(0),OPEN_GAME(1), SEPERATOR(2);
+		 JOINED_GAME(0), SEPERATOR(1), OPEN_GAME(2);
 		
 		private int type;
 		

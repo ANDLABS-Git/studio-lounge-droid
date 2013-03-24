@@ -1,5 +1,6 @@
 package eu.andlabs.studiolounge.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameMatch {
@@ -12,6 +13,9 @@ public class GameMatch {
 	private boolean running;
 
 	
+	public GameMatch(){
+		this.players=new ArrayList<Player>();
+	}
 	
 	public String getMatchId() {
 		return matchId;
