@@ -1,6 +1,10 @@
 ##  * hAppy Log * 
 
 # Studio-Lounge Android-Library
+
+#This is a open experimental project to prototype the LOUNGE Framework. 
+The concepting phase is over and we will release a first beta client here soon. So stay tuned. 
+
 Multi Platform
 Multi-Player
 Multi-App
